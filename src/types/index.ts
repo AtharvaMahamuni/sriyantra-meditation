@@ -6,14 +6,17 @@ export type SoundMode = 'om-136' | 'om-tanpura' | 'singing-bowl' | 'mute';
 
 export type BreathingRhythm = 'tidal-16' | 'box-16' | 'relax-478' | 'static';
 
-export type MotionMode = 'vortex' | 'harmonic';
+export type MotionStyle = 'alternating' | 'unified' | 'still';
+
+export type PaletteId = 'cursor-gold' | 'amethyst-rose' | 'emerald-copper' | 'pure-platinum';
 
 export interface VisualState {
   atmosphere: AtmosphereId;
   mantra: MantraMode;
   breathing: BreathingRhythm;
-  motionMode: MotionMode;      // 'vortex' (alternating counter-rotation) or 'harmonic' (sacred alignment)
-  rotationSpeed: number;       // 0 to 2 (1 = default gentle celestial)
+  motionStyle: MotionStyle;    // 'alternating' (layers counter-rotate, core clean), 'unified', 'still'
+  palette: PaletteId;          // Color theme palette
+  rotationSpeed: number;       // 0 to 3 (0 = still, 0.5 = gentle, 1 = normal, 2 = fast)
   glowIntensity: number;       // 0.5 to 2.0
   depth3D: number;             // 0.0 to 1.5 (Z-depth separation between layers)
   highlightAvarana: number | null; // 1 to 9 or null for all

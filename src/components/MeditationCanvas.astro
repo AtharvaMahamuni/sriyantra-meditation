@@ -44,6 +44,7 @@ import ZenControlsBar from './ZenControlsBar.astro';
     private idleTimer: number | null = null;
     private dockContainer: HTMLElement | null = null;
     private topBar: HTMLElement | null = null;
+    private viewport: HTMLElement | null = null;
 
     constructor() {
       const canvas = document.getElementById('sri-yantra-canvas') as HTMLCanvasElement;
@@ -55,15 +56,16 @@ import ZenControlsBar from './ZenControlsBar.astro';
 
       this.dockContainer = document.getElementById('zen-dock-container');
       this.topBar = document.getElementById('zen-top-bar');
+      this.viewport = document.getElementById('meditation-viewport');
 
       this.initEventListeners();
       this.initWakeLock();
       this.initIdleHiding();
       this.initBreathingText();
+      this.initFullscreenHandler();
     }
 
     private initWakeLock(): void {
-      // Auto-request wake-lock on first interaction
       const attemptWake = async () => {
         await this.wakeLock.request();
         document.removeEventListener('click', attemptWake);
@@ -98,6 +100,17 @@ import ZenControlsBar from './ZenControlsBar.astro';
         });
       });
 
+      // Palette selector buttons (Colors)
+      const paletteBtns = document.querySelectorAll('#palette-selector .pill-btn');
+      paletteBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          paletteBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const palette = btn.getAttribute('data-palette') as any;
+          if (palette) this.sceneManager.setPalette(palette);
+        });
+      });
+
       // Sound selector buttons
       const soundBtns = document.querySelectorAll('#sound-selector .pill-btn');
       soundBtns.forEach(btn => {
@@ -109,14 +122,25 @@ import ZenControlsBar from './ZenControlsBar.astro';
         });
       });
 
-      // Motion mode selector buttons (Vortex alternate vs Sacred harmonic)
+      // Motion style selector buttons (Alternate vs Unified vs Still)
       const motionBtns = document.querySelectorAll('#motion-selector .pill-btn');
       motionBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           motionBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const motion = btn.getAttribute('data-motion') as any;
-          if (motion) this.sceneManager.setMotionMode(motion);
+          if (motion) this.sceneManager.setMotionStyle(motion);
+        });
+      });
+
+      // Speed selector buttons
+      const speedBtns = document.querySelectorAll('#speed-selector .pill-btn');
+      speedBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          speedBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const speedVal = parseFloat(btn.getAttribute('data-speed') || '1.0');
+          this.sceneManager.setRotationSpeed(speedVal);
         });
       });
 
@@ -150,16 +174,33 @@ import ZenControlsBar from './ZenControlsBar.astro';
       });
     }
 
+    private initFullscreenHandler(): void {
+      document.addEventListener('fullscreenchange', () => {
+        const isFS = !!document.fullscreenElement;
+        if (isFS) {
+          document.documentElement.classList.add('is-fullscreen-locked');
+          document.body.classList.add('is-fullscreen-locked');
+        } else {
+          document.documentElement.classList.remove('is-fullscreen-locked');
+          document.body.classList.remove('is-fullscreen-locked');
+        }
+      });
+    }
+
     private initIdleHiding(): void {
       const showUI = () => {
         this.dockContainer?.classList.remove('idle-hidden');
         this.topBar?.classList.remove('idle-hidden');
+        this.viewport?.classList.remove('cursor-hidden');
+        document.body.classList.remove('cursor-hidden');
 
         if (this.idleTimer) clearTimeout(this.idleTimer);
         this.idleTimer = window.setTimeout(() => {
           this.dockContainer?.classList.add('idle-hidden');
           this.topBar?.classList.add('idle-hidden');
-        }, 4000);
+          this.viewport?.classList.add('cursor-hidden');
+          document.body.classList.add('cursor-hidden');
+        }, 3200);
       };
 
       window.addEventListener('pointermove', showUI, { passive: true });
@@ -172,7 +213,6 @@ import ZenControlsBar from './ZenControlsBar.astro';
       const textEl = document.getElementById('breath-state');
       if (!textEl) return;
 
-      // 16s cycle: 4s Inhale, 4s Hold, 4s Exhale, 4s Hold
       const states = [
         'Inhale gently • Expand awareness',
         'Hold breath • Stillness at Bindu',
@@ -192,7 +232,6 @@ import ZenControlsBar from './ZenControlsBar.astro';
     }
   }
 
-  // Initialize once DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => new MeditationApp());
   } else {
@@ -206,8 +245,32 @@ import ZenControlsBar from './ZenControlsBar.astro';
     width: 100vw;
     height: 100vh;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: hidden !important;
     background-color: var(--color-zen-canvas);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .meditation-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide mouse cursor during idle inactivity */
+  .meditation-viewport.cursor-hidden,
+  :global(body.cursor-hidden) {
+    cursor: none !important;
+  }
+
+  /* Prevent side scroll in fullscreen */
+  :global(html.is-fullscreen-locked),
+  :global(body.is-fullscreen-locked) {
+    overflow: hidden !important;
+    scrollbar-width: none !important;
+  }
+
+  :global(html.is-fullscreen-locked::-webkit-scrollbar),
+  :global(body.is-fullscreen-locked::-webkit-scrollbar) {
+    display: none !important;
   }
 
   #sri-yantra-canvas {
@@ -230,7 +293,7 @@ import ZenControlsBar from './ZenControlsBar.astro';
     justify-content: space-between;
     z-index: 30;
     pointer-events: auto;
-    transition: opacity 0.6s var(--ease-calm), transform 0.6s var(--ease-calm);
+    transition: opacity 0.5s var(--ease-calm), transform 0.5s var(--ease-calm);
   }
 
   .zen-top-bar.idle-hidden {
@@ -294,7 +357,7 @@ import ZenControlsBar from './ZenControlsBar.astro';
 
   .breathing-pill {
     position: absolute;
-    top: 5rem;
+    top: 4.8rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 25;
@@ -307,12 +370,12 @@ import ZenControlsBar from './ZenControlsBar.astro';
     font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(223, 168, 143, 0.75);
-    background-color: rgba(20, 18, 15, 0.65);
-    backdrop-filter: blur(8px);
-    padding: 0.35rem 0.85rem;
+    color: rgba(223, 168, 143, 0.8);
+    background-color: rgba(18, 16, 14, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 0.35rem 0.95rem;
     border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: opacity 0.4s ease-in-out;
   }
 </style>

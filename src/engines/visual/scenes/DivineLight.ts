@@ -132,12 +132,10 @@ export class DivineLightScene implements IVisualScene {
       scale: breathScale,
       speed: state.rotationSpeed,
       depth3D: state.depth3D ?? 1.1,
-      motionMode: state.motionMode ?? 'vortex',
+      motionStyle: state.motionStyle ?? 'alternating',
+      paletteId: state.palette ?? 'cursor-gold',
       highlightAvarana: state.highlightAvarana,
       glowIntensity: state.glowIntensity * 1.3,
-      baseColor: '#e0aa55',
-      shivaColor: '#ffaa3b',
-      shaktiColor: '#f54e00',
     });
   }
 

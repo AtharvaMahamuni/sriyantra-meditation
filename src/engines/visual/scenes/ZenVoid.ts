@@ -69,12 +69,10 @@ export class ZenVoidScene implements IVisualScene {
       scale: breathScale,
       speed: state.rotationSpeed,
       depth3D: state.depth3D ?? 0.85,
-      motionMode: state.motionMode ?? 'vortex',
+      motionStyle: state.motionStyle ?? 'alternating',
+      paletteId: state.palette ?? 'cursor-gold',
       highlightAvarana: state.highlightAvarana,
       glowIntensity: state.glowIntensity * 0.95,
-      baseColor: '#d4a259',
-      shivaColor: '#ffaa3b',
-      shaktiColor: '#f54e00',
     });
   }
 

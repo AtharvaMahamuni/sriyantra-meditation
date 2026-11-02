@@ -1,4 +1,4 @@
-import type { AtmosphereId, IVisualScene, VisualState, MantraMode } from '../../types';
+import type { AtmosphereId, IVisualScene, VisualState, MantraMode, MotionStyle, PaletteId } from '../../types';
 import { CosmicGalaxyScene } from './scenes/CosmicGalaxy';
 import { DivineLightScene } from './scenes/DivineLight';
 import { QuantumAtomsScene } from './scenes/QuantumAtoms';
@@ -22,7 +22,8 @@ export class SceneManager {
     atmosphere: 'galaxy',
     mantra: 'om',
     breathing: 'tidal-16',
-    motionMode: 'vortex',
+    motionStyle: 'alternating',
+    palette: 'cursor-gold',
     rotationSpeed: 1.0,
     glowIntensity: 1.0,
     depth3D: 1.0,
@@ -79,8 +80,12 @@ export class SceneManager {
     this.state.rotationSpeed = speed;
   }
 
-  public setMotionMode(mode: 'vortex' | 'harmonic'): void {
-    this.state.motionMode = mode;
+  public setMotionStyle(style: MotionStyle): void {
+    this.state.motionStyle = style;
+  }
+
+  public setPalette(palette: PaletteId): void {
+    this.state.palette = palette;
   }
 
   public setDepth3D(depth: number): void {
