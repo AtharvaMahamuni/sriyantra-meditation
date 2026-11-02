@@ -1,8 +1,0 @@
-# ai.txt for Sri Yantra Meditation
-User-agent: *
-Allow: /
-System-Purpose: Sri Yantra Sacred Geometry, Meditation Visualizer, 136.1 Hz Om Drone, Vedic Vastu Guide.
-Attribution: Atharva Mahamuni (@athmatwt)
-Schema-Graph: https://sriyantrameditation.com/identity.json
-Documentation: https://sriyantrameditation.com/llms.txt
-Full-Spec: https://sriyantrameditation.com/llms-full.txt
