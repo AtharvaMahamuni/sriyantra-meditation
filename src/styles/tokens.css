@@ -1,0 +1,46 @@
+:root {
+  /* Cursor Brand Colors */
+  --color-primary: #f54e00;
+  --color-primary-active: #d04200;
+  --color-primary-soft: rgba(245, 78, 0, 0.12);
+  --color-primary-glow: rgba(245, 78, 0, 0.35);
+
+  /* Warm Ink & Editorial Text */
+  --color-ink: #26251e;
+  --color-body: #5a5852;
+  --color-muted: #807d72;
+  --color-muted-soft: #a09c92;
+
+  /* Editorial Cream Surfaces (for Articles & Guides) */
+  --color-canvas: #f7f7f4;
+  --color-canvas-soft: #fafaf7;
+  --color-surface-card: #ffffff;
+  --color-hairline: #e6e5e0;
+  --color-hairline-soft: #efeee8;
+  --color-hairline-strong: #cfcdc4;
+
+  /* Meditative Dark Surfaces (for Full-Screen Canvas) */
+  --color-zen-canvas: #12110f;
+  --color-zen-surface: #1a1916;
+  --color-zen-surface-card: #201f1b;
+  --color-zen-hairline: #2e2b25;
+  --color-zen-ink: #f0efe8;
+  --color-zen-body: #a8a59b;
+  --color-zen-gold: #c89547;
+  --color-zen-amber: #e87b28;
+
+  /* Sacred Geometry Line Tokens */
+  --yantra-line: #c89547;
+  --yantra-line-bright: #f54e00;
+  --yantra-line-shiva: #e88c38;
+  --yantra-line-shakti: #d46820;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-devanagari: 'Cinzel', 'Rozha One', 'Georgia', serif;
+
+  /* Transitions */
+  --ease-calm: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-normal: 240ms;
+}

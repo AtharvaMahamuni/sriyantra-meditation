@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+---
+
+<BaseLayout
+  title="Sri Yantra FAQ — Geometry, Vastu Directions, Mantras & Materials"
+  description="Comprehensive answers to all questions about Sri Yantra (Shri / Shree Yantra): Triangle counts, Concurrency problem, Vastu directions, Bindu Trataka, and Sphatik tests."
+  canonicalPath="/faq/"
+  isDark={false}
+>
+  <Header isDark={false} />
+
+  <main class="faq-page-main">
+    <div class="faq-hero">
+      <div class="container-narrow">
+        <span class="mono-tag">Frequently Asked Questions</span>
+        <h1 class="display-title hero-title">Sri Yantra Knowledge Base</h1>
+        <p class="body-lead hero-desc">
+          Everything you need to know about Sri Yantra (Sri Chakra, Shri Yantra, Shree Yantra) sacred geometry, Vastu placement rules, meditation practices, and authentic materials.
+        </p>
+      </div>
+    </div>
+
+    <!-- The FAQ Accordion Component with Filter Tabs and Schema.org JSON-LD -->
+    <FaqAccordion />
+
+    <section class="faq-cta-banner">
+      <div class="container-narrow">
+        <div class="banner-inner">
+          <h2>Ready to Begin Your Meditation?</h2>
+          <p>
+            Experience the soothing, 60FPS rotating Sri Yantra with 136.1 Hz Om drone, customizable atmospheres, and automatic screen wake-lock.
+          </p>
+          <a href="/" class="launch-meditation-btn">Enter Meditation Visualizer</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer isDark={false} />
+</BaseLayout>
+
+<style>
+  .faq-page-main {
+    background-color: var(--color-canvas);
+  }
+
+  .faq-hero {
+    padding: 4.5rem 1.5rem 3rem;
+    text-align: center;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .hero-title {
+    margin: 0.5rem 0 1rem;
+  }
+
+  .hero-desc {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .faq-cta-banner {
+    padding: 5rem 1.5rem;
+    background-color: var(--color-surface-card);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .banner-inner {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .banner-inner h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .banner-inner p {
+    color: var(--color-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+  }
+
+  .launch-meditation-btn {
+    display: inline-block;
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s var(--ease-calm);
+  }
+
+  .launch-meditation-btn:hover {
+    background-color: var(--color-primary-active);
+  }
+</style>

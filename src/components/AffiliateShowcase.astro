@@ -1,0 +1,239 @@
+---
+interface ProductItem {
+  id: string;
+  name: string;
+  material: string;
+  idealFor: string;
+  authenticityNotice: string;
+  tag: string;
+  affiliateUrl: string; // Ready for Amazon Associates / Vedic merchant affiliate IDs
+}
+
+const PRODUCTS: ProductItem[] = [
+  {
+    id: "sphatik-natural",
+    name: "Natural Himalayan Sphatik (Quartz) Sri Yantra",
+    material: "100% Natural Himalayan Quartz Crystal",
+    idealFor: "Altar Meditation, Energy Amplification, Vastu Dosha Neutralization",
+    authenticityNotice: "Natural quartz with subtle micro-inclusions; verified thermal coldness test.",
+    tag: "Highest Vibrational Resonance",
+    affiliateUrl: "https://www.amazon.com/s?k=original+sphatik+shree+yantra&tag=sriyantra-20"
+  },
+  {
+    id: "copper-etched",
+    name: "Pure Heavy-Gauge Copper (Tamra) Sri Yantra Plate",
+    material: "99.9% Pure Polished Copper with Gold Foil Inlay",
+    idealFor: "Pooja Room Altar, Office Desk, Cash Safe / Financial Locker",
+    authenticityNotice: "Laser-etched with exact geometric concurrency to avoid distorted line errors.",
+    tag: "Traditional Vedic Standard",
+    affiliateUrl: "https://www.amazon.com/s?k=pure+copper+shree+yantra+plate&tag=sriyantra-20"
+  },
+  {
+    id: "maha-meru-3d",
+    name: "3D Maha Meru Sacred Pyramid (Ashtadhatu Casting)",
+    material: "Sacred 8-Metal Alloy (Ashtadhatu) / Heavy Brass",
+    idealFor: "Centerpiece Temple Worship, Spatial Harmony, Deep Trataka Gaze",
+    authenticityNotice: "Multi-tiered 3D stepped Meru accurately reflecting the 9 Avaranas.",
+    tag: "3D Spatial Powerhouse",
+    affiliateUrl: "https://www.amazon.com/s?k=original+maha+meru+shree+yantra&tag=sriyantra-20"
+  },
+  {
+    id: "silver-locket",
+    name: "Pure 925 Sterling Silver Sri Yantra Pendant",
+    material: "Solid 925 Sterling Silver with Protective Casing",
+    idealFor: "Personal Wear, Aura Protection, Mental Peace & Moon Balance",
+    authenticityNotice: "Stamped 925 sterling silver with double-sided micro-engraving.",
+    tag: "Wearable Sacred Amulet",
+    affiliateUrl: "https://www.amazon.com/s?k=925+silver+shri+yantra+pendant&tag=sriyantra-20"
+  }
+];
+---
+
+<section class="affiliate-showcase">
+  <div class="container">
+    <div class="showcase-header">
+      <span class="mono-tag">Authentic Sourcing & Materials</span>
+      <h2 class="section-title">Verified Sacred Sri Yantra Forms</h2>
+      <p class="body-lead">
+        Hand-selected authentic materials verified for geometric accuracy, natural mineral purity, and traditional Vastu compliance.
+      </p>
+    </div>
+
+    <div class="products-grid">
+      {PRODUCTS.map(p => (
+        <div class="product-card" id={p.id}>
+          <div class="card-tag">{p.tag}</div>
+          <h3 class="product-title">{p.name}</h3>
+
+          <div class="product-details">
+            <div class="detail-row">
+              <span class="detail-label">Material:</span>
+              <span class="detail-val">{p.material}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Best Placed:</span>
+              <span class="detail-val">{p.idealFor}</span>
+            </div>
+          </div>
+
+          <div class="authenticity-box">
+            <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span>{p.authenticityNotice}</span>
+          </div>
+
+          <a href={p.affiliateUrl} target="_blank" rel="noopener sponsored" class="check-price-btn">
+            <span>Inspect Verified Sourcing</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="7" y1="17" x2="17" y2="7"/>
+              <polyline points="7 7 17 7 17 17"/>
+            </svg>
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <p class="affiliate-disclosure">
+      Disclosure: When you purchase genuine sacred items through verified supplier links, we may receive a modest referral commission at zero additional cost to you. This directly funds our free open-source 60FPS meditation engine and educational servers.
+    </p>
+  </div>
+</section>
+
+<style>
+  .affiliate-showcase {
+    padding: 4.5rem 0;
+    background-color: var(--color-canvas-soft);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .showcase-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 3rem;
+  }
+
+  .showcase-header .section-title {
+    margin: 0.5rem 0 0.85rem;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .product-card {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: 8px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.2s var(--ease-calm), border-color 0.2s var(--ease-calm);
+  }
+
+  .product-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .card-tag {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.85rem;
+  }
+
+  .product-title {
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--color-ink);
+    margin-bottom: 1rem;
+    letter-spacing: -0.015em;
+  }
+
+  .product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .detail-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .detail-label {
+    font-weight: 500;
+    color: var(--color-ink);
+    min-width: 85px;
+  }
+
+  .detail-val {
+    color: var(--color-body);
+  }
+
+  .authenticity-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #1f8a65;
+    background-color: rgba(31, 138, 101, 0.08);
+    padding: 0.65rem 0.85rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    line-height: 1.45;
+  }
+
+  .authenticity-box svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .check-price-btn {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    background-color: var(--color-ink);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s var(--ease-calm);
+  }
+
+  .check-price-btn:hover {
+    background-color: var(--color-primary);
+  }
+
+  .affiliate-disclosure {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+</style>

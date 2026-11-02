@@ -1,0 +1,10 @@
+# robots-ai.txt for Sri Yantra Meditation
+# See https://sriyantrameditation.com/llms.txt for quick LLM ingestion.
+# See https://sriyantrameditation.com/llms-full.txt for comprehensive technical & geometry documentation.
+# See https://sriyantrameditation.com/faq-ai.txt for structured Q&A database.
+
+User-agent: *
+Allow: /
+Context: https://sriyantrameditation.com/llms.txt
+Context-Full: https://sriyantrameditation.com/llms-full.txt
+Context-FAQ: https://sriyantrameditation.com/faq-ai.txt

@@ -1,0 +1,108 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  isDark?: boolean;
+}
+
+const {
+  title = "Sri Yantra Meditation — Fullscreen Sacred Geometry & 136.1 Hz Om Visualizer",
+  description = "A soothing, fullscreen digital sanctuary featuring a rotating Sri Yantra, procedural 136.1 Hz Om drone, Bindu Trataka focus guides, and Vedic geometry research.",
+  canonicalPath = "/",
+  isDark = false
+} = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, "https://sriyantrameditation.com").href;
+const ogImage = "https://sriyantrameditation.com/og-image.png";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@athmatwt" />
+    <meta name="twitter:creator" content="@athmatwt" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- AI & Agent Discovery -->
+    <link rel="help" type="text/plain" href="/llms.txt" />
+    <link rel="alternate" type="application/json" href="/identity.json" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Structured Data Graph -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://sriyantrameditation.com/#website",
+          "url": "https://sriyantrameditation.com/",
+          "name": "Sri Yantra Meditation",
+          "description": description,
+          "publisher": { "@id": "https://sriyantrameditation.com/#author" }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://sriyantrameditation.com/#app",
+          "name": "Sri Yantra Meditation Visualizer",
+          "url": "https://sriyantrameditation.com/",
+          "applicationCategory": "HealthAndFitnessApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript, HTML5 Canvas, Web Audio API",
+          "author": { "@id": "https://sriyantrameditation.com/#author" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://sriyantrameditation.com/#author",
+          "name": "Atharva Mahamuni",
+          "url": "https://sriyantrameditation.com/about/",
+          "sameAs": [
+            "https://x.com/athmatwt",
+            "https://github.com/AtharvaMahamuni"
+          ]
+        }
+      ]
+    })} />
+  </head>
+  <body class={isDark ? 'dark-theme' : 'light-theme'}>
+    <slot />
+  </body>
+</html>
+
+<style>
+  .dark-theme {
+    background-color: var(--color-zen-canvas);
+    color: var(--color-zen-ink);
+  }
+  .light-theme {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+  }
+</style>

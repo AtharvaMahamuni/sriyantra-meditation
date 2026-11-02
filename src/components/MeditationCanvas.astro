@@ -1,0 +1,307 @@
+---
+import ZenControlsBar from './ZenControlsBar.astro';
+---
+
+<div class="meditation-viewport" id="meditation-viewport">
+  <!-- Interactive HTML5 Canvas Layer -->
+  <canvas id="sri-yantra-canvas" aria-label="Interactive Sri Yantra Visualizer"></canvas>
+
+  <!-- Floating Minimal Header Over Visualizer -->
+  <header class="zen-top-bar" id="zen-top-bar">
+    <div class="top-bar-brand">
+      <span class="pulse-indicator"></span>
+      <span class="top-title">Sri Yantra Meditation</span>
+      <span class="freq-tag">136.1 Hz</span>
+    </div>
+
+    <nav class="top-nav">
+      <a href="/geometry/" class="top-nav-link">Geometry</a>
+      <a href="/meditation/" class="top-nav-link">How to Meditate</a>
+      <a href="/vastu/" class="top-nav-link">Vastu & Placement</a>
+      <a href="/materials/" class="top-nav-link">Sphatik Guide</a>
+      <a href="/faq/" class="top-nav-link">FAQ</a>
+    </nav>
+  </header>
+
+  <!-- Breathing Instruction Indicator -->
+  <div class="breathing-pill" id="breathing-pill">
+    <span class="breath-state" id="breath-state">Inhale • Focus on Bindu</span>
+  </div>
+
+  <!-- Bottom Floating Zen Dock Controls -->
+  <ZenControlsBar />
+</div>
+
+<script>
+  import { SceneManager } from '../engines/visual/SceneManager';
+  import { AudioEngine } from '../engines/audio/AudioEngine';
+  import { WakeLockManager } from '../engines/session/WakeLockManager';
+
+  class MeditationApp {
+    private sceneManager: SceneManager;
+    private audioEngine: AudioEngine;
+    private wakeLock: WakeLockManager;
+    private idleTimer: number | null = null;
+    private dockContainer: HTMLElement | null = null;
+    private topBar: HTMLElement | null = null;
+
+    constructor() {
+      const canvas = document.getElementById('sri-yantra-canvas') as HTMLCanvasElement;
+      if (!canvas) throw new Error('Canvas element missing');
+
+      this.sceneManager = new SceneManager(canvas);
+      this.audioEngine = new AudioEngine();
+      this.wakeLock = new WakeLockManager();
+
+      this.dockContainer = document.getElementById('zen-dock-container');
+      this.topBar = document.getElementById('zen-top-bar');
+
+      this.initEventListeners();
+      this.initWakeLock();
+      this.initIdleHiding();
+      this.initBreathingText();
+    }
+
+    private initWakeLock(): void {
+      // Auto-request wake-lock on first interaction
+      const attemptWake = async () => {
+        await this.wakeLock.request();
+        document.removeEventListener('click', attemptWake);
+        document.removeEventListener('keydown', attemptWake);
+      };
+      document.addEventListener('click', attemptWake, { once: true });
+      document.addEventListener('keydown', attemptWake, { once: true });
+
+      const wlBtn = document.getElementById('wakelock-btn');
+      this.wakeLock.onChange((active) => {
+        if (wlBtn) {
+          wlBtn.classList.toggle('active', active);
+          const ind = wlBtn.querySelector('.status-indicator');
+          if (ind) (ind as HTMLElement).style.backgroundColor = active ? '#2ed573' : '#a09c92';
+        }
+      });
+
+      wlBtn?.addEventListener('click', async () => {
+        await this.wakeLock.toggle();
+      });
+    }
+
+    private initEventListeners(): void {
+      // Scene selector buttons
+      const sceneBtns = document.querySelectorAll('#scene-selector .pill-btn');
+      sceneBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sceneBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const sceneId = btn.getAttribute('data-scene') as any;
+          if (sceneId) this.sceneManager.switchAtmosphere(sceneId);
+        });
+      });
+
+      // Sound selector buttons
+      const soundBtns = document.querySelectorAll('#sound-selector .pill-btn');
+      soundBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          soundBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const soundMode = btn.getAttribute('data-sound') as any;
+          if (soundMode) await this.audioEngine.setMode(soundMode);
+        });
+      });
+
+      // Mantra selector buttons
+      const mantraBtns = document.querySelectorAll('#mantra-selector .pill-btn');
+      mantraBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          mantraBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const mantra = btn.getAttribute('data-mantra') as any;
+          if (mantra) this.sceneManager.setMantra(mantra);
+        });
+      });
+
+      // 4K Wallpaper Download
+      const dlBtn = document.getElementById('download-wallpaper-btn');
+      dlBtn?.addEventListener('click', () => {
+        this.sceneManager.downloadWallpaper();
+      });
+
+      // Fullscreen Toggle
+      const fsBtn = document.getElementById('fullscreen-btn');
+      fsBtn?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.warn('[SriYantra] Fullscreen error:', err);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      });
+    }
+
+    private initIdleHiding(): void {
+      const showUI = () => {
+        this.dockContainer?.classList.remove('idle-hidden');
+        this.topBar?.classList.remove('idle-hidden');
+
+        if (this.idleTimer) clearTimeout(this.idleTimer);
+        this.idleTimer = window.setTimeout(() => {
+          this.dockContainer?.classList.add('idle-hidden');
+          this.topBar?.classList.add('idle-hidden');
+        }, 4000);
+      };
+
+      window.addEventListener('pointermove', showUI, { passive: true });
+      window.addEventListener('keydown', showUI, { passive: true });
+      window.addEventListener('touchstart', showUI, { passive: true });
+      showUI();
+    }
+
+    private initBreathingText(): void {
+      const textEl = document.getElementById('breath-state');
+      if (!textEl) return;
+
+      // 16s cycle: 4s Inhale, 4s Hold, 4s Exhale, 4s Hold
+      const states = [
+        'Inhale gently • Expand awareness',
+        'Hold breath • Stillness at Bindu',
+        'Exhale softly • Dissolve thoughts',
+        'Rest in void • Pure consciousness'
+      ];
+
+      let idx = 0;
+      setInterval(() => {
+        idx = (idx + 1) % states.length;
+        textEl.style.opacity = '0';
+        setTimeout(() => {
+          textEl.textContent = states[idx];
+          textEl.style.opacity = '1';
+        }, 400);
+      }, 4000);
+    }
+  }
+
+  // Initialize once DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new MeditationApp());
+  } else {
+    new MeditationApp();
+  }
+</script>
+
+<style>
+  .meditation-viewport {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: var(--color-zen-canvas);
+  }
+
+  #sri-yantra-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    touch-action: none;
+  }
+
+  .zen-top-bar {
+    position: absolute;
+    top: 1.5rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 30;
+    pointer-events: auto;
+    transition: opacity 0.6s var(--ease-calm), transform 0.6s var(--ease-calm);
+  }
+
+  .zen-top-bar.idle-hidden {
+    opacity: 0;
+    transform: translateY(-16px);
+    pointer-events: none;
+  }
+
+  .top-bar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .pulse-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary);
+  }
+
+  .top-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-zen-ink);
+    letter-spacing: -0.01em;
+  }
+
+  .freq-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-zen-gold);
+    background-color: rgba(200, 149, 71, 0.15);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .top-nav {
+    display: none;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 860px) {
+    .top-nav {
+      display: flex;
+    }
+  }
+
+  .top-nav-link {
+    font-size: 0.8125rem;
+    color: var(--color-zen-body);
+    transition: color 0.2s var(--ease-calm);
+  }
+
+  .top-nav-link:hover {
+    color: #ffffff;
+  }
+
+  .breathing-pill {
+    position: absolute;
+    top: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    pointer-events: none;
+  }
+
+  .breath-state {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(223, 168, 143, 0.75);
+    background-color: rgba(20, 18, 15, 0.65);
+    backdrop-filter: blur(8px);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: opacity 0.4s ease-in-out;
+  }
+</style>

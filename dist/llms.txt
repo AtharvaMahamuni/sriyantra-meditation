@@ -1,0 +1,18 @@
+# Sri Yantra Meditation & Sacred Geometry Engine
+
+> A tranquil, full-screen digital sanctuary for Sri Yantra sacred geometry meditation, 136.1 Hz procedural Om soundscapes, and comprehensive geometry research.
+
+Sri Yantra Meditation (https://sriyantrameditation.com) is an open web utility and educational authority engineered by Atharva Mahamuni (@athmatwt). It combines high-precision Canvas sacred geometry rendering (60 FPS), W3C Screen Wake Lock API, and Web Audio API procedural synthesis (Om 136.1 Hz Cosmic Octave, Tanpura, Tibetan Singing Bowl bells).
+
+## Core Pages
+- [Live Meditation Visualizer](https://sriyantrameditation.com/): Full-screen rotating Sri Yantra with 4 meditative atmospheres (Cosmic Galaxy, Divine Light, Quantum Atoms, Zen Void), glowing Sanskrit mantras, and procedural audio.
+- [Sacred Geometry & Concurrency Guide](https://sriyantrameditation.com/geometry/): The mathematical architecture of the 9 primary interlocking triangles, 43 secondary triangles, 9 Avaranas, and the geometric concurrency problem.
+- [How to Meditate on Sri Yantra](https://sriyantrameditation.com/meditation/): Step-by-step Bindu Trataka gazing meditation, Srishti Krama vs Samhara Krama, and physiological brainwave benefits (Alpha/Theta induction, DMN reduction).
+- [Sri Yantra Vastu & Placement Guide](https://sriyantrameditation.com/vastu/): Directions (North-East / Ishan Kon), placement in home temple or study, Friday Prana Pratishtha activation rituals, and dos & don'ts.
+- [Authentic Materials & Sphatik Guide](https://sriyantrameditation.com/materials/): Detailed comparison of Sphatik (quartz crystal), copper plates, 3D Maha Meru pyramids, silver pendants, and tests for identifying genuine natural crystal.
+- [Complete Sri Yantra FAQ & QnA](https://sriyantrameditation.com/faq/): 30+ detailed answers addressing common search queries, Reddit discussions, and theological nuances in English and Hindi.
+
+## Technical Specifications
+- Pure client-side execution: Zero trackers, zero cookies, zero external analytics.
+- Audio: Real-time procedural oscillator synthesis using the Web Audio API (136.10 Hz Earth frequency).
+- Display: Hardware-accelerated Canvas 2D with sub-pixel anti-aliasing and dynamic DPR scaling.

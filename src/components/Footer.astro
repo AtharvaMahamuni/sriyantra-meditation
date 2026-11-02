@@ -1,0 +1,212 @@
+---
+interface Props {
+  isDark?: boolean;
+}
+
+const { isDark = false } = Astro.props;
+---
+
+<footer class={`site-footer ${isDark ? 'dark-mode' : 'light-mode'}`}>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <div class="brand-title">Sri Yantra Meditation</div>
+        <p class="brand-tagline">
+          The open, client-side digital sanctuary for sacred geometry contemplation, 136.1 Hz Om vibration, and Vedic science education.
+        </p>
+        <div class="author-badge">
+          Engineered by <a href="https://x.com/athmatwt" target="_blank" rel="noopener noreferrer" class="author-link">Atharva Mahamuni (@athmatwt)</a>
+        </div>
+      </div>
+
+      <div class="footer-links-col">
+        <h3 class="col-title">Sacred Practice</h3>
+        <ul class="col-list">
+          <li><a href="/">Live Full-screen Visualizer</a></li>
+          <li><a href="/meditation/">How to Meditate (Trataka)</a></li>
+          <li><a href="/meditation/#mantras">Sri Yantra Mantras</a></li>
+          <li><a href="/meditation/#sound-physics">136.1 Hz Cosmic Octave</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h3 class="col-title">Geometry & Vastu</h3>
+        <ul class="col-list">
+          <li><a href="/geometry/">The 9 Avaranas (Circuits)</a></li>
+          <li><a href="/geometry/#concurrency">The Concurrency Problem</a></li>
+          <li><a href="/vastu/">Where to Place in Home</a></li>
+          <li><a href="/materials/">Sphatik vs Copper vs Meru</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h3 class="col-title">Knowledge & AI</h3>
+        <ul class="col-list">
+          <li><a href="/faq/">Comprehensive FAQ</a></li>
+          <li><a href="/llms.txt">llms.txt (AI Specification)</a></li>
+          <li><a href="/faq-ai.txt">Machine-Readable Q&A</a></li>
+          <li><a href="/about/">About & Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="copyright">
+        © {new Date().getFullYear()} Sri Yantra Meditation. Designed with reverence following sacred proportions. 100% Client-Side Privacy.
+      </p>
+      <div class="bottom-badges">
+        <span class="badge">W3C Wake Lock API</span>
+        <span class="badge">Web Audio Synth</span>
+        <span class="badge">Zero Telemetry</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    width: 100%;
+    margin-top: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .light-mode {
+    background-color: var(--color-canvas);
+    border-top: 1px solid var(--color-hairline);
+    color: var(--color-body);
+  }
+
+  .dark-mode {
+    background-color: var(--color-zen-canvas);
+    border-top: 1px solid var(--color-zen-hairline);
+    color: var(--color-zen-body);
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 2.5rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: 3rem;
+    margin-bottom: 3.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .footer-brand-col {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+    .footer-brand-col {
+      grid-column: span 1;
+    }
+  }
+
+  .brand-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .dark-mode .brand-title {
+    color: var(--color-zen-ink);
+  }
+
+  .brand-tagline {
+    font-size: 0.875rem;
+    max-width: 340px;
+    margin-bottom: 1.25rem;
+  }
+
+  .author-badge {
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+  }
+
+  .author-link {
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .author-link:hover {
+    text-decoration: underline;
+  }
+
+  .col-title {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink);
+    margin-bottom: 1rem;
+  }
+
+  .dark-mode .col-title {
+    color: var(--color-zen-ink);
+  }
+
+  .col-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .col-list a {
+    color: inherit;
+    transition: color var(--duration-normal) var(--ease-calm);
+  }
+
+  .col-list a:hover {
+    color: var(--color-primary);
+  }
+
+  .footer-bottom {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-hairline-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .dark-mode .footer-bottom {
+    border-top-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .bottom-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background-color: var(--color-hairline-soft);
+    color: var(--color-muted);
+  }
+
+  .dark-mode .badge {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-zen-body);
+  }
+</style>

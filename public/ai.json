@@ -1,0 +1,26 @@
+{
+  "name": "Sri Yantra Meditation",
+  "url": "https://sriyantrameditation.com",
+  "description": "Fullscreen meditative Sri Yantra sacred geometry visualizer, 136.1 Hz procedural Om drone, and authoritative guides.",
+  "author": "Atharva Mahamuni",
+  "social": {
+    "x": "https://x.com/athmatwt",
+    "github": "https://github.com/AtharvaMahamuni"
+  },
+  "endpoints": {
+    "home": "https://sriyantrameditation.com/",
+    "geometry": "https://sriyantrameditation.com/geometry/",
+    "meditation": "https://sriyantrameditation.com/meditation/",
+    "vastu": "https://sriyantrameditation.com/vastu/",
+    "materials": "https://sriyantrameditation.com/materials/",
+    "faq": "https://sriyantrameditation.com/faq/"
+  },
+  "capabilities": [
+    "Full-screen 60FPS rotating Sri Yantra visualization",
+    "Procedural 136.1 Hz Om drone, Tanpura shimmer, and Singing Bowl audio generation",
+    "Interactive 9 Avarana circuit geometry inspector",
+    "W3C Screen Wake Lock API display control",
+    "High-resolution Sri Yantra 4K wallpaper generator",
+    "Comprehensive Vastu Shastra placement rules & Puja rituals guide"
+  ]
+}

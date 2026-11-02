@@ -1,0 +1,306 @@
+---
+interface FaqItem {
+  question: string;
+  answer: string;
+  category: 'geometry' | 'vastu' | 'meditation' | 'materials';
+  tags: string[];
+}
+
+const FAQS: FaqItem[] = [
+  // Geometry
+  {
+    question: "What is the Sri Yantra (or Shri / Shree Yantra)?",
+    answer: "The Sri Yantra (also known as Sri Chakra, Shri Yantra, or Shree Yantra) is a 12,000+ year-old sacred geometric mandala originating in the Vedic and Tantric Sri Vidya tradition. It represents the cosmic blueprint of the universe emerging from the central point of pure unmanifest consciousness (Bindu) into physical reality (Bhupura), and serves as an instrument for profound concentration and mental stilling.",
+    category: "geometry",
+    tags: ["what is sri yantra", "what is shri yantra", "what is shree yantra", "shri yantra kya hota hai", "shree yantra kya hai"]
+  },
+  {
+    question: "How many triangles are there in the Sri Yantra? (Is it 9 or 43?)",
+    answer: "The Sri Yantra is formed by 9 primary interlocking triangles (4 upward Shiva triangles representing masculine consciousness and 5 downward Shakti triangles representing feminine kinetic energy). When these 9 primary triangles intersect, they form exactly 43 secondary triangles arranged across 5 concentric rings. When counting the central dimensionless Bindu as the 44th point of origin, it is traditionally revered as 44 triangles.",
+    category: "geometry",
+    tags: ["how many triangles are there in sri yantra", "how many triangles in shree yantra", "how many triangles in sri yantra"]
+  },
+  {
+    question: "What is the Concurrency Problem in Sri Yantra geometry?",
+    answer: "In Euclidean geometry, three straight lines randomly positioned in a plane will form a triangle between them. For three lines to intersect at the exact same single point (a triple intersection), their mathematical parameters must satisfy an exact algebraic equation. In the Sri Yantra, numerous triangle vertices must land precisely on the lines of other triangles without creating secondary sliver gaps or bent lines. Mathematically constructing this requires solving systems of non-linear simultaneous equations.",
+    category: "geometry",
+    tags: ["who drew shri yantra and how", "how to draw sri yantra", "sri yantra sacred geometry", "how to make shree yantra"]
+  },
+  {
+    question: "What are the 9 Avaranas (circuits) of the Sri Yantra?",
+    answer: "The 9 Avaranas from outside to inside are: 1) Trailokya Mohana Chakra (Bhupura 3-line square with 4 T-gates), 2) Sarvasa Paripuraka (16-petal lotus), 3) Sarva Samkshobhana (8-petal lotus), 4) Sarva Saubhagyadayaka (14 triangles), 5) Sarvarthasadhaka (10 outer triangles), 6) Sarvarakshakara (10 inner triangles), 7) Sarvarogahara (8 triangles), 8) Sarva Siddhiprada (Central primary downward triangle), and 9) Sarvanandamaya (Central Bindu point of supreme non-dual bliss).",
+    category: "geometry",
+    tags: ["9 avaranas", "sri chakra yantra", "sri yantra diagram"]
+  },
+
+  // Vastu & Placement
+  {
+    question: "Where should Sri Yantra be placed in the home according to Vastu?",
+    answer: "According to Vastu Shastra, the best direction to place a Sri Yantra is the North-East corner (Ishan Kon) of your home, inside your home temple (Pooja room), or on a clean study/office desk. It should always be placed on a raised platform or altar, resting on a clean red or yellow silk cloth, and never directly on the bare floor.",
+    category: "vastu",
+    tags: ["where to place sri yantra in your home", "where to place shree yantra at home", "where should shree yantra be placed in the house", "shri yantra ko kahan rakhna chahie", "shree yantra kaha rakhna chahiye"]
+  },
+  {
+    question: "Which direction should the Shree Yantra face?",
+    answer: "The Shree Yantra should be oriented so that its front face looks towards the East (direction of the rising sun and new beginnings) or towards the North (direction of Kuber, prosperity, and divine magnetic flow). When meditating or praying, you should ideally face East or North. The Sri Yantra should never face South.",
+    category: "vastu",
+    tags: ["which direction should shree yantra face", "which direction to keep sri yantra", "shree yantra kis disha mein lagana chahie", "shri yantra kis disha mein lagana chahie"]
+  },
+  {
+    question: "Can we keep Sri Yantra at home? Are there strict rules?",
+    answer: "Yes, anyone can keep a Sri Yantra at home. While high-level temple rituals (such as intricate Sri Vidya Navavarna Puja) require initiation, keeping a 2D copper plate, 3D Maha Meru, or natural Sphatik Sri Yantra at home with reverence, daily cleanliness, and lighting a simple incense stick or diya brings peace, harmony, and mental focus without adverse effects.",
+    category: "vastu",
+    tags: ["can we keep sri yantra at home", "can we keep shree yantra at home", "can we keep sri chakra yantra at home"]
+  },
+  {
+    question: "Can we keep two Sri Yantras at home?",
+    answer: "Yes, you can keep more than one Sri Yantra in the house as long as they are placed in appropriate, clean locations. For example, keeping one in your Pooja room for daily spiritual connection and another smaller copper or crystal Sri Yantra on your study desk or office workstation for focus and productivity is completely acceptable.",
+    category: "vastu",
+    tags: ["can we keep two shree yantra at home", "how to place shri yantra at home", "where to keep shri yantra"]
+  },
+  {
+    question: "How to activate and energize (Prana Pratishtha) a Sri Yantra at home?",
+    answer: "To energize a Sri Yantra: 1) Choose an auspicious Friday morning during Shukla Paksha (waxing moon) or on a Purnima (full moon). 2) Gently bathe the yantra with Gangajal or raw milk, then wipe dry with a clean cloth. 3) Place it on a clean red cloth in the North-East facing East. 4) Light a ghee lamp and incense. 5) Chant the Bija mantra 'Om Shreem Hreem Kleem Shreem Namah' or 'Om Aim Hreem Shreem Sri Matre Namah' 108 times.",
+    category: "vastu",
+    tags: ["how to activate sri yantra", "how to activate shri yantra", "how to worship sri yantra at home", "shri yantra ki puja kaise karen"]
+  },
+
+  // Meditation & Mantras
+  {
+    question: "How to meditate on the Sri Yantra (Bindu Trataka)?",
+    answer: "Sit comfortably with a straight spine at eye level with the Sri Yantra. Soften your gaze and gently rest your focus on the central golden dot (the Bindu). Inhale and exhale in a slow, continuous rhythm (such as our 16-second tidal cycle). When thoughts arise, do not fight them; simply bring your vision back to the center point. Practicing for 10 to 20 minutes quiets the brain's Default Mode Network and induces calm Alpha brainwaves.",
+    category: "meditation",
+    tags: ["how to meditate on sri yantra", "sri yantra meditation", "shri yantra for meditation", "bindu trataka"]
+  },
+  {
+    question: "What is the Sri Yantra Mantra?",
+    answer: "The fundamental seed mantra of the Sri Yantra is 'SHREEM' (श्रीं), the acoustic vibration of auspicious cosmic light and abundance. The foundational chant for daily meditation is 'Om Aim Hreem Shreem Sri Matre Namah' or 'Om Shreem Maha Lakshmyai Namah'. In esoteric Sri Vidya, the 15-lettered Panchadasakshari and 16-lettered Shodashakshari mantras represent the sacred geometric code of the yantra.",
+    category: "meditation",
+    tags: ["sri yantra mantra", "shri yantra mantra", "shree yantra mantra", "panchadasakshari"]
+  },
+  {
+    question: "Why is the background meditation sound tuned to 136.1 Hz?",
+    answer: "136.10 Hz is known as the 'Cosmic Octave' (discovered by mathematician Hans Cousto), derived by octave-doubling the Earth's 365.25-day orbital period around the Sun into the human audible range. It corresponds to C#3 (Sadja or root note 'Sa' in Indian classical music) and physically stimulates the thoracic cavity and vagus nerve, lowering heart rate and promoting deep relaxation.",
+    category: "meditation",
+    tags: ["136.1hz om", "om frequency", "cosmic octave", "sound healing"]
+  },
+
+  // Materials & Authenticity
+  {
+    question: "Which metal or material is best for a Sri Yantra?",
+    answer: "1) Natural Sphatik (Quartz Crystal): Considered the supreme material as pure quartz stores and amplifies electromagnetic vibrations. 2) Pure Copper (Tamra): Highly traditional, conducts subtle pranic energies. 3) 3D Maha Meru (Brass/Bronze/Ashtadhatu): The three-dimensional pyramid form represents Mount Meru and is ideal for home altars. 4) Pure Silver (Chandi): Brings cooling, peaceful lunar energy and is ideal for lockets.",
+    category: "materials",
+    tags: ["which metal shree yantra is best", "which shree yantra is best for home", "copper shree yantra", "sphatik sri yantra", "meru shri yantra"]
+  },
+  {
+    question: "How to identify an original Sphatik (Quartz) Shree Yantra?",
+    answer: "1) Temperature Test: Genuine quartz crystal remains cool to the touch and takes much longer to warm up in your palm compared to synthetic glass or plastic. 2) Optical Refraction: When placed over a printed line, natural quartz exhibits slight double refraction, whereas glass shows a flat single image. 3) Inclusions: Authentic natural crystal will contain subtle microscopic natural veils or fissures. Perfectly flawless pieces with tiny spherical air bubbles are almost always cheap industrial glass.",
+    category: "materials",
+    tags: ["how to identify original sphatik shree yantra", "original shree yantra", "original shri yantra", "sphatik shri yantra"]
+  }
+];
+---
+
+<section class="faq-section" id="faq">
+  <div class="faq-container">
+    <div class="faq-header">
+      <span class="mono-tag">Sacred Knowledge Engine</span>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="body-lead">
+        Comprehensive answers to geometry, Vastu placement, meditation methods, and authentic material verification.
+      </p>
+
+      <!-- Category Filter Tabs -->
+      <div class="filter-tabs" role="tablist">
+        <button class="tab-btn active" data-cat="all">All Topics</button>
+        <button class="tab-btn" data-cat="geometry">Sacred Geometry</button>
+        <button class="tab-btn" data-cat="vastu">Vastu & Placement</button>
+        <button class="tab-btn" data-cat="meditation">Meditation & Sound</button>
+        <button class="tab-btn" data-cat="materials">Materials & Sphatik</button>
+      </div>
+    </div>
+
+    <!-- FAQ Accordion List -->
+    <div class="faq-list">
+      {FAQS.map((faq, idx) => (
+        <details class="faq-item" data-category={faq.category} data-tags={faq.tags.join(' ')}>
+          <summary class="faq-question">
+            <span class="q-number">{String(idx + 1).padStart(2, '0')}</span>
+            <span class="q-text">{faq.question}</span>
+            <span class="q-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </span>
+          </summary>
+          <div class="faq-answer">
+            <p>{faq.answer}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Embedded FAQPage Schema.org JSON-LD -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": FAQS.map(f => ({
+    "@type": "Question",
+    "name": f.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.answer
+    }
+  }))
+})} />
+
+<script>
+  // Filter tabs functionality
+  const tabs = document.querySelectorAll('.tab-btn');
+  const items = document.querySelectorAll('.faq-item');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const cat = tab.getAttribute('data-cat');
+      items.forEach(item => {
+        const itemCat = item.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          (item as HTMLElement).style.display = 'block';
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .faq-section {
+    padding: 5rem 1.5rem;
+    background-color: var(--color-canvas);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .faq-container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .faq-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .faq-header .section-title {
+    margin: 0.5rem 0 1rem;
+  }
+
+  .filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+
+  .tab-btn {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    color: var(--color-body);
+    transition: all 0.2s var(--ease-calm);
+  }
+
+  .tab-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-ink);
+  }
+
+  .tab-btn.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .faq-item {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s var(--ease-calm);
+  }
+
+  .faq-item[open] {
+    border-color: var(--color-hairline-strong);
+  }
+
+  .faq-question {
+    list-style: none;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    user-select: none;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .q-number {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .q-text {
+    flex: 1;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    letter-spacing: -0.01em;
+  }
+
+  .q-icon {
+    color: var(--color-muted);
+    transition: transform 0.24s var(--ease-calm);
+  }
+
+  .faq-item[open] .q-icon {
+    transform: rotate(45deg);
+    color: var(--color-primary);
+  }
+
+  .faq-answer {
+    padding: 0 1.5rem 1.5rem 3.5rem;
+    color: var(--color-body);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    border-top: 1px solid var(--color-hairline-soft);
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .faq-answer {
+      padding-left: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MeditationCanvas from '../components/MeditationCanvas.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import AffiliateShowcase from '../components/AffiliateShowcase.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Sri Yantra Meditation — Fullscreen Sacred Geometry & 136.1 Hz Om Visualizer"
+  description="Experience a meditative, full-screen rotating Sri Yantra with procedural 136.1 Hz Om sound, Bindu Trataka focus guides, W3C screen wake-lock, and sacred geometry research."
+  canonicalPath="/"
+  isDark={true}
+>
+  <!-- 1. Fullscreen Interactive Sacred Geometry Visualizer -->
+  <main>
+    <MeditationCanvas />
+
+    <!-- 2. Scroll Prompt for Educational Content -->
+    <section class="scroll-intro-section">
+      <div class="container-narrow">
+        <div class="intro-badge">
+          <span class="mono-tag">Sacred Vedic Science</span>
+        </div>
+        <h1 class="display-title intro-heading">
+          The Living Architecture of Consciousness
+        </h1>
+        <p class="body-lead intro-desc">
+          The Sri Yantra (Sri Chakra) is a visual blueprint of creation. Through the intersection of 9 primary triangles, 43 secondary triangles, 24 lotus petals, and the dimensionless central Bindu, it provides a geometric anchor for profound mental stillness and Bindu Trataka meditation.
+        </p>
+
+        <!-- Feature Grid Cards -->
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🕉️</div>
+            <h3 class="feature-title">136.1 Hz Cosmic Octave</h3>
+            <p class="feature-text">
+              Procedurally generated in your browser using the Web Audio API. Aligned with the Earth's orbital period and classical Indian Sadja (Sa) for deep vagus nerve relaxation.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📐</div>
+            <h3 class="feature-title">Mathematical Concurrency</h3>
+            <p class="feature-text">
+              Precision Canvas 2D vector calculation resolving the ancient triple-intersection challenge across all 9 circuits (Nava Avaranas) with sub-pixel clarity.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title">Screen Wake Lock API</h3>
+            <p class="feature-text">
+              Your device will never dim or sleep while meditating. 100% private and client-side, with zero tracking scripts or accounts required.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🖼️</div>
+            <h3 class="feature-title">4K Wallpaper Generator</h3>
+            <p class="feature-text">
+              Export stunning, ultra-high-definition wallpapers with custom atmospheres (Cosmic Galaxy, Divine Light, Quantum Atoms, Zen Void) in a single click.
+            </p>
+          </div>
+        </div>
+
+        <!-- Guide Directory Links -->
+        <div class="guide-banner">
+          <div class="banner-content">
+            <h3 class="banner-title">Deepen Your Practice & Understanding</h3>
+            <p class="banner-desc">
+              Explore our comprehensive guides on Sri Yantra sacred geometry, step-by-step Trataka meditation, and authentic Vastu placement rules.
+            </p>
+          </div>
+          <div class="banner-actions">
+            <a href="/geometry/" class="guide-link-btn primary">Explore Geometry</a>
+            <a href="/meditation/" class="guide-link-btn secondary">Meditation Guide</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Comprehensive FAQ Section (Targeting all high-volume user search queries) -->
+    <FaqAccordion />
+
+    <!-- 4. Verified Sourcing & Materials Showcase (Affiliate Ready) -->
+    <AffiliateShowcase />
+  </main>
+
+  <!-- 5. Footer with Author Credentials -->
+  <Footer isDark={false} />
+</BaseLayout>
+
+<style>
+  .scroll-intro-section {
+    padding: 6rem 0 5rem;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .intro-badge {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .intro-heading {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .intro-desc {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 3.5rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  @media (max-width: 768px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .feature-card {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: transform 0.2s var(--ease-calm), border-color 0.2s var(--ease-calm);
+  }
+
+  .feature-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .feature-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+
+  .feature-text {
+    font-size: 0.9375rem;
+    color: var(--color-body);
+    line-height: 1.6;
+  }
+
+  .guide-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2.25rem;
+    border-radius: 12px;
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  @media (max-width: 768px) {
+    .guide-banner {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .banner-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .banner-desc {
+    font-size: 0.9375rem;
+    color: var(--color-body);
+    max-width: 460px;
+    line-height: 1.55;
+  }
+
+  .banner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .guide-link-btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    transition: all 0.2s var(--ease-calm);
+  }
+
+  .guide-link-btn.primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .guide-link-btn.primary:hover {
+    background-color: var(--color-primary-active);
+  }
+
+  .guide-link-btn.secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-hairline-strong);
+    color: var(--color-ink);
+  }
+
+  .guide-link-btn.secondary:hover {
+    border-color: var(--color-ink);
+  }
+</style>

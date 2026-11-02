@@ -1,0 +1,56 @@
+# Sri Yantra Meditation & Sacred Geometry — Full Technical & Conceptual Specification
+
+Canonical URL: https://sriyantrameditation.com
+Author: Atharva Mahamuni (@athmatwt)
+License: Educational & Meditative Public Web Utility
+
+---
+
+## 1. Geometric Foundations of the Sri Yantra
+The Sri Yantra (Sri Chakra) is a 9-circuit (Nava Avarana) sacred mandala. 
+
+### Core Components:
+1. **The 9 Primary Triangles (Mula Trikonas)**:
+   - 4 Upward Isosceles Triangles: Shiva principle (ascending spiritual consciousness, fire element, masculine).
+   - 5 Downward Isosceles Triangles: Shakti principle (descending creative manifestation, water/kinetic energy, feminine).
+2. **The 43 Formed Triangles**:
+   Interlocking of the 9 primary triangles generates 43 secondary triangles across 5 concentric circuits:
+   - Level 1: Central downward triangle (Trikona) housing the Bindu.
+   - Level 2: Ring of 8 triangles (Ashtara / Sarvarogahara Chakra).
+   - Level 3: Inner ring of 10 triangles (Antardashara / Sarvarakshakara Chakra).
+   - Level 4: Outer ring of 10 triangles (Bahirdashara / Sarvarthasadhaka Chakra).
+   - Level 5: Outermost ring of 14 triangles (Chaturdashara / Sarva Saubhagyadayaka Chakra).
+3. **The Enclosing Layers**:
+   - 3 Concentric inner circles (Mekhala).
+   - 8 Lotus Petals (Ashta Dala Padma / Sarva Samkshobhana Chakra).
+   - 3 Transition boundary circles.
+   - 16 Lotus Petals (Shodasha Dala Padma / Sarvasa Paripuraka Chakra).
+   - 3 Outer perimeter boundary circles (Trirékhá).
+   - The Earth Citadel (Bhupura / Trailokya Mohana Chakra): Square perimeter with 3 continuous parallel lines and 4 T-shaped gateways facing cardinal directions.
+4. **The Dimensionless Center (Bindu)**:
+   - Symbolizes the supreme point of unmanifest unity (Sarvanandamaya Chakra) where Shiva and Shakti are indivisible.
+
+### The Concurrency Problem:
+In planar Euclidean geometry, three lines rarely meet at an exact single point (triple intersection). In the Sri Yantra, multiple vertices must meet at common points along adjacent triangle sides. Analytical solvers use systems of non-linear equations to eliminate interstitial sliver gaps, producing true mathematical concurrency.
+
+---
+
+## 2. Acoustic Physics & The Om (136.1 Hz) Sound Engine
+- **Frequency Calculation**: The 136.10 Hz frequency is the Hans Cousto "Cosmic Octave", derived from the astronomical tropical year (Earth's orbital period around the Sun).
+  Equation: 1 / (365.24219878 days * 86400 seconds) * 2^32 ≈ 136.10 Hz.
+- **Musical Alignment**: Corresponds to C#3 (Sadja / root note Sa in Indian classical music).
+- **Physiological Response**: Frequencies between 100 Hz and 140 Hz stimulate the vagus nerve and promote parasympathetic dominant autonomic states, reducing cortisol and blood pressure.
+- **Synthesizer Structure**:
+  - Fundamental: 136.10 Hz Sine/Sawtooth
+  - Sub-Octave: 68.05 Hz Sine
+  - Harmonic Fifth (Pancham): 204.15 Hz Sine
+  - Upper Octave: 272.20 Hz Triangle
+  - Formant Vowel Filter: Low-pass resonant sweep simulating vocal "A-U-M" envelope.
+
+---
+
+## 3. Web & Browser Engine Architecture
+- **Framework**: Astro 5 (Static Site Generation for sub-second First Contentful Paint).
+- **Rendering**: HTML5 Canvas with requestAnimationFrame, auto-scaling to devicePixelRatio (DPR 1 to 3).
+- **Power Optimization**: Render loop automatically suspends when document.visibilityState is 'hidden'.
+- **Persistence**: W3C Screen Wake Lock API prevents mobile and desktop displays from dimming or sleeping during meditation.

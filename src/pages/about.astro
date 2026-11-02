@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="About & Privacy — Sri Yantra Meditation"
+  description="Learn about the mission of Sri Yantra Meditation, our 100% client-side privacy guarantee, and creator Atharva Mahamuni (@athmatwt)."
+  canonicalPath="/about/"
+  isDark={false}
+>
+  <Header isDark={false} />
+
+  <main class="article-page">
+    <article class="article-container">
+      <header class="article-header">
+        <div class="category-tag">Project Vision & Creator</div>
+        <h1 class="display-title article-title">
+          About Sri Yantra Meditation
+        </h1>
+        <p class="article-subtitle">
+          An open, mathematically pure digital space designed for deep contemplation, acoustic entrainment, and authentic Vedic sacred geometry education.
+        </p>
+
+        <div class="author-meta">
+          <span>Created by <strong>Atharva Mahamuni</strong> (<a href="https://x.com/athmatwt" target="_blank" rel="noopener">@athmatwt</a>)</span>
+          <span class="meta-dot">•</span>
+          <span>100% Client-Side</span>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <h2>Our Mission</h2>
+        <p class="lead-paragraph">
+          The internet is saturated with low-resolution video loops, distracting advertisements, and commercial myths about sacred geometry. <strong>Sri Yantra Meditation</strong> was created to offer an uncompromising, authentic digital sanctuary.
+        </p>
+        <p>
+          We set out to engineer three foundational pillars:
+        </p>
+        <ol>
+          <li><strong>Sub-Pixel Mathematical Precision:</strong> Rendering the 9 primary triangles, 43 formed polygons, and 24 lotus petals using precision Canvas 2D vectors that resolve the ancient Concurrency Problem without line distortion or overlapping slivers.</li>
+          <li><strong>Pure Procedural Web Audio:</strong> Real-time synthesis of the 136.10 Hz Cosmic Octave (Earth orbital frequency) and Tanpura string overtones entirely inside your browser—eliminating choppy audio loops or high-bandwidth audio streaming.</li>
+          <li><strong>Distraction-Free Immersion:</strong> Built with the W3C Screen Wake Lock API to ensure your meditation is never interrupted by a dimming screen, combined with auto-hiding controls that fade out to leave only the glowing sacred geometry.</li>
+        </ol>
+
+        <h2>Creator & Engineering</h2>
+        <p>
+          This project was conceived and built by <strong>Atharva Mahamuni</strong>, a software engineer and researcher fascinated by the intersection of computational sacred geometry, psychoacoustics, and high-performance web graphics.
+        </p>
+        <p>
+          Connect on Twitter / X: <a href="https://x.com/athmatwt" target="_blank" rel="noopener" class="text-link">@athmatwt</a><br>
+          GitHub: <a href="https://github.com/AtharvaMahamuni" target="_blank" rel="noopener" class="text-link">github.com/AtharvaMahamuni</a>
+        </p>
+
+        <h2>100% Client-Side Privacy Guarantee</h2>
+        <div class="privacy-box">
+          <div class="privacy-badge">Zero Telemetry • Zero Trackers</div>
+          <p>
+            Your meditation is personal and sacred. This application runs <strong>entirely inside your browser</strong>. We do not use third-party tracking scripts, cookies, or analytics beacons. Audio synthesis and graphic rendering happen strictly on your device's GPU and CPU.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <Footer isDark={false} />
+</BaseLayout>
+
+<style>
+  .article-page {
+    padding: 3.5rem 1.5rem 5rem;
+    background-color: var(--color-canvas);
+  }
+
+  .article-container {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .article-header {
+    margin-bottom: 3rem;
+  }
+
+  .category-tag {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  .article-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .article-subtitle {
+    font-size: 1.1875rem;
+    color: var(--color-body);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .author-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .meta-dot {
+    color: var(--color-hairline-strong);
+  }
+
+  .article-content {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-ink);
+  }
+
+  .lead-paragraph {
+    font-size: 1.25rem;
+    line-height: 1.65;
+    margin-bottom: 2rem;
+  }
+
+  .article-content h2 {
+    font-size: 1.625rem;
+    font-weight: 600;
+    margin: 2.75rem 0 1rem;
+    color: var(--color-ink);
+  }
+
+  .article-content p {
+    margin-bottom: 1.5rem;
+    color: var(--color-body);
+  }
+
+  .article-content ol {
+    margin: 0 0 1.5rem 1.5rem;
+    color: var(--color-body);
+  }
+
+  .article-content li {
+    margin-bottom: 0.75rem;
+  }
+
+  .text-link {
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .text-link:hover {
+    text-decoration: underline;
+  }
+
+  .privacy-box {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-left: 4px solid #1f8a65;
+    border-radius: 8px;
+    padding: 1.75rem;
+    margin: 2rem 0;
+  }
+
+  .privacy-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #1f8a65;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .privacy-box p {
+    margin-bottom: 0;
+    color: var(--color-body);
+  }
+</style>
