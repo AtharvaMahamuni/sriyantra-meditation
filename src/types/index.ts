@@ -6,19 +6,22 @@ export type SoundMode = 'om-136' | 'om-tanpura' | 'singing-bowl' | 'mute';
 
 export type BreathingRhythm = 'tidal-16' | 'box-16' | 'relax-478' | 'static';
 
+export type MotionMode = 'vortex' | 'harmonic';
+
 export interface VisualState {
   atmosphere: AtmosphereId;
   mantra: MantraMode;
   breathing: BreathingRhythm;
-  rotationSpeed: number; // 0 to 2 (1 = default gentle celestial)
-  glowIntensity: number; // 0.5 to 2.0
-  counterRotatePetals: boolean;
+  motionMode: MotionMode;      // 'vortex' (alternating counter-rotation) or 'harmonic' (sacred alignment)
+  rotationSpeed: number;       // 0 to 2 (1 = default gentle celestial)
+  glowIntensity: number;       // 0.5 to 2.0
+  depth3D: number;             // 0.0 to 1.5 (Z-depth separation between layers)
   highlightAvarana: number | null; // 1 to 9 or null for all
 }
 
 export interface SoundState {
   mode: SoundMode;
-  masterVolume: number; // 0 to 1
+  masterVolume: number;        // 0 to 1
   bellIntervalMinutes: number; // 0 (off), 3, 5, 10, 15, 20
 }
 

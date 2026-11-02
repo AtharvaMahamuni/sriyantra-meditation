@@ -22,9 +22,10 @@ export class SceneManager {
     atmosphere: 'galaxy',
     mantra: 'om',
     breathing: 'tidal-16',
+    motionMode: 'vortex',
     rotationSpeed: 1.0,
     glowIntensity: 1.0,
-    counterRotatePetals: true,
+    depth3D: 1.0,
     highlightAvarana: null,
   };
 
@@ -76,6 +77,14 @@ export class SceneManager {
 
   public setRotationSpeed(speed: number): void {
     this.state.rotationSpeed = speed;
+  }
+
+  public setMotionMode(mode: 'vortex' | 'harmonic'): void {
+    this.state.motionMode = mode;
+  }
+
+  public setDepth3D(depth: number): void {
+    this.state.depth3D = depth;
   }
 
   private handleResize(): void {

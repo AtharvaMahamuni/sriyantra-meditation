@@ -109,6 +109,17 @@ import ZenControlsBar from './ZenControlsBar.astro';
         });
       });
 
+      // Motion mode selector buttons (Vortex alternate vs Sacred harmonic)
+      const motionBtns = document.querySelectorAll('#motion-selector .pill-btn');
+      motionBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          motionBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const motion = btn.getAttribute('data-motion') as any;
+          if (motion) this.sceneManager.setMotionMode(motion);
+        });
+      });
+
       // Mantra selector buttons
       const mantraBtns = document.querySelectorAll('#mantra-selector .pill-btn');
       mantraBtns.forEach(btn => {

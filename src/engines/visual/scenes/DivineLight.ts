@@ -14,22 +14,26 @@ interface PranaEmber {
 
 export class DivineLightScene implements IVisualScene {
   public id = 'divine-light' as const;
-  public name = 'Divine Light';
+  public name = 'Divine Light 3D';
 
   private width: number = 0;
   private height: number = 0;
   private embers: PranaEmber[] = [];
   private time: number = 0;
-  private rotationAngle: number = 0;
 
-  private readonly NUM_EMBERS = 90;
+  private targetTiltX: number = 0.2;
+  private targetTiltY: number = 0.0;
+  private currentTiltX: number = 0.2;
+  private currentTiltY: number = 0.0;
+
+  private readonly FOV = 550;
+  private readonly NUM_EMBERS = 95;
   private readonly NUM_RAYS = 12;
 
   public init(_ctx: CanvasRenderingContext2D, width: number, height: number): void {
     this.width = width;
     this.height = height;
     this.time = 0;
-    this.rotationAngle = 0;
     this.spawnEmbers();
   }
 
@@ -39,37 +43,46 @@ export class DivineLightScene implements IVisualScene {
     this.spawnEmbers();
   }
 
+  public onPointerMove(x: number, y: number): void {
+    const normX = (x / this.width - 0.5) * 2;
+    const normY = (y / this.height - 0.5) * 2;
+    this.targetTiltX = normY * 0.45;
+    this.targetTiltY = normX * 0.55;
+  }
+
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
     const dt = Math.min(delta, 100) * 0.001;
-    this.time += dt * 0.1;
-    this.rotationAngle += dt * 0.02 * state.rotationSpeed;
+    this.time += dt * 0.2 * state.rotationSpeed;
+
+    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.06;
+    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.06;
 
     const cx = this.width / 2;
     const cy = this.height / 2;
     const minDim = Math.min(this.width, this.height);
-    const yantraRadius = minDim * 0.40;
+    const yantraRadius = minDim * 0.42;
 
-    // 1. Deep Radiant Background
-    const bgGrad = ctx.createRadialGradient(cx, cy, minDim * 0.05, cx, cy, minDim * 0.85);
-    bgGrad.addColorStop(0, '#1c150c');
-    bgGrad.addColorStop(0.5, '#12100d');
-    bgGrad.addColorStop(1, '#0c0b09');
+    // 1. Radiant Background
+    const bgGrad = ctx.createRadialGradient(cx, cy, minDim * 0.05, cx, cy, minDim * 0.9);
+    bgGrad.addColorStop(0, '#1a1309');
+    bgGrad.addColorStop(0.5, '#110f0c');
+    bgGrad.addColorStop(1, '#090807');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, this.width, this.height);
 
-    // 2. Volumetric Prana Light Rays
+    // 2. Volumetric Prana Light Rays in 3D Perspective
     ctx.save();
     ctx.translate(cx, cy);
     const rayMaxR = minDim * 0.95;
 
     for (let i = 0; i < this.NUM_RAYS; i++) {
-      const angle = (i * Math.PI * 2) / this.NUM_RAYS + this.time * 0.06;
-      const rayAlpha = (Math.sin(this.time * 0.8 + i * 1.5) * 0.04 + 0.06) * state.glowIntensity;
-      const rayWidth = (Math.PI * 2) / (this.NUM_RAYS * 2.8);
+      const angle = (i * Math.PI * 2) / this.NUM_RAYS + this.time * 0.08;
+      const rayAlpha = (Math.sin(this.time * 1.2 + i * 1.5) * 0.04 + 0.07) * state.glowIntensity;
+      const rayWidth = (Math.PI * 2) / (this.NUM_RAYS * 2.6);
 
-      const rayGrad = ctx.createRadialGradient(0, 0, yantraRadius * 0.2, 0, 0, rayMaxR);
-      rayGrad.addColorStop(0, `rgba(245, 140, 40, ${rayAlpha * 1.8})`);
-      rayGrad.addColorStop(0.4, `rgba(223, 168, 143, ${rayAlpha * 0.9})`);
+      const rayGrad = ctx.createRadialGradient(0, 0, yantraRadius * 0.15, 0, 0, rayMaxR);
+      rayGrad.addColorStop(0, `rgba(255, 160, 40, ${rayAlpha * 2.0})`);
+      rayGrad.addColorStop(0.4, `rgba(245, 78, 0, ${rayAlpha * 0.9})`);
       rayGrad.addColorStop(1, 'rgba(245, 78, 0, 0)');
 
       ctx.fillStyle = rayGrad;
@@ -81,7 +94,7 @@ export class DivineLightScene implements IVisualScene {
     }
     ctx.restore();
 
-    // 3. Floating Golden Prana Embers
+    // 3. Floating Golden Embers
     ctx.save();
     for (let i = 0; i < this.embers.length; i++) {
       const e = this.embers[i];
@@ -96,8 +109,8 @@ export class DivineLightScene implements IVisualScene {
       const alpha = (Math.sin(e.pulsePhase) * 0.35 + 0.65) * e.maxAlpha;
       ctx.beginPath();
       ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(245, 180, 80, ${alpha})`;
-      ctx.shadowColor = 'rgba(245, 100, 30, 0.45)';
+      ctx.fillStyle = `rgba(255, 190, 80, ${alpha})`;
+      ctx.shadowColor = 'rgba(245, 100, 30, 0.5)';
       ctx.shadowBlur = 6;
       ctx.fill();
     }
@@ -106,21 +119,25 @@ export class DivineLightScene implements IVisualScene {
     // 4. Breathing Rhythm
     let breathScale = 1.0;
     if (state.breathing !== 'static') {
-      const breathPeriod = 16.0;
-      const breathProgress = (Math.sin((this.time * Math.PI * 2) / breathPeriod - Math.PI / 2) + 1) / 2;
+      const breathProgress = (Math.sin((this.time * Math.PI * 2) / 16 - Math.PI / 2) + 1) / 2;
       breathScale = 0.965 + 0.05 * breathProgress;
     }
 
-    // 5. Render Geometry
-    SriYantraGeometry.render(ctx, cx, cy, yantraRadius, {
-      rotation: this.rotationAngle,
-      petalCounterRotation: state.counterRotatePetals ? -this.rotationAngle * 0.6 : 0,
+    // 5. Render 3D Sri Yantra
+    SriYantraGeometry.render3D(ctx, cx, cy, yantraRadius, {
+      time: this.time,
+      pitch: this.currentTiltX,
+      yaw: this.currentTiltY,
+      fov: this.FOV,
       scale: breathScale,
+      speed: state.rotationSpeed,
+      depth3D: state.depth3D ?? 1.1,
+      motionMode: state.motionMode ?? 'vortex',
       highlightAvarana: state.highlightAvarana,
       glowIntensity: state.glowIntensity * 1.3,
       baseColor: '#e0aa55',
-      shivaColor: '#f59038',
-      shaktiColor: '#e06b20',
+      shivaColor: '#ffaa3b',
+      shaktiColor: '#f54e00',
     });
   }
 
@@ -131,10 +148,10 @@ export class DivineLightScene implements IVisualScene {
         x: Math.random() * this.width,
         y: Math.random() * this.height,
         vx: (Math.random() - 0.5) * 0.4,
-        vy: -Math.random() * 0.7 - 0.2, // Drifting upwards like incense smoke
+        vy: -Math.random() * 0.8 - 0.2,
         radius: Math.random() * 2.0 + 0.8,
         alpha: 0,
-        maxAlpha: Math.random() * 0.5 + 0.25,
+        maxAlpha: Math.random() * 0.55 + 0.25,
         pulsePhase: Math.random() * Math.PI * 2,
       });
     }
