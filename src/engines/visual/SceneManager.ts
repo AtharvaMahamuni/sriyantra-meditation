@@ -163,55 +163,6 @@ export class SceneManager {
     this.animFrameId = requestAnimationFrame(this.loop);
   }
 
-  private renderMantraOverlay(ctx: CanvasRenderingContext2D, now: number): void {
-    const cx = this.width / 2;
-    const cy = this.height * 0.90; // Bottom focal anchor
-    const breathProgress = (Math.sin((now * 0.001 * Math.PI * 2) / 16 - Math.PI / 2) + 1) / 2;
-    const alpha = 0.55 + 0.35 * breathProgress;
-
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    let primaryText = '';
-    let subText = '';
-
-    switch (this.state.mantra) {
-      case 'om':
-        primaryText = 'ॐ';
-        subText = 'OM • THE PRIMORDIAL VIBRATION (136.1 Hz)';
-        break;
-      case 'shreem':
-        primaryText = 'श्रीं';
-        subText = 'SHREEM • SEED OF COSMIC ABUNDANCE & LIGHT';
-        break;
-      case 'sri-matre':
-        primaryText = 'ॐ ऐं ह्रीं श्रीं श्री मात्रे नमः';
-        subText = 'OM AIM HREEM SHREEM SRI MATRE NAMAH';
-        break;
-      case 'panchadasi':
-        primaryText = 'क ए ई ल ह्रीं • ह स क ह ल ह्रीं • स क ल ह्रीं';
-        subText = 'PANCHADASAKSHARI • THE 15-LETTERED COSMIC CODE';
-        break;
-    }
-
-    // Glowing Sacred Devanagari Letters
-    ctx.font = primaryText.length > 5 ? '600 24px var(--font-sans)' : '400 48px var(--font-devanagari)';
-    ctx.shadowColor = 'rgba(245, 120, 40, 0.75)';
-    ctx.shadowBlur = 16 * this.state.glowIntensity;
-    ctx.fillStyle = `rgba(255, 235, 200, ${alpha})`;
-    ctx.fillText(primaryText, cx, cy - 14);
-
-    // Subtitle Transliteration
-    ctx.shadowBlur = 0;
-    ctx.font = '500 11px var(--font-mono)';
-    ctx.letterSpacing = '0.12em';
-    ctx.fillStyle = `rgba(200, 160, 100, ${alpha * 0.85})`;
-    ctx.fillText(subText, cx, cy + 18);
-
-    ctx.restore();
-  }
-
   /**
    * Export high-resolution wallpaper (e.g. 4K 3840x2160 or 2560x1440)
    */
