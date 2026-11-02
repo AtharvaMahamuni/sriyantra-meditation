@@ -11,7 +11,7 @@ import ZenControlsBar from './ZenControlsBar.astro';
     <div class="top-bar-brand">
       <span class="pulse-indicator"></span>
       <span class="top-title">Sri Yantra Meditation</span>
-      <span class="freq-tag">136.1 Hz</span>
+      <span class="freq-tag" id="header-sound-tag">136.1 Hz Cosmic Om</span>
     </div>
 
     <nav class="top-nav">
@@ -23,10 +23,51 @@ import ZenControlsBar from './ZenControlsBar.astro';
     </nav>
   </header>
 
-  <!-- Breathing Instruction Indicator -->
-  <div class="breathing-pill" id="breathing-pill">
-    <span class="breath-state" id="breath-state">Inhale • Focus on Bindu</span>
-  </div>
+  <!-- Left Lateral HUD: Sound & Acoustic Frequency Monitor (Out of Sight from Central Yantra) -->
+  <aside class="lateral-hud lateral-hud-left" id="lateral-sound-hud" aria-label="Acoustic Sound Resonance Monitor">
+    <div class="hud-glass-card">
+      <div class="sound-wave-header">
+        <div class="sound-wave-bars" id="hud-sound-wave" aria-hidden="true">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+          <span class="bar bar-4"></span>
+          <span class="bar bar-5"></span>
+        </div>
+        <span class="hud-eyebrow" id="hud-sound-status">Sound Resonance</span>
+      </div>
+
+      <div class="hud-sound-name" id="hud-sound-name">136.10 Hz Cosmic Om</div>
+      <div class="hud-sound-desc" id="hud-sound-desc">Earth Year / C#3 Vowel Formant Chanting</div>
+
+      <button id="hud-sound-toggle-btn" class="hud-action-pill" title="Toggle Sound / Unmute">
+        <span class="sound-dot"></span>
+        <span id="hud-toggle-label">Tap Anywhere to Play</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Right Lateral HUD: Sacred Mantra & Breath Guide (Out of Sight from Central Yantra) -->
+  <aside class="lateral-hud lateral-hud-right" id="lateral-mantra-hud" aria-label="Sacred Mantra and Pranayama Breath Guide">
+    <div class="hud-glass-card">
+      <div class="mantra-glyph-container">
+        <span class="mantra-glowing-glyph" id="hud-mantra-glyph">ॐ</span>
+      </div>
+
+      <div class="mantra-text-details">
+        <div class="hud-eyebrow" id="hud-mantra-type">Sacred Seed Syllable</div>
+        <div class="hud-mantra-title" id="hud-mantra-title">OM (Pranava)</div>
+        <div class="hud-mantra-meaning" id="hud-mantra-meaning">The primordial sound of cosmic creation and absolute stillness.</div>
+      </div>
+
+      <div class="hud-divider"></div>
+
+      <div class="hud-breath-section">
+        <div class="hud-eyebrow">Pranayama Phase</div>
+        <div class="breath-indicator" id="breath-state">Inhale • Expand Awareness</div>
+      </div>
+    </div>
+  </aside>
 
   <!-- Bottom Floating Zen Dock Controls -->
   <ZenControlsBar />
@@ -34,17 +75,69 @@ import ZenControlsBar from './ZenControlsBar.astro';
 
 <script>
   import { SceneManager } from '../engines/visual/SceneManager';
-  import { AudioEngine } from '../engines/audio/AudioEngine';
+  import { AudioEngine, type AudioEngineState } from '../engines/audio/AudioEngine';
   import { WakeLockManager } from '../engines/session/WakeLockManager';
+  import type { MantraMode, SoundMode } from '../types';
 
   class MeditationApp {
     private sceneManager: SceneManager;
     private audioEngine: AudioEngine;
     private wakeLock: WakeLockManager;
     private idleTimer: number | null = null;
+
     private dockContainer: HTMLElement | null = null;
     private topBar: HTMLElement | null = null;
+    private leftHud: HTMLElement | null = null;
+    private rightHud: HTMLElement | null = null;
     private viewport: HTMLElement | null = null;
+
+    private hasUserInteracted: boolean = false;
+
+    private static readonly MANTRA_INFO: Record<string, { glyph: string; title: string; meaning: string; type: string }> = {
+      'om': {
+        glyph: 'ॐ',
+        title: 'OM (Pranava)',
+        meaning: 'Primordial vibration of cosmic creation, sustaining consciousness, and eternal stillness.',
+        type: 'Universal Seed'
+      },
+      'shreem': {
+        glyph: 'श्रीं',
+        title: 'SHREEM (Maha Lakshmi)',
+        meaning: 'Sacred seed sound of divine prosperity, supreme grace, and spiritual-material abundance.',
+        type: 'Lakshmi Bija'
+      },
+      'sri-matre': {
+        glyph: 'ॐ ऐं ह्रीं श्रीं',
+        title: 'SRI VIDYA MAHA MANTRA',
+        meaning: 'Invocation of Tripurasundari: Wisdom (Aim), Purification (Hreem), and Radiance (Shreem).',
+        type: 'Supreme Vidya'
+      },
+      'off': {
+        glyph: '·',
+        title: 'PURE SILENCE',
+        meaning: 'Unbroken contemplation of the supreme center Bindu in pure unconditioned silence.',
+        type: 'Bindu Trataka'
+      }
+    };
+
+    private static readonly SOUND_INFO: Record<string, { title: string; desc: string }> = {
+      'om-136': {
+        title: '136.10 Hz Cosmic Om',
+        desc: 'Earth Year / C#3 Cosmic Octave with Human Formant Vocal Morphing'
+      },
+      'om-tanpura': {
+        title: 'Om + Tanpura Shimmer',
+        desc: 'Vocal Om Drone with 4-String Plucked Indian Tanpura Harmonics'
+      },
+      'singing-bowl': {
+        title: 'Tibetan Singing Bowl',
+        desc: '272.2 Hz Crystal Bell Resonant Strike with 8.5s Harmonic Decay'
+      },
+      'mute': {
+        title: 'Sound Muted',
+        desc: 'Silent Meditation • Tap anywhere to activate audio'
+      }
+    };
 
     constructor() {
       const canvas = document.getElementById('sri-yantra-canvas') as HTMLCanvasElement;
@@ -56,9 +149,12 @@ import ZenControlsBar from './ZenControlsBar.astro';
 
       this.dockContainer = document.getElementById('zen-dock-container');
       this.topBar = document.getElementById('zen-top-bar');
+      this.leftHud = document.getElementById('lateral-sound-hud');
+      this.rightHud = document.getElementById('lateral-mantra-hud');
       this.viewport = document.getElementById('meditation-viewport');
 
       this.initEventListeners();
+      this.initAudioGestures();
       this.initWakeLock();
       this.initIdleHiding();
       this.initBreathingText();
@@ -68,8 +164,6 @@ import ZenControlsBar from './ZenControlsBar.astro';
     private initWakeLock(): void {
       const attemptWake = async () => {
         await this.wakeLock.request();
-        document.removeEventListener('click', attemptWake);
-        document.removeEventListener('keydown', attemptWake);
       };
       document.addEventListener('click', attemptWake, { once: true });
       document.addEventListener('keydown', attemptWake, { once: true });
@@ -83,8 +177,44 @@ import ZenControlsBar from './ZenControlsBar.astro';
         }
       });
 
-      wlBtn?.addEventListener('click', async () => {
+      wlBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
         await this.wakeLock.toggle();
+      });
+    }
+
+    private initAudioGestures(): void {
+      // Browser Autoplay Policy: Unlock AudioContext on first user interaction anywhere
+      const unlockAudio = async () => {
+        if (this.hasUserInteracted) return;
+        this.hasUserInteracted = true;
+
+        if (!this.audioEngine.getIsRunning() || this.audioEngine.getCurrentMode() === 'mute') {
+          await this.audioEngine.setMode('om-136');
+          this.syncSoundSelectorUI('om-136');
+        }
+
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('pointerdown', unlockAudio);
+        document.removeEventListener('keydown', unlockAudio);
+      };
+
+      document.addEventListener('click', unlockAudio);
+      document.addEventListener('pointerdown', unlockAudio);
+      document.addEventListener('keydown', unlockAudio);
+
+      // HUD Lateral Sound Button Toggle
+      const hudSoundBtn = document.getElementById('hud-sound-toggle-btn');
+      hudSoundBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        this.hasUserInteracted = true;
+        const isPlaying = await this.audioEngine.toggleMute();
+        this.syncSoundSelectorUI(isPlaying ? 'om-136' : 'mute');
+      });
+
+      // Subscribe to AudioEngine state updates
+      this.audioEngine.onStateChange((state) => {
+        this.updateSoundHUD(state);
       });
     }
 
@@ -92,7 +222,8 @@ import ZenControlsBar from './ZenControlsBar.astro';
       // Scene selector buttons
       const sceneBtns = document.querySelectorAll('#scene-selector .pill-btn');
       sceneBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           sceneBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const sceneId = btn.getAttribute('data-scene') as any;
@@ -103,7 +234,8 @@ import ZenControlsBar from './ZenControlsBar.astro';
       // Palette selector buttons (Colors)
       const paletteBtns = document.querySelectorAll('#palette-selector .pill-btn');
       paletteBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           paletteBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const palette = btn.getAttribute('data-palette') as any;
@@ -114,10 +246,12 @@ import ZenControlsBar from './ZenControlsBar.astro';
       // Sound selector buttons
       const soundBtns = document.querySelectorAll('#sound-selector .pill-btn');
       soundBtns.forEach(btn => {
-        btn.addEventListener('click', async () => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          this.hasUserInteracted = true;
           soundBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          const soundMode = btn.getAttribute('data-sound') as any;
+          const soundMode = btn.getAttribute('data-sound') as SoundMode;
           if (soundMode) await this.audioEngine.setMode(soundMode);
         });
       });
@@ -125,7 +259,8 @@ import ZenControlsBar from './ZenControlsBar.astro';
       // Motion style selector buttons (Alternate vs Unified vs Still)
       const motionBtns = document.querySelectorAll('#motion-selector .pill-btn');
       motionBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           motionBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const motion = btn.getAttribute('data-motion') as any;
@@ -136,7 +271,8 @@ import ZenControlsBar from './ZenControlsBar.astro';
       // Speed selector buttons
       const speedBtns = document.querySelectorAll('#speed-selector .pill-btn');
       speedBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           speedBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const speedVal = parseFloat(btn.getAttribute('data-speed') || '1.0');
@@ -144,26 +280,43 @@ import ZenControlsBar from './ZenControlsBar.astro';
         });
       });
 
-      // Mantra selector buttons
+      // Mantra selector buttons: triggers both visual mantra update and authentic audio seed sound!
       const mantraBtns = document.querySelectorAll('#mantra-selector .pill-btn');
       mantraBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          this.hasUserInteracted = true;
           mantraBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          const mantra = btn.getAttribute('data-mantra') as any;
-          if (mantra) this.sceneManager.setMantra(mantra);
+          const mantra = btn.getAttribute('data-mantra') as MantraMode;
+          if (mantra) {
+            this.sceneManager.setMantra(mantra);
+            await this.audioEngine.setMantraMode(mantra);
+            this.updateMantraHUD(mantra);
+          }
         });
+      });
+
+      // Show / Hide Sri Yantra Toggle Button
+      const yantraBtn = document.getElementById('toggle-yantra-btn');
+      yantraBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isVisible = this.sceneManager.toggleYantra();
+        yantraBtn.classList.toggle('active', isVisible);
+        yantraBtn.setAttribute('title', isVisible ? 'Hide Sri Yantra Sacred Geometry' : 'Show Sri Yantra Sacred Geometry');
       });
 
       // 4K Wallpaper Download
       const dlBtn = document.getElementById('download-wallpaper-btn');
-      dlBtn?.addEventListener('click', () => {
+      dlBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.sceneManager.downloadWallpaper();
       });
 
       // Fullscreen Toggle
       const fsBtn = document.getElementById('fullscreen-btn');
-      fsBtn?.addEventListener('click', () => {
+      fsBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(err => {
             console.warn('[SriYantra] Fullscreen error:', err);
@@ -171,6 +324,59 @@ import ZenControlsBar from './ZenControlsBar.astro';
         } else {
           document.exitFullscreen();
         }
+      });
+    }
+
+    private updateSoundHUD(state: AudioEngineState): void {
+      const info = MeditationApp.SOUND_INFO[state.mode] || MeditationApp.SOUND_INFO['om-136'];
+      const nameEl = document.getElementById('hud-sound-name');
+      const descEl = document.getElementById('hud-sound-desc');
+      const tagEl = document.getElementById('header-sound-tag');
+      const waveEl = document.getElementById('hud-sound-wave');
+      const toggleLabel = document.getElementById('hud-toggle-label');
+      const toggleBtn = document.getElementById('hud-sound-toggle-btn');
+
+      if (nameEl) nameEl.textContent = info.title;
+      if (descEl) descEl.textContent = info.desc;
+      if (tagEl) tagEl.textContent = info.title;
+
+      const isPlaying = state.isRunning && state.mode !== 'mute';
+
+      if (waveEl) waveEl.classList.toggle('animating', isPlaying);
+      if (toggleBtn) toggleBtn.classList.toggle('active', isPlaying);
+
+      if (toggleLabel) {
+        toggleLabel.textContent = isPlaying ? 'Active • Tap to Mute' : 'Tap to Listen';
+      }
+    }
+
+    private updateMantraHUD(mantra: MantraMode): void {
+      const info = MeditationApp.MANTRA_INFO[mantra] || MeditationApp.MANTRA_INFO['om'];
+      const glyphEl = document.getElementById('hud-mantra-glyph');
+      const typeEl = document.getElementById('hud-mantra-type');
+      const titleEl = document.getElementById('hud-mantra-title');
+      const meaningEl = document.getElementById('hud-mantra-meaning');
+
+      if (glyphEl) {
+        glyphEl.style.opacity = '0';
+        glyphEl.style.transform = 'scale(0.85)';
+        setTimeout(() => {
+          glyphEl.textContent = info.glyph;
+          glyphEl.style.opacity = '1';
+          glyphEl.style.transform = 'scale(1)';
+        }, 200);
+      }
+
+      if (typeEl) typeEl.textContent = info.type;
+      if (titleEl) titleEl.textContent = info.title;
+      if (meaningEl) meaningEl.textContent = info.meaning;
+    }
+
+    private syncSoundSelectorUI(mode: SoundMode): void {
+      const soundBtns = document.querySelectorAll('#sound-selector .pill-btn');
+      soundBtns.forEach(b => {
+        const btnMode = b.getAttribute('data-sound');
+        b.classList.toggle('active', btnMode === mode);
       });
     }
 
@@ -191,6 +397,8 @@ import ZenControlsBar from './ZenControlsBar.astro';
       const showUI = () => {
         this.dockContainer?.classList.remove('idle-hidden');
         this.topBar?.classList.remove('idle-hidden');
+        this.leftHud?.classList.remove('idle-hidden');
+        this.rightHud?.classList.remove('idle-hidden');
         this.viewport?.classList.remove('cursor-hidden');
         document.body.classList.remove('cursor-hidden');
 
@@ -198,9 +406,11 @@ import ZenControlsBar from './ZenControlsBar.astro';
         this.idleTimer = window.setTimeout(() => {
           this.dockContainer?.classList.add('idle-hidden');
           this.topBar?.classList.add('idle-hidden');
+          this.leftHud?.classList.add('idle-hidden');
+          this.rightHud?.classList.add('idle-hidden');
           this.viewport?.classList.add('cursor-hidden');
           document.body.classList.add('cursor-hidden');
-        }, 3200);
+        }, 3400);
       };
 
       window.addEventListener('pointermove', showUI, { passive: true });
@@ -214,10 +424,10 @@ import ZenControlsBar from './ZenControlsBar.astro';
       if (!textEl) return;
 
       const states = [
-        'Inhale gently • Expand awareness',
-        'Hold breath • Stillness at Bindu',
-        'Exhale softly • Dissolve thoughts',
-        'Rest in void • Pure consciousness'
+        'Inhale • Expand Awareness',
+        'Hold • Stillness at Bindu',
+        'Exhale • Dissolve Ego',
+        'Rest • Pure Consciousness'
       ];
 
       let idx = 0;
@@ -283,6 +493,7 @@ import ZenControlsBar from './ZenControlsBar.astro';
     touch-action: none;
   }
 
+  /* Header Bar */
   .zen-top-bar {
     position: absolute;
     top: 1.5rem;
@@ -328,9 +539,10 @@ import ZenControlsBar from './ZenControlsBar.astro';
     font-size: 0.6875rem;
     color: var(--color-zen-gold);
     background-color: rgba(200, 149, 71, 0.15);
-    padding: 0.15rem 0.45rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 4px;
     letter-spacing: 0.04em;
+    border: 1px solid rgba(200, 149, 71, 0.25);
   }
 
   .top-nav {
@@ -355,27 +567,204 @@ import ZenControlsBar from './ZenControlsBar.astro';
     color: #ffffff;
   }
 
-  .breathing-pill {
+  /* Lateral HUD Containers: Positioned at Left and Right Margins, completely out of sight of the central yantra */
+  .lateral-hud {
     position: absolute;
-    top: 4.8rem;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 25;
+    pointer-events: auto;
+    transition: opacity 0.5s var(--ease-calm), transform 0.5s var(--ease-calm);
+  }
+
+  .lateral-hud.idle-hidden {
+    opacity: 0;
     pointer-events: none;
   }
 
-  .breath-state {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(223, 168, 143, 0.8);
-    background-color: rgba(18, 16, 14, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 0.35rem 0.95rem;
-    border-radius: 9999px;
+  .lateral-hud-left {
+    left: 2rem;
+  }
+
+  .lateral-hud-left.idle-hidden {
+    transform: translateY(-50%) translateX(-20px);
+  }
+
+  .lateral-hud-right {
+    right: 2rem;
+  }
+
+  .lateral-hud-right.idle-hidden {
+    transform: translateY(-50%) translateX(20px);
+  }
+
+  @media (max-width: 960px) {
+    .lateral-hud {
+      display: none; /* Hide side HUDs on smaller screens to keep screen 100% focused */
+    }
+  }
+
+  .hud-glass-card {
+    background-color: rgba(18, 17, 15, 0.78);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1rem 1.15rem;
+    width: 230px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .sound-wave-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .sound-wave-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 14px;
+  }
+
+  .sound-wave-bars .bar {
+    width: 3px;
+    height: 4px;
+    background-color: var(--color-primary);
+    border-radius: 2px;
+    transition: height 0.2s ease;
+  }
+
+  .sound-wave-bars.animating .bar-1 { animation: soundBar 1.2s ease-in-out infinite alternate; }
+  .sound-wave-bars.animating .bar-2 { animation: soundBar 0.9s ease-in-out infinite alternate 0.2s; }
+  .sound-wave-bars.animating .bar-3 { animation: soundBar 1.4s ease-in-out infinite alternate 0.4s; }
+  .sound-wave-bars.animating .bar-4 { animation: soundBar 1.0s ease-in-out infinite alternate 0.1s; }
+  .sound-wave-bars.animating .bar-5 { animation: soundBar 1.3s ease-in-out infinite alternate 0.3s; }
+
+  @keyframes soundBar {
+    0% { height: 3px; opacity: 0.5; }
+    50% { height: 14px; opacity: 1; }
+    100% { height: 6px; opacity: 0.7; }
+  }
+
+  .hud-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-zen-body);
+  }
+
+  .hud-sound-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-zen-ink);
+    letter-spacing: -0.01em;
+  }
+
+  .hud-sound-desc {
+    font-size: 0.6875rem;
+    color: var(--color-zen-body);
+    line-height: 1.4;
+  }
+
+  .hud-action-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--color-zen-ink);
+    cursor: pointer;
+    transition: all 0.2s var(--ease-calm);
+  }
+
+  .hud-action-pill:hover {
+    background-color: rgba(245, 78, 0, 0.15);
+    border-color: rgba(245, 78, 0, 0.35);
+  }
+
+  .hud-action-pill.active {
+    background-color: rgba(245, 78, 0, 0.18);
+    border-color: rgba(245, 78, 0, 0.4);
+    color: #ffb74d;
+  }
+
+  .sound-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+  }
+
+  .hud-action-pill.active .sound-dot {
+    background-color: #2ed573;
+    box-shadow: 0 0 6px #2ed573;
+  }
+
+  /* Right Lateral HUD (Mantra & Pranayama) */
+  .mantra-glyph-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+  }
+
+  .mantra-glowing-glyph {
+    font-family: 'Noto Sans Devanagari', 'Martel Sans', serif, sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff3d6;
+    text-shadow: 0 0 20px rgba(245, 78, 0, 0.65), 0 0 40px rgba(255, 183, 77, 0.35);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mantra-text-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .hud-mantra-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-zen-ink);
+    letter-spacing: 0.02em;
+  }
+
+  .hud-mantra-meaning {
+    font-size: 0.6875rem;
+    color: var(--color-zen-body);
+    line-height: 1.35;
+  }
+
+  .hud-divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.08);
+    margin: 0.2rem 0;
+  }
+
+  .hud-breath-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .breath-indicator {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    color: var(--color-primary);
     transition: opacity 0.4s ease-in-out;
   }
 </style>

@@ -19,6 +19,7 @@ export interface VisualState {
   rotationSpeed: number;       // 0 to 3 (0 = still, 0.5 = gentle, 1 = normal, 2 = fast)
   glowIntensity: number;       // 0.5 to 2.0
   depth3D: number;             // 0.0 to 1.5 (Z-depth separation between layers)
+  showYantra: boolean;         // Option to show or hide the Sri Yantra
   highlightAvarana: number | null; // 1 to 9 or null for all
 }
 

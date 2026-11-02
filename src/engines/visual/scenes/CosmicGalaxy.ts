@@ -23,9 +23,9 @@ export class CosmicGalaxyScene implements IVisualScene {
   private time: number = 0;
 
   // 3D Perspective Camera Angles
-  private targetTiltX: number = 0.25; // Pitch (up/down)
+  private targetTiltX: number = 0.12; // Pitch (up/down)
   private targetTiltY: number = 0.0;  // Yaw (left/right)
-  private currentTiltX: number = 0.25;
+  private currentTiltX: number = 0.12;
   private currentTiltY: number = 0.0;
 
   private readonly FOV = 550;
@@ -50,8 +50,8 @@ export class CosmicGalaxyScene implements IVisualScene {
     const normX = (x / this.width - 0.5) * 2;
     const normY = (y / this.height - 0.5) * 2;
 
-    this.targetTiltX = normY * 0.45; // Mouse Y tilts pitch (up/down perspective)
-    this.targetTiltY = normX * 0.55; // Mouse X tilts yaw (left/right perspective)
+    this.targetTiltX = normY * 0.22; // Mouse Y tilts pitch (never pushes geometry off screen)
+    this.targetTiltY = normX * 0.30; // Mouse X tilts yaw
   }
 
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
@@ -64,8 +64,10 @@ export class CosmicGalaxyScene implements IVisualScene {
 
     const cx = this.width / 2;
     const cy = this.height / 2;
+    const isPortrait = this.height > this.width;
     const minDim = Math.min(this.width, this.height);
-    const yantraRadius = minDim * 0.42;
+    // Scaled safely so Bhupura corners never clip in full screen or at extreme 3D tilts
+    const yantraRadius = isPortrait ? minDim * 0.36 : minDim * 0.21;
 
     // 1. Deep Space Obsidian Canvas
     ctx.fillStyle = '#0e0d0b';
@@ -141,6 +143,7 @@ export class CosmicGalaxyScene implements IVisualScene {
       depth3D: state.depth3D ?? 1.0,
       motionStyle: state.motionStyle ?? 'alternating',
       paletteId: state.palette ?? 'cursor-gold',
+      showYantra: state.showYantra ?? true,
       highlightAvarana: state.highlightAvarana,
       glowIntensity: state.glowIntensity,
     });

@@ -82,6 +82,7 @@ export interface Render3DOptions {
   paletteId?: PaletteId;
   highlightAvarana?: number | null;
   glowIntensity?: number;
+  showYantra?: boolean;
 }
 
 export class SriYantraGeometry {
@@ -164,7 +165,12 @@ export class SriYantraGeometry {
       paletteId = 'cursor-gold',
       highlightAvarana = null,
       glowIntensity = 1.0,
+      showYantra = true,
     } = opts;
+
+    if (!showYantra) {
+      return;
+    }
 
     const colors = PALETTES[paletteId] || PALETTES['cursor-gold'];
     const R = baseRadius * scale;

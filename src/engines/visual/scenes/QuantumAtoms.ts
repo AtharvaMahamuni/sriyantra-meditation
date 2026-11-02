@@ -20,9 +20,9 @@ export class QuantumAtomsScene implements IVisualScene {
   private electrons: OrbitalElectron[] = [];
   private time: number = 0;
 
-  private targetTiltX: number = 0.2;
+  private targetTiltX: number = 0.12;
   private targetTiltY: number = 0.0;
-  private currentTiltX: number = 0.2;
+  private currentTiltX: number = 0.12;
   private currentTiltY: number = 0.0;
 
   private readonly FOV = 550;
@@ -43,8 +43,8 @@ export class QuantumAtomsScene implements IVisualScene {
   public onPointerMove(x: number, y: number): void {
     const normX = (x / this.width - 0.5) * 2;
     const normY = (y / this.height - 0.5) * 2;
-    this.targetTiltX = normY * 0.45;
-    this.targetTiltY = normX * 0.55;
+    this.targetTiltX = normY * 0.22;
+    this.targetTiltY = normX * 0.30;
   }
 
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
@@ -56,8 +56,9 @@ export class QuantumAtomsScene implements IVisualScene {
 
     const cx = this.width / 2;
     const cy = this.height / 2;
+    const isPortrait = this.height > this.width;
     const minDim = Math.min(this.width, this.height);
-    const yantraRadius = minDim * 0.42;
+    const yantraRadius = isPortrait ? minDim * 0.36 : minDim * 0.21;
 
     // 1. Dark Quantum Vacuum
     ctx.fillStyle = '#0c0b0a';
@@ -118,6 +119,7 @@ export class QuantumAtomsScene implements IVisualScene {
       depth3D: state.depth3D ?? 1.0,
       motionStyle: state.motionStyle ?? 'alternating',
       paletteId: state.palette ?? 'cursor-gold',
+      showYantra: state.showYantra ?? true,
       highlightAvarana: state.highlightAvarana,
       glowIntensity: state.glowIntensity,
     });

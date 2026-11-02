@@ -27,6 +27,7 @@ export class SceneManager {
     rotationSpeed: 1.0,
     glowIntensity: 1.0,
     depth3D: 1.0,
+    showYantra: true,
     highlightAvarana: null,
   };
 
@@ -52,6 +53,10 @@ export class SceneManager {
     this.handlePointerMove = this.handlePointerMove.bind(this);
 
     window.addEventListener('resize', this.handleResize, { passive: true });
+    document.addEventListener('fullscreenchange', () => {
+      this.handleResize();
+      setTimeout(this.handleResize, 150);
+    });
     document.addEventListener('visibilitychange', this.handleVisibility);
     window.addEventListener('pointermove', this.handlePointerMove, { passive: true });
 
@@ -86,6 +91,15 @@ export class SceneManager {
 
   public setPalette(palette: PaletteId): void {
     this.state.palette = palette;
+  }
+
+  public setShowYantra(show: boolean): void {
+    this.state.showYantra = show;
+  }
+
+  public toggleYantra(): boolean {
+    this.state.showYantra = !this.state.showYantra;
+    return this.state.showYantra;
   }
 
   public setDepth3D(depth: number): void {
@@ -143,13 +157,8 @@ export class SceneManager {
     const delta = now - this.lastTime;
     this.lastTime = now;
 
-    // Render Active Background Scene & Sri Yantra
+    // Render Active Background Scene & Sri Yantra (Text moved to lateral side HUD)
     this.activeScene.render(this.ctx, delta, this.state);
-
-    // Render Glowing Mantra Typography Overlay if active
-    if (this.state.mantra !== 'off') {
-      this.renderMantraOverlay(this.ctx, now);
-    }
 
     this.animFrameId = requestAnimationFrame(this.loop);
   }
