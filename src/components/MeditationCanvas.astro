@@ -219,82 +219,58 @@ import ZenControlsBar from './ZenControlsBar.astro';
     }
 
     private initEventListeners(): void {
-      // Scene selector buttons
-      const sceneBtns = document.querySelectorAll('#scene-selector .pill-btn');
-      sceneBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          sceneBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const sceneId = btn.getAttribute('data-scene') as any;
-          if (sceneId) this.sceneManager.switchAtmosphere(sceneId);
-        });
+      // Scene Dropdown
+      const sceneSelect = document.getElementById('select-scene') as HTMLSelectElement | null;
+      sceneSelect?.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const sceneId = sceneSelect.value as any;
+        if (sceneId) this.sceneManager.switchAtmosphere(sceneId);
       });
 
-      // Palette selector buttons (Colors)
-      const paletteBtns = document.querySelectorAll('#palette-selector .pill-btn');
-      paletteBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          paletteBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const palette = btn.getAttribute('data-palette') as any;
-          if (palette) this.sceneManager.setPalette(palette);
-        });
+      // Sacred Mantra Dropdown: triggers visual mantra, right HUD, and authentic vocal chanting!
+      const mantraSelect = document.getElementById('select-mantra') as HTMLSelectElement | null;
+      mantraSelect?.addEventListener('change', async (e) => {
+        e.stopPropagation();
+        this.hasUserInteracted = true;
+        const mantra = mantraSelect.value as MantraMode;
+        if (mantra) {
+          this.sceneManager.setMantra(mantra);
+          await this.audioEngine.setMantraMode(mantra);
+          this.updateMantraHUD(mantra);
+        }
       });
 
-      // Sound selector buttons
-      const soundBtns = document.querySelectorAll('#sound-selector .pill-btn');
-      soundBtns.forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          this.hasUserInteracted = true;
-          soundBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const soundMode = btn.getAttribute('data-sound') as SoundMode;
-          if (soundMode) await this.audioEngine.setMode(soundMode);
-        });
+      // Sound Mode Dropdown
+      const soundSelect = document.getElementById('select-sound') as HTMLSelectElement | null;
+      soundSelect?.addEventListener('change', async (e) => {
+        e.stopPropagation();
+        this.hasUserInteracted = true;
+        const soundMode = soundSelect.value as SoundMode;
+        if (soundMode) await this.audioEngine.setMode(soundMode);
       });
 
-      // Motion style selector buttons (Alternate vs Unified vs Still)
-      const motionBtns = document.querySelectorAll('#motion-selector .pill-btn');
-      motionBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          motionBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const motion = btn.getAttribute('data-motion') as any;
-          if (motion) this.sceneManager.setMotionStyle(motion);
-        });
+      // Palette Dropdown (Colors)
+      const paletteSelect = document.getElementById('select-palette') as HTMLSelectElement | null;
+      paletteSelect?.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const palette = paletteSelect.value as any;
+        if (palette) this.sceneManager.setPalette(palette);
       });
 
-      // Speed selector buttons
-      const speedBtns = document.querySelectorAll('#speed-selector .pill-btn');
-      speedBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          speedBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const speedVal = parseFloat(btn.getAttribute('data-speed') || '1.0');
-          this.sceneManager.setRotationSpeed(speedVal);
-        });
+      // Motion Style Dropdown
+      const motionSelect = document.getElementById('select-motion') as HTMLSelectElement | null;
+      motionSelect?.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const motion = motionSelect.value as any;
+        if (motion) this.sceneManager.setMotionStyle(motion);
       });
 
-      // Mantra selector buttons: triggers both visual mantra update and authentic audio seed sound!
-      const mantraBtns = document.querySelectorAll('#mantra-selector .pill-btn');
-      mantraBtns.forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          this.hasUserInteracted = true;
-          mantraBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const mantra = btn.getAttribute('data-mantra') as MantraMode;
-          if (mantra) {
-            this.sceneManager.setMantra(mantra);
-            await this.audioEngine.setMantraMode(mantra);
-            this.updateMantraHUD(mantra);
-          }
-        });
+      // Speed Dropdown
+      const speedSelect = document.getElementById('select-speed') as HTMLSelectElement | null;
+      speedSelect?.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const speedVal = parseFloat(speedSelect.value || '1.0');
+        this.sceneManager.setRotationSpeed(speedVal);
       });
 
       // Show / Hide Sri Yantra Toggle Button
@@ -348,6 +324,10 @@ import ZenControlsBar from './ZenControlsBar.astro';
       if (toggleLabel) {
         toggleLabel.textContent = isPlaying ? 'Active • Tap to Mute' : 'Tap to Listen';
       }
+
+      // Sync select dropdowns
+      this.syncSoundSelectorUI(state.mode);
+      this.syncMantraSelectorUI(state.mantra);
     }
 
     private updateMantraHUD(mantra: MantraMode): void {
@@ -370,14 +350,22 @@ import ZenControlsBar from './ZenControlsBar.astro';
       if (typeEl) typeEl.textContent = info.type;
       if (titleEl) titleEl.textContent = info.title;
       if (meaningEl) meaningEl.textContent = info.meaning;
+
+      this.syncMantraSelectorUI(mantra);
     }
 
     private syncSoundSelectorUI(mode: SoundMode): void {
-      const soundBtns = document.querySelectorAll('#sound-selector .pill-btn');
-      soundBtns.forEach(b => {
-        const btnMode = b.getAttribute('data-sound');
-        b.classList.toggle('active', btnMode === mode);
-      });
+      const soundSelect = document.getElementById('select-sound') as HTMLSelectElement | null;
+      if (soundSelect && soundSelect.value !== mode) {
+        soundSelect.value = mode;
+      }
+    }
+
+    private syncMantraSelectorUI(mantra: MantraMode): void {
+      const mantraSelect = document.getElementById('select-mantra') as HTMLSelectElement | null;
+      if (mantraSelect && mantraSelect.value !== mantra) {
+        mantraSelect.value = mantra;
+      }
     }
 
     private initFullscreenHandler(): void {
