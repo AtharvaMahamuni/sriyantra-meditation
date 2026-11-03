@@ -21,51 +21,71 @@
 
     <!-- Main Teardown Cockpit -->
     <div class="simulator-cockpit">
-      <!-- 3D Canvas Viewport -->
-      <div class="canvas-viewport" id="sim-viewport">
-        <canvas id="teardown-canvas" aria-label="Interactive 3D Sri Yantra Exploded Model"></canvas>
-
-        <!-- Viewport Overlays -->
-        <div class="viewport-hud-top">
-          <div class="view-pill active" id="view-mode-tag">3D Meru Isometric</div>
-          <div class="elevation-gauge" id="elevation-gauge">Elevation: 0.0 mm</div>
-        </div>
-
-        <div class="camera-toolbar" role="toolbar" aria-label="Camera Presets">
-          <button class="cam-btn active" data-cam="isometric" title="3D Isometric 3/4 View">Isometric</button>
-          <button class="cam-btn" data-cam="top-side" title="3D View from Top Side (North)">Top Side</button>
-          <button class="cam-btn" data-cam="bottom-side" title="3D View from Bottom Side (South)">Bottom Side</button>
-          <button class="cam-btn" data-cam="plan" title="Top-Down 2D Overhead Plan (All Planes)">2D Plan</button>
-          <button class="cam-btn" data-cam="cutaway" title="Side Profile Elevation">Elevation</button>
-          <button class="cam-btn" data-cam="bindu" title="Macro Bindu Focus">Apex Bindu</button>
-          <button class="cam-btn reset" id="sim-reset-cam-btn" title="Reset Camera">Reset</button>
-        </div>
-
-        <div class="drag-hint" id="drag-hint">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 8v8M8 12h8"/>
-          </svg>
-          <span>Drag to orbit • Scroll to zoom</span>
-        </div>
-
-        <!-- Auto Tour Floating Pill -->
-        <div class="auto-tour-status" id="tour-status" style="display: none;">
-          <span class="pulse-dot"></span>
-          <span id="tour-status-text">Auto Tour Active • Layer 1 of 9</span>
-          <button class="stop-tour-btn" id="stop-tour-btn" title="Stop Auto Tour">✕</button>
-        </div>
-      </div>
-
-      <!-- Control & Telemetry Sidebar Panel -->
-      <aside class="telemetry-panel">
-        <!-- 1. Explode & Teardown Control -->
-        <div class="panel-card explode-card">
-          <div class="card-header">
-            <span class="card-label">Exploded Separation</span>
-            <span class="card-val" id="explode-percent-text">50%</span>
+      <!-- 3D Canvas Viewport Container -->
+      <div class="viewport-card">
+        <!-- Viewport Header Toolbar -->
+        <div class="viewport-header">
+          <div class="header-left">
+            <span class="view-pill" id="view-mode-tag">3D Meru Isometric</span>
+            <span class="elevation-gauge" id="elevation-gauge">Elevation: 0.0 mm</span>
           </div>
-          <div class="slider-wrapper">
+
+          <!-- Camera Angle Presets -->
+          <div class="camera-toolbar" role="toolbar" aria-label="Camera Presets">
+            <button class="cam-btn" data-cam="top-plan" title="Top View (Direct Overhead View of All 9 Planes)">Top View</button>
+            <button class="cam-btn" data-cam="top-side" title="3D View from Top Side (North)">Top-Side</button>
+            <button class="cam-btn" data-cam="bottom-side" title="3D View from Bottom Side (South)">Bottom-Side</button>
+            <button class="cam-btn active" data-cam="isometric" title="3D Isometric 3/4 View">Isometric</button>
+            <button class="cam-btn" data-cam="cutaway" title="Side Profile Elevation">Elevation</button>
+            <button class="cam-btn" data-cam="bindu" title="Macro Bindu Focus">Apex Bindu</button>
+            <button class="cam-btn reset" id="sim-reset-cam-btn" title="Reset Camera">Reset</button>
+          </div>
+
+          <!-- Zoom Controls (Scroll or Click) -->
+          <div class="zoom-toolbar" role="toolbar" aria-label="Zoom Controls">
+            <button class="zoom-btn" id="zoom-in-btn" title="Zoom In (or Scroll Up)" aria-label="Zoom In">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="21" y1="21" x2="16" y2="16"/>
+                <line x1="11" y1="8" x2="11" y2="14"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </button>
+            <button class="zoom-btn" id="zoom-out-btn" title="Zoom Out (or Scroll Down)" aria-label="Zoom Out">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="21" y1="21" x2="16" y2="16"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </button>
+            <button class="zoom-btn reset" id="zoom-reset-btn" title="Reset 100% Zoom">1:1</button>
+          </div>
+        </div>
+
+        <!-- 3D Canvas Viewport -->
+        <div class="canvas-viewport" id="sim-viewport">
+          <canvas id="teardown-canvas" aria-label="Interactive 3D Sri Yantra Exploded Model"></canvas>
+
+          <div class="drag-hint" id="drag-hint">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v8M8 12h8"/>
+            </svg>
+            <span>Drag to orbit 360° • Scroll / Pinch to zoom</span>
+          </div>
+
+          <!-- Auto Tour Floating Pill -->
+          <div class="auto-tour-status" id="tour-status" style="display: none;">
+            <span class="pulse-dot"></span>
+            <span id="tour-status-text">Auto Tour Active • Layer 1 of 9</span>
+            <button class="stop-tour-btn" id="stop-tour-btn" title="Stop Auto Tour">✕</button>
+          </div>
+        </div>
+
+        <!-- Explode Separation Controls Strip -->
+        <div class="explode-strip">
+          <div class="explode-left">
+            <span class="strip-label">3D Layer Separation:</span>
             <input
               type="range"
               id="explode-slider"
@@ -76,71 +96,101 @@
               class="explode-slider"
               aria-label="Explode layers vertically along Z axis"
             />
+            <span class="explode-val" id="explode-percent-text">50%</span>
           </div>
-          <div class="explode-quick-buttons">
-            <button class="quick-btn" data-val="0">Assembled (0%)</button>
-            <button class="quick-btn active" data-val="50">Expanded (50%)</button>
-            <button class="quick-btn" data-val="100">Full Meru (100%)</button>
+          <div class="explode-quick-btns">
+            <button class="quick-btn" data-val="0">0% Assembled</button>
+            <button class="quick-btn active" data-val="50">50% Exploded</button>
+            <button class="quick-btn" data-val="100">100% Full Meru</button>
           </div>
-        </div>
-
-        <!-- 2. Tour & Motion Actions -->
-        <div class="tour-actions">
-          <button id="start-tour-btn" class="tour-cta-btn">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-              <polygon points="5 3 19 12 5 21 5 3"/>
-            </svg>
-            <span>Start Cinematic Auto Tour</span>
-          </button>
-        </div>
-
-        <!-- 3. Subsystem Selector (The 9 Avaranas) -->
-        <div class="panel-card subsystems-card">
-          <div class="card-header">
-            <span class="card-label">Subsystem Isolation</span>
-            <button id="isolate-all-btn" class="isolate-all-btn active">All 9 Layers</button>
-          </div>
-          <div class="layers-button-grid" role="group" aria-label="Select Avarana Layer to Isolate">
-            <button class="layer-pill" data-layer="1">
-              <span class="layer-num">1</span>
-              <span class="layer-name">Bhupura</span>
-            </button>
-            <button class="layer-pill" data-layer="2">
-              <span class="layer-num">2</span>
-              <span class="layer-name">16-Lotus</span>
-            </button>
-            <button class="layer-pill" data-layer="3">
-              <span class="layer-num">3</span>
-              <span class="layer-name">8-Lotus</span>
-            </button>
-            <button class="layer-pill" data-layer="4">
-              <span class="layer-num">4</span>
-              <span class="layer-name">14 Triangles</span>
-            </button>
-            <button class="layer-pill" data-layer="5">
-              <span class="layer-num">5</span>
-              <span class="layer-name">Outer 10</span>
-            </button>
-            <button class="layer-pill" data-layer="6">
-              <span class="layer-num">6</span>
-              <span class="layer-name">Inner 10</span>
-            </button>
-            <button class="layer-pill" data-layer="7">
-              <span class="layer-num">7</span>
-              <span class="layer-name">8 Triangles</span>
-            </button>
-            <button class="layer-pill" data-layer="8">
-              <span class="layer-num">8</span>
-              <span class="layer-name">Trikona</span>
-            </button>
-            <button class="layer-pill" data-layer="9">
-              <span class="layer-num">9</span>
-              <span class="layer-name">Bindu</span>
+          <div class="explode-tour">
+            <button id="start-tour-btn" class="tour-btn-pill">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span>Auto Tour</span>
             </button>
           </div>
         </div>
 
-        <!-- 4. Real-time Telemetry & Metaphysics Display -->
+        <!-- PROMINENT ALL 9 SACRED LAYERS STRIP (Directly Accessible & Fully Visible) -->
+        <div class="layers-strip-container">
+          <div class="layers-strip-bar">
+            <div class="layers-strip-title">
+              <span class="strip-eyebrow">EXPLORE 9 AVARANAS</span>
+              <button id="isolate-all-btn" class="isolate-all-pill active" title="View all 9 layers together in 3D">All 9 Layers</button>
+            </div>
+            <div class="layers-strip-grid" role="group" aria-label="Select any of the 9 Avarana layers to isolate and inspect">
+              <button class="layer-tab-btn" data-layer="1" title="1. Trailokya Mohana (Earth Citadel)">
+                <span class="tab-num">01</span>
+                <span class="tab-text">
+                  <span class="tab-name">Bhupura</span>
+                  <span class="tab-meta">Earth Citadel</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="2" title="2. Sarvasha Paripuraka (16 Petals)">
+                <span class="tab-num">02</span>
+                <span class="tab-text">
+                  <span class="tab-name">16-Lotus</span>
+                  <span class="tab-meta">Outer Lotus</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="3" title="3. Sarva Samkshobhana (8 Petals)">
+                <span class="tab-num">03</span>
+                <span class="tab-text">
+                  <span class="tab-name">8-Lotus</span>
+                  <span class="tab-meta">Inner Lotus</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="4" title="4. Sarva Saubhagyadayaka (14 Triangles)">
+                <span class="tab-num">04</span>
+                <span class="tab-text">
+                  <span class="tab-name">14 Triangles</span>
+                  <span class="tab-meta">Chaturdasha</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="5" title="5. Sarvartha Sadhaka (Outer 10 Triangles)">
+                <span class="tab-num">05</span>
+                <span class="tab-text">
+                  <span class="tab-name">Outer 10</span>
+                  <span class="tab-meta">Bahir Dashara</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="6" title="6. Sarva Rakshakara (Inner 10 Triangles)">
+                <span class="tab-num">06</span>
+                <span class="tab-text">
+                  <span class="tab-name">Inner 10</span>
+                  <span class="tab-meta">Antar Dashara</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="7" title="7. Sarva Rogahara (8 Triangles)">
+                <span class="tab-num">07</span>
+                <span class="tab-text">
+                  <span class="tab-name">8 Triangles</span>
+                  <span class="tab-meta">Ashta Kona</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="8" title="8. Sarva Siddhiprada (Inmost Triangle)">
+                <span class="tab-num">08</span>
+                <span class="tab-text">
+                  <span class="tab-name">Trikona</span>
+                  <span class="tab-meta">Inner Triangle</span>
+                </span>
+              </button>
+              <button class="layer-tab-btn" data-layer="9" title="9. Sarvanandamaya (Supreme Bindu)">
+                <span class="tab-num">09</span>
+                <span class="tab-text">
+                  <span class="tab-name">Bindu</span>
+                  <span class="tab-meta">Apex Point</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Telemetry & Spiritual Insights Sidebar -->
+      <aside class="telemetry-panel">
         <div class="panel-card telemetry-card">
           <div class="card-header">
             <span class="card-label">Active Layer Telemetry</span>
@@ -365,10 +415,10 @@
     private dpr: number = 1;
 
     // 3D Camera & Pose State
-    private pitch: number = 0.62;   // ~35 degrees down
-    private yaw: number = 0.52;     // ~30 degrees orbit
-    private targetPitch: number = 0.62;
-    private targetYaw: number = 0.52;
+    private pitch: number = 0.55;   // ~32 degrees tilt
+    private yaw: number = 0.55;     // ~32 degrees orbit
+    private targetPitch: number = 0.55;
+    private targetYaw: number = 0.55;
     private fov: number = 650;
     private zoom: number = 1.0;
     private targetZoom: number = 1.0;
@@ -420,7 +470,7 @@
       this.dpr = Math.min(window.devicePixelRatio || 1, 2);
       const rect = parent.getBoundingClientRect();
       const w = Math.floor(rect.width);
-      const h = Math.floor(rect.height || 560);
+      const h = Math.floor(rect.height || 540);
 
       this.canvas.width = w * this.dpr;
       this.canvas.height = h * this.dpr;
@@ -430,7 +480,9 @@
 
     private initInteractions(): void {
       const cvs = this.canvas;
+      const viewport = document.getElementById('sim-viewport');
 
+      // Drag Orbit on Canvas
       cvs.addEventListener('pointerdown', (e) => {
         this.isDragging = true;
         this.lastMouseX = e.clientX;
@@ -449,7 +501,7 @@
         this.lastInteractionTime = Date.now();
 
         this.targetYaw += dx * 0.007;
-        // Allow full 3D vertical orbit: from Top Side (North, negative pitch) to Bottom Side (South, positive pitch)
+        // Unconstrained vertical orbit: allows viewing from top (negative pitch) down to bottom (positive pitch)
         this.targetPitch = Math.max(-Math.PI * 0.48, Math.min(Math.PI * 0.48, this.targetPitch + dy * 0.007));
       });
 
@@ -459,15 +511,24 @@
       cvs.addEventListener('pointerup', stopDrag);
       cvs.addEventListener('pointercancel', stopDrag);
 
-      // Wheel Zoom
-      cvs.addEventListener('wheel', (e) => {
+      // Highly Responsive Wheel Zoom on Viewport Container (Cross-Browser Normalized)
+      const handleWheel = (e: WheelEvent) => {
         e.preventDefault();
         this.lastInteractionTime = Date.now();
         if (this.isTouring) this.stopAutoTour();
 
-        const zoomDelta = e.deltaY * -0.0015;
-        this.targetZoom = Math.max(0.55, Math.min(2.2, this.targetZoom + zoomDelta));
-      }, { passive: false });
+        // Normalize delta across all browser engines (DOM_DELTA_PIXEL, DOM_DELTA_LINE, DOM_DELTA_PAGE)
+        const rawDelta = e.deltaMode === 1 ? e.deltaY * 30 : (e.deltaMode === 2 ? e.deltaY * 300 : e.deltaY);
+        const sign = Math.sign(rawDelta);
+        // Guarantee clear perceptible step per wheel notch (at least +/- 0.08 per tick)
+        const step = Math.max(0.08, Math.min(0.24, Math.abs(rawDelta) * 0.0025));
+        const zoomDelta = -sign * step;
+
+        this.targetZoom = Math.max(0.35, Math.min(3.5, this.targetZoom + zoomDelta));
+      };
+
+      viewport?.addEventListener('wheel', handleWheel, { passive: false });
+      cvs.addEventListener('wheel', handleWheel, { passive: false });
     }
 
     private initUIControls(): void {
@@ -518,15 +579,34 @@
         this.targetZoom = 1.0;
       });
 
-      // Layer Isolation Buttons
-      const layerBtns = document.querySelectorAll('.layer-pill');
+      // Zoom In / Out / Reset Buttons
+      document.getElementById('zoom-in-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.lastInteractionTime = Date.now();
+        this.targetZoom = Math.min(3.5, this.targetZoom + 0.22);
+      });
+
+      document.getElementById('zoom-out-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.lastInteractionTime = Date.now();
+        this.targetZoom = Math.max(0.35, this.targetZoom - 0.22);
+      });
+
+      document.getElementById('zoom-reset-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.lastInteractionTime = Date.now();
+        this.targetZoom = 1.0;
+      });
+
+      // Prominent All 9 Layers Selector Tabs
+      const layerTabs = document.querySelectorAll('.layer-tab-btn');
       const allBtn = document.getElementById('isolate-all-btn');
 
-      layerBtns.forEach((btn) => {
+      layerTabs.forEach((btn) => {
         btn.addEventListener('click', () => {
           this.lastInteractionTime = Date.now();
           if (this.isTouring) this.stopAutoTour();
-          layerBtns.forEach(b => b.classList.remove('active'));
+          layerTabs.forEach(b => b.classList.remove('active'));
           allBtn?.classList.remove('active');
           btn.classList.add('active');
 
@@ -538,7 +618,7 @@
 
       allBtn?.addEventListener('click', () => {
         this.lastInteractionTime = Date.now();
-        layerBtns.forEach(b => b.classList.remove('active'));
+        layerTabs.forEach(b => b.classList.remove('active'));
         allBtn.classList.add('active');
         this.isolatedLayer = null;
         this.updateTelemetry(1);
@@ -556,35 +636,41 @@
 
     private applyCameraPreset(preset: string | null): void {
       const modeTag = document.getElementById('view-mode-tag');
-      if (preset === 'isometric') {
+      if (preset === 'top-plan') {
+        // Direct overhead top view (pitch ~ 0.08, looking straight down at all 9 tiers)
+        this.targetPitch = 0.08;
+        this.targetYaw = 0.0;
+        this.targetZoom = 0.98;
+        if (modeTag) modeTag.textContent = 'Top View (Overhead Plan)';
+      } else if (preset === 'top-side') {
+        // 3D perspective from Top Side (North): standing at the North looking across the tiers
         this.targetPitch = 0.58;
-        this.targetYaw = 0.52;
+        this.targetYaw = Math.PI; // 180 deg around model
+        this.targetZoom = 0.96;
+        if (modeTag) modeTag.textContent = '3D Top-Side View (North)';
+      } else if (preset === 'bottom-side') {
+        // 3D perspective from Bottom Side (South): standing at the South looking across the tiers
+        this.targetPitch = 0.58;
+        this.targetYaw = 0.0;
+        this.targetZoom = 0.96;
+        if (modeTag) modeTag.textContent = '3D Bottom-Side View (South)';
+      } else if (preset === 'isometric') {
+        // Classic 3D Isometric 3/4 perspective
+        this.targetPitch = 0.55;
+        this.targetYaw = 0.55;
         this.targetZoom = 0.96;
         if (modeTag) modeTag.textContent = '3D Meru Isometric';
-      } else if (preset === 'top-side') {
-        this.targetPitch = -0.58; // 3D perspective from Top Side (North)
-        this.targetYaw = 0.0;
-        this.targetZoom = 0.96;
-        if (modeTag) modeTag.textContent = '3D Top Side View (North)';
-      } else if (preset === 'bottom-side') {
-        this.targetPitch = 0.58; // 3D perspective from Bottom Side (South)
-        this.targetYaw = 0.0;
-        this.targetZoom = 0.96;
-        if (modeTag) modeTag.textContent = '3D Bottom Side View (South)';
-      } else if (preset === 'plan') {
-        this.targetPitch = 0.0; // Looking directly down from overhead
-        this.targetYaw = 0.0;
-        this.targetZoom = 0.94;
-        if (modeTag) modeTag.textContent = '2D Plan View (All Planes)';
       } else if (preset === 'cutaway') {
-        this.targetPitch = 1.40; // Side profile elevation
-        this.targetYaw = Math.PI * 0.5; // True 90 deg side cutaway
+        // Pure side profile elevation showing vertical stepped Meru temple spacing
+        this.targetPitch = 1.42;
+        this.targetYaw = Math.PI * 0.5; // Exactly 90 deg side elevation
         this.targetZoom = 1.0;
         if (modeTag) modeTag.textContent = 'Side Profile Elevation';
       } else if (preset === 'bindu') {
+        // Macro zoom into the summit Bindu singularity
         this.targetPitch = 0.35;
         this.targetYaw = 0.20;
-        this.targetZoom = 1.45;
+        this.targetZoom = 1.55;
         if (modeTag) modeTag.textContent = 'Apex Bindu Focus';
       }
     }
@@ -616,10 +702,10 @@
       this.updateTelemetry(layerIndex);
 
       // Highlight corresponding layer button in UI
-      const layerBtns = document.querySelectorAll('.layer-pill');
+      const layerTabs = document.querySelectorAll('.layer-tab-btn');
       const allBtn = document.getElementById('isolate-all-btn');
       allBtn?.classList.remove('active');
-      layerBtns.forEach(btn => {
+      layerTabs.forEach(btn => {
         const id = parseInt(btn.getAttribute('data-layer') || '0', 10);
         btn.classList.toggle('active', id === layerIndex);
       });
@@ -629,22 +715,26 @@
         tourText.textContent = `Auto Tour: Layer ${layerIndex} of 9 (${LAYERS[layerIndex - 1].title})`;
       }
 
-      // Dynamic camera perspectives covering all planes (Bottom side, Side elevation, Top side, and Overhead Bindu)
-      if (layerIndex <= 3) {
-        // Layers 1-3: Viewed from Bottom Side / South perspective
-        this.targetPitch = 0.50;
-        this.targetYaw = 0.35 + layerIndex * 0.20;
+      // Dynamic camera perspectives covering all planes throughout the tour
+      if (layerIndex <= 2) {
+        // Layers 1-2: Viewed from Isometric 3D
+        this.targetPitch = 0.55;
+        this.targetYaw = 0.45;
+      } else if (layerIndex <= 4) {
+        // Layers 3-4: Viewed from Bottom-Side (South)
+        this.targetPitch = 0.60;
+        this.targetYaw = 0.0;
       } else if (layerIndex <= 6) {
-        // Layers 4-6: Viewed from Side Elevation profile
-        this.targetPitch = 1.25;
-        this.targetYaw = Math.PI * 0.45;
+        // Layers 5-6: Viewed from Side Elevation profile
+        this.targetPitch = 1.35;
+        this.targetYaw = Math.PI * 0.5;
       } else if (layerIndex <= 8) {
-        // Layers 7-8: Viewed from Top Side / North perspective looking down across all planes
-        this.targetPitch = -0.48;
-        this.targetYaw = Math.PI * 0.20;
+        // Layers 7-8: Viewed from Top-Side (North) looking across all planes
+        this.targetPitch = 0.58;
+        this.targetYaw = Math.PI;
       } else {
-        // Layer 9: Overhead apex Bindu focus
-        this.targetPitch = 0.05;
+        // Layer 9: Overhead Top View (Plan) zoom into apex Bindu
+        this.targetPitch = 0.08;
         this.targetYaw = 0.0;
       }
       this.targetZoom = 0.92 + (layerIndex / 9) * 0.35;
@@ -719,18 +809,20 @@
       const cosP = Math.cos(this.pitch);
       const sinP = Math.sin(this.pitch);
 
-      // Yaw rotation (around vertical Y/Z axis)
+      // 1. Yaw rotation (around vertical Z axis)
       const rx = x * cosY - y * sinY;
       const ry = x * sinY + y * cosY;
 
-      // Pitch rotation (tilt towards viewer)
+      // 2. Pitch rotation (tilt angle)
       const ry2 = ry * cosP - z * sinP;
       const rz2 = ry * sinP + z * cosP;
 
-      // Perspective divide
+      // 3. True Perspective division:
+      // Camera sits at +effFov looking at origin.
+      // Points closer to viewer (positive rz2) have smaller cameraDistance, hence LARGER scale!
       const effFov = this.fov * this.zoom;
-      const depth = rz2 + effFov;
-      const scale = depth > 10 ? effFov / depth : effFov / 10;
+      const cameraDist = effFov - rz2;
+      const scale = cameraDist > 25 ? effFov / cameraDist : effFov / 25;
 
       return {
         x: cx + rx * scale,
@@ -746,10 +838,10 @@
       const h = this.canvas.height;
 
       // Smooth physics damping toward targets
-      this.pitch += (this.targetPitch - this.pitch) * 0.08;
-      this.yaw += (this.targetYaw - this.yaw) * 0.08;
-      this.zoom += (this.targetZoom - this.zoom) * 0.08;
-      this.explodeProgress += (this.targetExplodeProgress - this.explodeProgress) * 0.08;
+      this.pitch += (this.targetPitch - this.pitch) * 0.09;
+      this.yaw += (this.targetYaw - this.yaw) * 0.09;
+      this.zoom += (this.targetZoom - this.zoom) * 0.09;
+      this.explodeProgress += (this.targetExplodeProgress - this.explodeProgress) * 0.09;
 
       // Update elevation gauge display
       const totalElevation = (this.explodeProgress * 320.0).toFixed(1);
@@ -765,12 +857,11 @@
       const renderH = h / this.dpr;
       const cx = renderW * 0.5;
 
-      // Full-range vertical plane anchor:
-      // When flat (top-down), plane is at center (0.50).
-      // When looking from bottom side (pitch > 0), base lowers smoothly so apex has headroom.
-      // When looking from top side (pitch < 0), base raises smoothly so bottom has footroom.
+      // Dynamic viewport plane anchor:
+      // In Top View (pitch ~ 0), plane is dead center (0.50).
+      // In 3D (pitch > 0), base shifts smoothly down so apex has comfortable headroom.
       const pitchSin = Math.sin(this.pitch);
-      const cy = renderH * 0.50 + pitchSin * (renderH * 0.11 + this.explodeProgress * 18);
+      const cy = renderH * 0.50 + pitchSin * (renderH * 0.10 + this.explodeProgress * 16);
       const baseR = Math.min(renderW, renderH) * 0.32;
 
       // Clear with elegant studio gradient (light canvas conforming to DESIGN.md)
@@ -790,7 +881,7 @@
       }
 
       // Depth sort layers from back to front (Painter's Algorithm)
-      // Ensures crisp, correct visual layering whether viewed from Top Side, Bottom Side, or Elevation
+      // Ensures crisp, correct visual layering whether viewed from Top View, Top-Side, Bottom-Side, or Elevation
       const sortedLayers = LAYERS.map(layer => {
         const layerZ = layer.baseZ * (0.15 + this.explodeProgress * 2.8);
         const depth = layerZ * Math.cos(this.pitch);
@@ -1134,7 +1225,7 @@
 
 <style>
   .teardown-section {
-    padding: 6rem 0 5rem;
+    padding: 5.5rem 0 4.5rem;
     background-color: var(--color-canvas);
     color: var(--color-ink);
     border-top: 1px solid var(--color-hairline);
@@ -1142,19 +1233,19 @@
   }
 
   .teardown-container {
-    max-width: 1400px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
   }
 
   .section-intro {
     text-align: center;
     max-width: 820px;
-    margin: 0 auto 3.5rem;
+    margin: 0 auto 3rem;
   }
 
   .intro-badge {
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
   }
 
   .mono-badge {
@@ -1171,44 +1262,172 @@
   }
 
   .teardown-title {
-    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-size: clamp(2rem, 3.8vw, 2.75rem);
     line-height: 1.15;
     letter-spacing: -0.03em;
     color: var(--color-ink);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
     font-weight: 400;
   }
 
   .teardown-desc {
     color: var(--color-body);
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     line-height: 1.6;
   }
 
-  /* Cockpit Layout: 3D Viewport on Left, Telemetry & Controls on Right */
+  /* Cockpit Layout */
   .simulator-cockpit {
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: 2rem;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
     align-items: start;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1100px) {
     .simulator-cockpit {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* 3D Viewport Card Container */
+  .viewport-card {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header Toolbar with Presets & Zoom */
+  .viewport-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #fafaf7;
+    border-bottom: 1px solid var(--color-hairline);
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .view-pill {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink);
+    background: #ffffff;
+    border: 1px solid var(--color-hairline);
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .elevation-gauge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    background: rgba(245, 78, 0, 0.08);
+    border: 1px solid rgba(245, 78, 0, 0.2);
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  /* Camera Preset Toolbar */
+  .camera-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: #ffffff;
+    border: 1px solid var(--color-hairline);
+    padding: 0.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+
+  .cam-btn {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    color: var(--color-body);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 180ms ease;
+  }
+
+  .cam-btn:hover {
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+  }
+
+  .cam-btn.active {
+    background-color: var(--color-ink);
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .cam-btn.reset {
+    color: var(--color-muted);
+    border-left: 1px solid var(--color-hairline);
+    border-radius: 0 5px 5px 0;
+  }
+
+  /* Zoom Toolbar (+, -, 1:1) */
+  .zoom-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    background: #ffffff;
+    border: 1px solid var(--color-hairline);
+    padding: 0.25rem;
+    border-radius: 8px;
+  }
+
+  .zoom-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--color-body);
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+
+  .zoom-btn:hover {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+  }
+
+  .zoom-btn.reset {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    width: auto;
+    padding: 0 0.4rem;
   }
 
   /* 3D Canvas Viewport */
   .canvas-viewport {
     position: relative;
     width: 100%;
-    height: 640px;
-    background-color: var(--color-surface-card);
-    border: 1px solid var(--color-hairline);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    height: 520px;
+    background-color: #ffffff;
     touch-action: none;
     cursor: grab;
   }
@@ -1223,114 +1442,37 @@
     display: block;
   }
 
-  /* Viewport HUD Overlays */
-  .viewport-hud-top {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    pointer-events: none;
-  }
-
-  .view-pill {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-ink);
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--color-hairline);
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    font-weight: 500;
-  }
-
-  .elevation-gauge {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-primary);
-    background: rgba(245, 78, 0, 0.08);
-    border: 1px solid rgba(245, 78, 0, 0.2);
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    font-weight: 600;
-  }
-
-  .camera-toolbar {
-    position: absolute;
-    bottom: 1rem;
-    left: 1rem;
-    display: flex;
-    gap: 0.4rem;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--color-hairline);
-    padding: 0.3rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-  }
-
-  .cam-btn {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.35rem 0.75rem;
-    border-radius: 5px;
-    border: none;
-    background: transparent;
-    color: var(--color-body);
-    cursor: pointer;
-    transition: all 180ms ease;
-  }
-
-  .cam-btn:hover {
-    color: var(--color-ink);
-    background-color: var(--color-canvas);
-  }
-
-  .cam-btn.active {
-    background-color: var(--color-ink);
-    color: #ffffff;
-  }
-
-  .cam-btn.reset {
-    color: var(--color-muted);
-    border-left: 1px solid var(--color-hairline);
-    border-radius: 0 5px 5px 0;
-  }
-
   .drag-hint {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 0.85rem;
+    right: 0.85rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--color-muted);
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(8px);
     border: 1px solid var(--color-hairline);
-    padding: 0.35rem 0.65rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 6px;
     pointer-events: none;
   }
 
   .auto-tour-status {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.85rem;
+    right: 0.85rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(38, 37, 30, 0.92);
+    background: rgba(38, 37, 30, 0.94);
     backdrop-filter: blur(8px);
     color: #ffffff;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    padding: 0.4rem 0.85rem;
+    padding: 0.35rem 0.85rem;
     border-radius: 9999px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   }
@@ -1362,18 +1504,240 @@
     color: #ffffff;
   }
 
+  /* Explode Separation Strip */
+  .explode-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #fafaf7;
+    border-top: 1px solid var(--color-hairline);
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .explode-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 260px;
+  }
+
+  .strip-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .explode-slider {
+    flex: 1;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    height: 5px;
+    background: var(--color-hairline);
+    border-radius: 3px;
+  }
+
+  .explode-val {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    width: 38px;
+    text-align: right;
+  }
+
+  .explode-quick-btns {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .quick-btn {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    padding: 0.35rem 0.65rem;
+    background-color: #ffffff;
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    color: var(--color-body);
+    cursor: pointer;
+    transition: all 180ms ease;
+    white-space: nowrap;
+  }
+
+  .quick-btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-hairline-strong);
+  }
+
+  .quick-btn.active {
+    background-color: rgba(245, 78, 0, 0.08);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .tour-btn-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+
+  .tour-btn-pill:hover {
+    background-color: var(--color-primary-active);
+  }
+
+  /* PROMINENT ALL 9 SACRED LAYERS STRIP */
+  .layers-strip-container {
+    padding: 0.85rem 1rem 1rem;
+    background-color: #ffffff;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .layers-strip-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.65rem;
+  }
+
+  .strip-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    font-weight: 600;
+  }
+
+  .isolate-all-pill {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    padding: 0.2rem 0.65rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+
+  .isolate-all-pill:hover {
+    color: var(--color-ink);
+  }
+
+  .isolate-all-pill.active {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .layers-strip-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 0.45rem;
+  }
+
+  @media (max-width: 1024px) {
+    .layers-strip-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .layer-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 0.6rem;
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 180ms ease;
+    text-align: left;
+    width: 100%;
+  }
+
+  .layer-tab-btn:hover {
+    background-color: var(--color-canvas-soft);
+    border-color: var(--color-hairline-strong);
+  }
+
+  .layer-tab-btn.active {
+    background-color: rgba(245, 78, 0, 0.08);
+    border-color: var(--color-primary);
+  }
+
+  .tab-num {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .layer-tab-btn.active .tab-num {
+    color: var(--color-primary);
+  }
+
+  .tab-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .tab-name {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .layer-tab-btn.active .tab-name {
+    color: var(--color-primary);
+  }
+
+  .tab-meta {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   /* Telemetry Sidebar Panel */
   .telemetry-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
   }
 
   .panel-card {
     background: var(--color-surface-card);
     border: 1px solid var(--color-hairline);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   }
 
   .card-header {
@@ -1392,176 +1756,22 @@
     font-weight: 600;
   }
 
-  .card-val {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--color-primary);
-    font-weight: 700;
-  }
-
-  /* Explode Slider */
-  .slider-wrapper {
-    margin-bottom: 0.85rem;
-  }
-
-  .explode-slider {
-    width: 100%;
-    accent-color: var(--color-primary);
-    cursor: pointer;
-    height: 6px;
-    background: var(--color-hairline);
-    border-radius: 3px;
-  }
-
-  .explode-quick-buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-  }
-
-  .quick-btn {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    padding: 0.4rem 0.5rem;
-    background-color: var(--color-canvas);
-    border: 1px solid var(--color-hairline);
-    border-radius: 6px;
-    color: var(--color-body);
-    cursor: pointer;
-    transition: all 180ms ease;
-  }
-
-  .quick-btn:hover {
-    color: var(--color-ink);
-    border-color: var(--color-hairline-strong);
-  }
-
-  .quick-btn.active {
-    background-color: rgba(245, 78, 0, 0.08);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    font-weight: 600;
-  }
-
-  /* Tour CTA */
-  .tour-cta-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    background-color: var(--color-primary);
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.85rem 1.25rem;
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 200ms var(--ease-calm);
-    box-shadow: 0 4px 14px rgba(245, 78, 0, 0.25);
-  }
-
-  .tour-cta-btn:hover {
-    background-color: var(--color-primary-active);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(245, 78, 0, 0.35);
-  }
-
-  /* Subsystems Grid */
-  .isolate-all-btn {
-    font-family: var(--font-sans);
-    font-size: 0.72rem;
-    color: var(--color-muted);
-    background: transparent;
-    border: 1px solid var(--color-hairline);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .isolate-all-btn.active {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    background-color: var(--color-primary-soft);
-  }
-
-  .layers-button-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.45rem;
-  }
-
-  .layer-pill {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.55rem;
-    background-color: var(--color-canvas);
-    border: 1px solid var(--color-hairline);
-    border-radius: 6px;
-    color: var(--color-body);
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 180ms ease;
-    text-align: left;
-  }
-
-  .layer-pill:hover {
-    background-color: var(--color-canvas-soft);
-    color: var(--color-ink);
-    border-color: var(--color-hairline-strong);
-  }
-
-  .layer-pill.active {
-    background-color: rgba(245, 78, 0, 0.1);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    font-weight: 600;
-  }
-
-  .layer-num {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    width: 16px;
-    height: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 3px;
-    flex-shrink: 0;
-  }
-
-  .layer-pill.active .layer-num {
-    background: var(--color-primary);
-    color: #ffffff;
-  }
-
-  .layer-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Telemetry Body */
   .layer-index-tag {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--color-primary);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .tel-main-title {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.15rem;
     border-bottom: 1px solid var(--color-hairline);
     padding-bottom: 0.85rem;
   }
 
   .sanskrit-title {
     font-family: var(--font-devanagari);
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: var(--color-primary);
     font-weight: 600;
     margin-bottom: 0.15rem;
@@ -1569,14 +1779,14 @@
 
   .english-title {
     font-family: var(--font-sans);
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: var(--color-ink);
     font-weight: 600;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
   }
 
   .meaning-subtitle {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--color-muted);
     font-style: italic;
   }
@@ -1584,33 +1794,33 @@
   .telemetry-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.85rem;
-    margin-bottom: 1.25rem;
+    gap: 0.75rem;
+    margin-bottom: 1.15rem;
   }
 
   .tel-cell {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.15rem;
   }
 
   .cell-k {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     color: var(--color-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .cell-v {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--color-ink);
     font-weight: 500;
   }
 
   .cell-v.mono {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     color: var(--color-primary);
   }
 
@@ -1618,7 +1828,7 @@
     background-color: var(--color-canvas);
     border: 1px solid var(--color-hairline);
     border-radius: 6px;
-    padding: 0.85rem;
+    padding: 0.8rem;
   }
 
   .desc-heading {
@@ -1628,11 +1838,11 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--color-muted);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.35rem;
   }
 
   .tel-description p {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     line-height: 1.55;
     color: var(--color-body);
     margin: 0;
