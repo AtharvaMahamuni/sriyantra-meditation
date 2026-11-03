@@ -103,9 +103,9 @@ export class AudioEngine {
       this.tanpuraGain.gain.setValueAtTime(0, this.ctx.currentTime);
       this.tanpuraGain.connect(this.masterGain);
 
-      // Channel: Mantra Vocal Chanting (High Priority)
+      // Channel: Mantra Vocal Chanting (Warm, Soothing, Subtle in Mix)
       this.mantraGain = this.ctx.createGain();
-      this.mantraGain.gain.setValueAtTime(1.0, this.ctx.currentTime);
+      this.mantraGain.gain.setValueAtTime(0.38, this.ctx.currentTime);
       this.mantraGain.connect(this.masterGain);
 
       this.setupVocalOmSynthesizer();
@@ -130,9 +130,9 @@ export class AudioEngine {
   private async preloadMantraAudio(): Promise<void> {
     if (!this.ctx) return;
     const files = [
-      { id: 'om', url: '/audio/om.mp3' },
-      { id: 'shreem', url: '/audio/shreem.mp3' },
-      { id: 'sri-matre', url: '/audio/sri-matre.mp3' },
+      { id: 'om', url: '/audio/om.wav' },
+      { id: 'shreem', url: '/audio/shreem.wav' },
+      { id: 'sri-matre', url: '/audio/sri-matre.wav' },
     ];
 
     for (const f of files) {
@@ -175,20 +175,20 @@ export class AudioEngine {
       this.isRunning = false;
     } else {
       this.isRunning = true;
-      this.mantraGain.gain.linearRampToValueAtTime(1.0, now + fade);
+      this.mantraGain.gain.linearRampToValueAtTime(0.38, now + fade);
 
       if (mode === 'om-136') {
-        // If current mantra is Shreem or Sri Matre, don't let OM drown it out
-        const omLevel = (this.currentMantra === 'shreem' || this.currentMantra === 'sri-matre') ? 0.20 : 0.85;
+        // If current mantra is Shreem or Sri Matre, keep OM drone subtle
+        const omLevel = (this.currentMantra === 'shreem' || this.currentMantra === 'sri-matre') ? 0.12 : 0.65;
         this.omGain.gain.linearRampToValueAtTime(omLevel, now + fade);
         this.tanpuraGain.gain.linearRampToValueAtTime(0, now + fade);
       } else if (mode === 'om-tanpura') {
-        const omLevel = (this.currentMantra === 'shreem' || this.currentMantra === 'sri-matre') ? 0.15 : 0.65;
+        const omLevel = (this.currentMantra === 'shreem' || this.currentMantra === 'sri-matre') ? 0.10 : 0.50;
         this.omGain.gain.linearRampToValueAtTime(omLevel, now + fade);
-        this.tanpuraGain.gain.linearRampToValueAtTime(0.65, now + fade);
+        this.tanpuraGain.gain.linearRampToValueAtTime(0.55, now + fade);
         this.pluckTanpuraString(136.10 * 1.5);
       } else if (mode === 'singing-bowl') {
-        this.omGain.gain.linearRampToValueAtTime(0.15, now + fade);
+        this.omGain.gain.linearRampToValueAtTime(0.12, now + fade);
         this.tanpuraGain.gain.linearRampToValueAtTime(0, now + fade);
         this.playSingingBowl(272.2);
       }
@@ -249,12 +249,12 @@ export class AudioEngine {
   }
 
   /**
-   * Play the authentic vocal chanting audio file for the mantra
+   * Play the soothing, authentic human vocal chant for the mantra
    */
   public playMantraVoice(mantra: MantraMode): void {
     if (!this.ctx || !this.mantraGain || this.currentMode === 'mute' || mantra === 'off') return;
 
-    // Stop previous vocal playback
+    // Stop previous vocal playback cleanly
     if (this.activeMantraSource) {
       try {
         this.activeMantraSource.stop();
@@ -269,20 +269,27 @@ export class AudioEngine {
       const src = this.ctx.createBufferSource();
       src.buffer = buffer;
 
-      // Vocal warmth filter
+      // Meditative breath amplitude envelope: gentle 1.6s swell fade-in, long sustain, soft release
+      const vocalEnv = this.ctx.createGain();
+      vocalEnv.gain.setValueAtTime(0.0001, now);
+      vocalEnv.gain.exponentialRampToValueAtTime(0.50, now + 1.6);
+
+      const decayStart = Math.max(1.6, buffer.duration - 2.6);
+      vocalEnv.gain.setValueAtTime(0.50, now + decayStart);
+      vocalEnv.gain.exponentialRampToValueAtTime(0.0001, now + buffer.duration);
+
+      // Warm soothing Low-Pass filter to smooth and warm the voice (removes digital harshness)
       const warmth = this.ctx.createBiquadFilter();
-      warmth.type = 'lowshelf';
-      warmth.frequency.setValueAtTime(320, now);
-      warmth.gain.setValueAtTime(3.5, now);
+      warmth.type = 'lowpass';
+      warmth.frequency.setValueAtTime(1400, now);
+      warmth.Q.setValueAtTime(0.8, now);
 
       src.connect(warmth);
-      warmth.connect(this.mantraGain);
+      warmth.connect(vocalEnv);
+      vocalEnv.connect(this.mantraGain);
 
       src.start(now);
       this.activeMantraSource = src;
-    } else {
-      // Fallback: Web Speech API synthesis with deep resonant voice
-      this.speechSynthesisFallback(mantra);
     }
   }
 
@@ -293,11 +300,11 @@ export class AudioEngine {
     this.stopMantraLoop();
     if (mantra === 'off' || this.currentMode === 'mute') return;
 
-    // Immediate playback on click
+    // Immediate playback on selection
     this.playMantraVoice(mantra);
 
-    // Loop interval based on mantra length
-    const intervalMs = mantra === 'sri-matre' ? 14000 : 10000;
+    // Loop interval harmonized with Pranayama breath cycle
+    const intervalMs = mantra === 'sri-matre' ? 15000 : 12000;
     this.mantraLoopTimerId = window.setInterval(() => {
       if (this.currentMode !== 'mute' && this.currentMantra === mantra) {
         this.playMantraVoice(mantra);
@@ -316,35 +323,6 @@ export class AudioEngine {
         this.activeMantraSource.disconnect();
       } catch (_) {}
       this.activeMantraSource = null;
-    }
-  }
-
-  /**
-   * Browser Web Speech Synthesis Fallback (guarantees voice sound if audio buffers haven't loaded)
-   */
-  private speechSynthesisFallback(mantra: MantraMode): void {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-
-    let text = '';
-    if (mantra === 'om') text = 'ॐ... ॐ...';
-    else if (mantra === 'shreem') text = 'श्रीं... ॐ श्रीं महालक्ष्म्यै नमः';
-    else if (mantra === 'sri-matre') text = 'ॐ ऐं ह्रीं श्रीं श्री मात्रे नमः';
-    else return;
-
-    try {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = 0.75;  // Slow, serene cadence
-      utter.pitch = 0.85; // Deep resonant vocal pitch
-      utter.volume = 0.95;
-
-      const voices = window.speechSynthesis.getVoices();
-      const indianVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN') || v.lang.includes('sa'));
-      if (indianVoice) utter.voice = indianVoice;
-
-      window.speechSynthesis.speak(utter);
-    } catch (err) {
-      console.warn('[SriYantra Audio] Speech synthesis fallback error:', err);
     }
   }
 

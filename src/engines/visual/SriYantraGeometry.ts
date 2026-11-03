@@ -21,52 +21,52 @@ export interface PaletteColors {
 
 export const PALETTES: Record<PaletteId, PaletteColors> = {
   'cursor-gold': {
-    shiva: '#ffb74d',      // Solar Radiant Gold
-    shakti: '#f54e00',     // Cursor Brand Orange / Vermilion
-    trikona: '#fff3d6',    // Incandescent Champagne Gold
-    lotus8: '#dfa88f',     // Warm Peach / Rose Coral
-    lotus16: '#e5b85e',    // Luminous Temple Gold
-    circles: '#c89547',    // Antique Polished Amber
-    bhupura: '#b38138',    // Deep Sacred Bronze
-    binduCore: '#ffffff',  // Pure Star White
-    binduGlow: 'rgba(245, 78, 0, 0.65)',
-    lineGlow: 'rgba(245, 120, 40, 0.45)',
+    shiva: 'rgba(255, 192, 90, 0.44)',       // Solar Gold starlight
+    shakti: 'rgba(245, 85, 15, 0.40)',       // Cursor Vermilion soft glow
+    trikona: 'rgba(255, 246, 225, 0.62)',    // Luminous Champagne Core
+    lotus8: 'rgba(225, 160, 135, 0.30)',     // Rose Coral mist
+    lotus16: 'rgba(230, 185, 100, 0.24)',    // Luminous Temple Gold, dissolving
+    circles: 'rgba(200, 150, 75, 0.20)',     // Amber boundary, whisper faint
+    bhupura: 'rgba(180, 130, 58, 0.16)',     // Sacred Bronze citadel, melting into space
+    binduCore: 'rgba(255, 255, 255, 0.88)',  // Pure Star Pearl
+    binduGlow: 'rgba(245, 80, 10, 0.40)',
+    lineGlow: 'rgba(245, 115, 30, 0.25)',
   },
   'amethyst-rose': {
-    shiva: '#c48bfe',      // Radiant Cosmic Amethyst
-    shakti: '#f06292',     // Sacred Rose Lotus
-    trikona: '#f8edeb',    // Luminous Pearl White
-    lotus8: '#d1a3f6',     // Soft Lilac
-    lotus16: '#f48fb1',    // Rose Gold Shimmer
-    circles: '#ab47bc',    // Violet Boundary
-    bhupura: '#8e24aa',    // Deep Royal Purple
-    binduCore: '#ffffff',  // Star White
-    binduGlow: 'rgba(225, 112, 180, 0.7)',
-    lineGlow: 'rgba(186, 104, 200, 0.45)',
+    shiva: 'rgba(196, 139, 254, 0.44)',
+    shakti: 'rgba(240, 98, 146, 0.40)',
+    trikona: 'rgba(248, 237, 235, 0.62)',
+    lotus8: 'rgba(209, 163, 246, 0.30)',
+    lotus16: 'rgba(244, 143, 177, 0.24)',
+    circles: 'rgba(171, 71, 188, 0.20)',
+    bhupura: 'rgba(142, 36, 170, 0.16)',
+    binduCore: 'rgba(255, 255, 255, 0.88)',
+    binduGlow: 'rgba(225, 112, 180, 0.40)',
+    lineGlow: 'rgba(186, 104, 200, 0.25)',
   },
   'emerald-copper': {
-    shiva: '#4dd0e1',      // Celestial Cyan Jade
-    shakti: '#e67e22',     // Radiant Copper Fire
-    trikona: '#e0f7fa',    // Luminous Crystal Mint
-    lotus8: '#80cbc4',     // Soft Sage
-    lotus16: '#f39c12',    // Polished Copper Ochre
-    circles: '#00897b',    // Deep Malachite
-    bhupura: '#c0392b',    // Antique Red Copper
-    binduCore: '#ffffff',  // Diamond White
-    binduGlow: 'rgba(0, 188, 212, 0.65)',
-    lineGlow: 'rgba(230, 126, 34, 0.45)',
+    shiva: 'rgba(77, 208, 225, 0.44)',
+    shakti: 'rgba(230, 126, 34, 0.40)',
+    trikona: 'rgba(224, 247, 250, 0.62)',
+    lotus8: 'rgba(128, 203, 196, 0.30)',
+    lotus16: 'rgba(243, 156, 18, 0.24)',
+    circles: 'rgba(0, 137, 123, 0.20)',
+    bhupura: 'rgba(192, 57, 43, 0.16)',
+    binduCore: 'rgba(255, 255, 255, 0.88)',
+    binduGlow: 'rgba(0, 188, 212, 0.40)',
+    lineGlow: 'rgba(230, 126, 34, 0.25)',
   },
   'pure-platinum': {
-    shiva: '#ffffff',      // Pure Incandescent White
-    shakti: '#e2e8f0',     // Cool Moonlight Silver
-    trikona: '#ffffff',    // Brilliant Diamond
-    lotus8: '#cbd5e1',     // Pearl
-    lotus16: '#94a3b8',    // Slate Silver
-    circles: '#64748b',    // Steel
-    bhupura: '#475569',    // Deep Obsidian Chrome
-    binduCore: '#ffffff',  // White
-    binduGlow: 'rgba(255, 255, 255, 0.75)',
-    lineGlow: 'rgba(200, 220, 255, 0.4)',
+    shiva: 'rgba(255, 255, 255, 0.48)',
+    shakti: 'rgba(226, 232, 240, 0.38)',
+    trikona: 'rgba(255, 255, 255, 0.65)',
+    lotus8: 'rgba(203, 213, 225, 0.28)',
+    lotus16: 'rgba(148, 163, 184, 0.22)',
+    circles: 'rgba(100, 116, 139, 0.18)',
+    bhupura: 'rgba(71, 85, 105, 0.14)',
+    binduCore: 'rgba(255, 255, 255, 0.88)',
+    binduGlow: 'rgba(255, 255, 255, 0.45)',
+    lineGlow: 'rgba(200, 220, 255, 0.20)',
   },
 };
 
@@ -222,15 +222,17 @@ export class SriYantraGeometry {
     ctx.save();
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
+    // Ethereal Screen Blending: Dissolves lines seamlessly into cosmic darkness
+    ctx.globalCompositeOperation = 'screen';
 
     // 1. Central Prana Volumetric Radial Glow in 3D
     const binduP = this.project(0, 0, 42 * depth3D, pitch, yaw, fov, cx, cy);
     if (glowIntensity > 0) {
-      const glowR = R * 0.78 * binduP.scale;
+      const glowR = R * 0.72 * binduP.scale;
       const grad = ctx.createRadialGradient(binduP.x, binduP.y, 2, binduP.x, binduP.y, glowR);
       grad.addColorStop(0, colors.binduGlow);
-      grad.addColorStop(0.35, colors.lineGlow);
-      grad.addColorStop(0.75, 'rgba(0, 0, 0, 0.05)');
+      grad.addColorStop(0.30, colors.lineGlow);
+      grad.addColorStop(0.65, 'rgba(0, 0, 0, 0.02)');
       grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       ctx.fillStyle = grad;
@@ -239,15 +241,15 @@ export class SriYantraGeometry {
       ctx.fill();
     }
 
-    // 2. LAYER 1: The Bhupura (Outer Earth Citadel with 4 T-Gates)
+    // 2. LAYER 1: The Bhupura (Outer Earth Citadel with 4 T-Gates) - Soft Dissolve
     const isBhupuraActive = highlightAvarana === null || highlightAvarana === 1;
     if (isBhupuraActive) {
-      const bColor = highlightAvarana === 1 ? '#ffffff' : colors.bhupura;
+      const bColor = highlightAvarana === 1 ? 'rgba(255, 255, 255, 0.75)' : colors.bhupura;
       const bZ = -38 * depth3D;
       ctx.strokeStyle = bColor;
-      ctx.lineWidth = 1.25;
+      ctx.lineWidth = 0.75;
       ctx.shadowColor = colors.lineGlow;
-      ctx.shadowBlur = 6 * glowIntensity;
+      ctx.shadowBlur = 4 * glowIntensity;
 
       this.render3DBhupura(ctx, rBhupuraInner, bZ, angleBhupura, pitch, yaw, fov, cx, cy);
       this.render3DBhupura(ctx, rBhupuraMid, bZ + 2, angleBhupura, pitch, yaw, fov, cx, cy);
@@ -256,25 +258,27 @@ export class SriYantraGeometry {
 
     // 3. LAYER 2: Outer Boundary Rings (3 Concentric Circles)
     ctx.strokeStyle = colors.circles;
-    ctx.lineWidth = 1.0;
+    ctx.lineWidth = 0.55;
+    ctx.shadowBlur = 3 * glowIntensity;
     const outerCirclesZ = -28 * depth3D;
     for (let i = 0; i < 3; i++) {
       this.render3DCircle(ctx, rOuterCircles + i * (R * 0.015), outerCirclesZ + i * 2, angleOuterCircles, pitch, yaw, fov, cx, cy);
     }
 
-    // 4. LAYER 3: 16-Petal Lotus (Shodasha Dala Padma)
+    // 4. LAYER 3: 16-Petal Lotus (Shodasha Dala Padma) - Translucent Petals
     const isLotus16Active = highlightAvarana === null || highlightAvarana === 2;
     if (isLotus16Active) {
-      ctx.strokeStyle = highlightAvarana === 2 ? '#ffffff' : colors.lotus16;
-      ctx.lineWidth = highlightAvarana === 2 ? 2.0 : 1.2;
+      ctx.strokeStyle = highlightAvarana === 2 ? 'rgba(255, 255, 255, 0.8)' : colors.lotus16;
+      ctx.lineWidth = highlightAvarana === 2 ? 1.3 : 0.70;
       ctx.shadowColor = colors.lineGlow;
-      ctx.shadowBlur = 8 * glowIntensity;
+      ctx.shadowBlur = 5 * glowIntensity;
       this.render3DLotus(ctx, 16, rMidCircles * 1.01, rLotus16, -18 * depth3D, angleLotus16, pitch, yaw, fov, cx, cy);
     }
 
     // 5. LAYER 4: Middle Boundary Rings (3 Concentric Circles)
     ctx.strokeStyle = colors.circles;
-    ctx.lineWidth = 0.95;
+    ctx.lineWidth = 0.55;
+    ctx.shadowBlur = 3 * glowIntensity;
     const midCirclesZ = -8 * depth3D;
     for (let i = 0; i < 3; i++) {
       this.render3DCircle(ctx, rMidCircles + i * (R * 0.012), midCirclesZ + i * 2, angleMidCircles, pitch, yaw, fov, cx, cy);
@@ -283,23 +287,23 @@ export class SriYantraGeometry {
     // 6. LAYER 5: 8-Petal Lotus (Ashta Dala Padma)
     const isLotus8Active = highlightAvarana === null || highlightAvarana === 3;
     if (isLotus8Active) {
-      ctx.strokeStyle = highlightAvarana === 3 ? '#ffffff' : colors.lotus8;
-      ctx.lineWidth = highlightAvarana === 3 ? 2.2 : 1.35;
+      ctx.strokeStyle = highlightAvarana === 3 ? 'rgba(255, 255, 255, 0.8)' : colors.lotus8;
+      ctx.lineWidth = highlightAvarana === 3 ? 1.4 : 0.75;
       ctx.shadowColor = colors.lineGlow;
-      ctx.shadowBlur = 9 * glowIntensity;
+      ctx.shadowBlur = 5 * glowIntensity;
       this.render3DLotus(ctx, 8, rInnerCircles * 1.01, rLotus8, 2 * depth3D, angleLotus8, pitch, yaw, fov, cx, cy);
     }
 
     // 7. LAYER 6: Inner Concentric Circles (Mekhala)
     ctx.strokeStyle = colors.circles;
-    ctx.lineWidth = 1.0;
+    ctx.lineWidth = 0.55;
+    ctx.shadowBlur = 3 * glowIntensity;
     const innerCirclesZ = 10 * depth3D;
     for (let i = 0; i < 3; i++) {
       this.render3DCircle(ctx, rInnerCircles + i * (R * 0.01), innerCirclesZ + i * 2, angleInnerCircles, pitch, yaw, fov, cx, cy);
     }
 
-    // 8. LAYERS 7 & 8: The 9 Primary Interlocking Triangles
-    // ALL 9 TRIANGLES ROTATE SYNCHRONOUSLY at angleCore so the 43 triangles are 100% PRISTINE!
+    // 8. LAYERS 7 & 8: The 9 Primary Interlocking Triangles (Delicate Luminous Hairlines)
     for (let i = 0; i < this.TRIANGLES.length; i++) {
       const tri = this.TRIANGLES[i];
       const isCentral = tri.id === 'D5';
@@ -314,24 +318,24 @@ export class SriYantraGeometry {
         strokeColor = colors.shakti;
       }
 
-      let width = isCentral ? 1.7 : 1.35;
+      let width = isCentral ? 1.05 : 0.85;
 
       if (highlightAvarana !== null) {
         if (highlightAvarana === 8 && isCentral) {
-          strokeColor = '#ffffff';
-          width = 2.4;
-        } else if (highlightAvarana >= 4 && highlightAvarana <= 7) {
+          strokeColor = 'rgba(255, 255, 255, 0.9)';
           width = 1.6;
+        } else if (highlightAvarana >= 4 && highlightAvarana <= 7) {
+          width = 1.1;
         } else {
-          strokeColor = 'rgba(200, 149, 71, 0.2)';
-          width = 0.8;
+          strokeColor = 'rgba(200, 149, 71, 0.12)';
+          width = 0.55;
         }
       }
 
       ctx.strokeStyle = strokeColor;
       ctx.lineWidth = width;
       ctx.shadowColor = isCentral ? colors.binduGlow : colors.lineGlow;
-      ctx.shadowBlur = (isCentral ? 12 : 7) * glowIntensity;
+      ctx.shadowBlur = (isCentral ? 8 : 4) * glowIntensity;
 
       // 3 Vertices of this triangle
       const apexPt = { x: 0, y: tri.apexY * rTri };
@@ -345,7 +349,7 @@ export class SriYantraGeometry {
     const isBinduActive = highlightAvarana === null || highlightAvarana === 9;
     if (isBinduActive) {
       const bp = this.project(0, 0, 40 * depth3D, pitch, yaw, fov, cx, cy);
-      const bRadius = R * (highlightAvarana === 9 ? 0.022 : 0.013) * bp.scale;
+      const bRadius = R * (highlightAvarana === 9 ? 0.018 : 0.010) * bp.scale;
 
       ctx.save();
       // Gentle pulsing outer ripple rings
@@ -354,21 +358,21 @@ export class SriYantraGeometry {
         const ringR = bRadius * (1.6 + r * 1.6 + ringPulse * 0.4);
         ctx.beginPath();
         ctx.arc(bp.x, bp.y, ringR, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 240, 200, ${0.4 / r})`;
-        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = `rgba(255, 240, 200, ${0.15 / r})`;
+        ctx.lineWidth = 0.65;
         ctx.stroke();
       }
 
       // Bindu Core Glow
       ctx.shadowColor = colors.binduGlow;
-      ctx.shadowBlur = 18 * glowIntensity;
+      ctx.shadowBlur = 12 * glowIntensity;
       ctx.fillStyle = colors.binduCore;
       ctx.beginPath();
       ctx.arc(bp.x, bp.y, bRadius, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.strokeStyle = colors.shakti;
-      ctx.lineWidth = 1.1;
+      ctx.lineWidth = 0.85;
       ctx.stroke();
       ctx.restore();
     }
