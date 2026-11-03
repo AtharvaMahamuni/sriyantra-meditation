@@ -65,8 +65,8 @@ export class CosmicGalaxyScene implements IVisualScene {
     const cx = this.width / 2;
     const isPortrait = this.height > this.width;
     const minDim = Math.min(this.width, this.height);
-    // Lower plane anchor when tilted in 3D to ensure ample headroom at top
-    const cy = this.height * (isPortrait ? 0.518 : 0.532) + Math.sin(Math.max(0, this.currentTiltX)) * 26;
+    // Dynamic plane anchor responding smoothly from both top side and bottom side
+    const cy = this.height * (isPortrait ? 0.518 : 0.528) + Math.sin(this.currentTiltX) * 22;
     // Scaled safely so Bhupura corners never clip in full screen or at extreme 3D tilts
     const yantraRadius = isPortrait ? minDim * 0.35 : minDim * 0.205;
 

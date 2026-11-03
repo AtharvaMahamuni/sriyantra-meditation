@@ -33,7 +33,9 @@
 
         <div class="camera-toolbar" role="toolbar" aria-label="Camera Presets">
           <button class="cam-btn active" data-cam="isometric" title="3D Isometric 3/4 View">Isometric</button>
-          <button class="cam-btn" data-cam="plan" title="Top-Down 2D Chakra Plan">2D Plan</button>
+          <button class="cam-btn" data-cam="top-side" title="3D View from Top Side (North)">Top Side</button>
+          <button class="cam-btn" data-cam="bottom-side" title="3D View from Bottom Side (South)">Bottom Side</button>
+          <button class="cam-btn" data-cam="plan" title="Top-Down 2D Overhead Plan (All Planes)">2D Plan</button>
           <button class="cam-btn" data-cam="cutaway" title="Side Profile Elevation">Elevation</button>
           <button class="cam-btn" data-cam="bindu" title="Macro Bindu Focus">Apex Bindu</button>
           <button class="cam-btn reset" id="sim-reset-cam-btn" title="Reset Camera">Reset</button>
@@ -447,7 +449,8 @@
         this.lastInteractionTime = Date.now();
 
         this.targetYaw += dx * 0.007;
-        this.targetPitch = Math.max(0.05, Math.min(Math.PI * 0.48, this.targetPitch + dy * 0.007));
+        // Allow full 3D vertical orbit: from Top Side (North, negative pitch) to Bottom Side (South, positive pitch)
+        this.targetPitch = Math.max(-Math.PI * 0.48, Math.min(Math.PI * 0.48, this.targetPitch + dy * 0.007));
       });
 
       const stopDrag = () => {
@@ -558,16 +561,26 @@
         this.targetYaw = 0.52;
         this.targetZoom = 0.96;
         if (modeTag) modeTag.textContent = '3D Meru Isometric';
+      } else if (preset === 'top-side') {
+        this.targetPitch = -0.58; // 3D perspective from Top Side (North)
+        this.targetYaw = 0.0;
+        this.targetZoom = 0.96;
+        if (modeTag) modeTag.textContent = '3D Top Side View (North)';
+      } else if (preset === 'bottom-side') {
+        this.targetPitch = 0.58; // 3D perspective from Bottom Side (South)
+        this.targetYaw = 0.0;
+        this.targetZoom = 0.96;
+        if (modeTag) modeTag.textContent = '3D Bottom Side View (South)';
       } else if (preset === 'plan') {
-        this.targetPitch = 0.02; // Looking directly down
+        this.targetPitch = 0.0; // Looking directly down from overhead
         this.targetYaw = 0.0;
         this.targetZoom = 0.94;
-        if (modeTag) modeTag.textContent = '2D Plan View (Chakra)';
+        if (modeTag) modeTag.textContent = '2D Plan View (All Planes)';
       } else if (preset === 'cutaway') {
         this.targetPitch = 1.40; // Side profile elevation
-        this.targetYaw = 0.78;
+        this.targetYaw = Math.PI * 0.5; // True 90 deg side cutaway
         this.targetZoom = 1.0;
-        if (modeTag) modeTag.textContent = 'Elevation Cutaway';
+        if (modeTag) modeTag.textContent = 'Side Profile Elevation';
       } else if (preset === 'bindu') {
         this.targetPitch = 0.35;
         this.targetYaw = 0.20;
@@ -616,11 +629,26 @@
         tourText.textContent = `Auto Tour: Layer ${layerIndex} of 9 (${LAYERS[layerIndex - 1].title})`;
       }
 
-      // Smooth camera adjustments per layer with comfortable headroom
-      this.targetPitch = 0.40 + (layerIndex / 9) * 0.20;
-      this.targetYaw = 0.20 + (layerIndex * 0.45);
+      // Dynamic camera perspectives covering all planes (Bottom side, Side elevation, Top side, and Overhead Bindu)
+      if (layerIndex <= 3) {
+        // Layers 1-3: Viewed from Bottom Side / South perspective
+        this.targetPitch = 0.50;
+        this.targetYaw = 0.35 + layerIndex * 0.20;
+      } else if (layerIndex <= 6) {
+        // Layers 4-6: Viewed from Side Elevation profile
+        this.targetPitch = 1.25;
+        this.targetYaw = Math.PI * 0.45;
+      } else if (layerIndex <= 8) {
+        // Layers 7-8: Viewed from Top Side / North perspective looking down across all planes
+        this.targetPitch = -0.48;
+        this.targetYaw = Math.PI * 0.20;
+      } else {
+        // Layer 9: Overhead apex Bindu focus
+        this.targetPitch = 0.05;
+        this.targetYaw = 0.0;
+      }
       this.targetZoom = 0.92 + (layerIndex / 9) * 0.35;
-      this.targetExplodeProgress = 0.55;
+      this.targetExplodeProgress = 0.60;
 
       this.tourStep++;
       this.tourTimer = window.setTimeout(() => {
@@ -737,13 +765,12 @@
       const renderH = h / this.dpr;
       const cx = renderW * 0.5;
 
-      // Lower plane positioning in 3D:
-      // When flat (top-down), plane is near center (0.50).
-      // When in 3D perspective / exploded, vertical layers rise upward into +Z.
-      // Lowering the base plane (0.60 to 0.64) ensures the 3D structure stays perfectly centered
-      // with generous headroom at the top so nothing ever goes out of sight.
-      const pitchFactor = Math.sin(Math.max(0, this.pitch));
-      const cy = renderH * (0.52 + pitchFactor * 0.11 + this.explodeProgress * 0.04);
+      // Full-range vertical plane anchor:
+      // When flat (top-down), plane is at center (0.50).
+      // When looking from bottom side (pitch > 0), base lowers smoothly so apex has headroom.
+      // When looking from top side (pitch < 0), base raises smoothly so bottom has footroom.
+      const pitchSin = Math.sin(this.pitch);
+      const cy = renderH * 0.50 + pitchSin * (renderH * 0.11 + this.explodeProgress * 18);
       const baseR = Math.min(renderW, renderH) * 0.32;
 
       // Clear with elegant studio gradient (light canvas conforming to DESIGN.md)
@@ -762,18 +789,18 @@
         this.renderElevatorHairlines(ctx, cx, cy, baseR);
       }
 
-      // Render each of the 9 Avaranas in ascending 3D elevation
-      for (let i = 0; i < LAYERS.length; i++) {
-        const layer = LAYERS[i];
-        const isIsolated = this.isolatedLayer !== null && this.isolatedLayer === layer.id;
-        const isDimmed = this.isolatedLayer !== null && this.isolatedLayer !== layer.id;
-
-        // Calculate vertical elevation for this layer
-        // When explodeProgress = 0, all layers sit at flat z ~ 0.
-        // When explodeProgress = 1, each layer extends to full Meru stepped height.
+      // Depth sort layers from back to front (Painter's Algorithm)
+      // Ensures crisp, correct visual layering whether viewed from Top Side, Bottom Side, or Elevation
+      const sortedLayers = LAYERS.map(layer => {
         const layerZ = layer.baseZ * (0.15 + this.explodeProgress * 2.8);
+        const depth = layerZ * Math.cos(this.pitch);
+        return { layer, layerZ, depth };
+      }).sort((a, b) => a.depth - b.depth);
 
-        this.renderLayerGeometry(ctx, layer, layerZ, cx, cy, baseR, isIsolated, isDimmed, t);
+      for (const item of sortedLayers) {
+        const isIsolated = this.isolatedLayer !== null && this.isolatedLayer === item.layer.id;
+        const isDimmed = this.isolatedLayer !== null && this.isolatedLayer !== item.layer.id;
+        this.renderLayerGeometry(ctx, item.layer, item.layerZ, cx, cy, baseR, isIsolated, isDimmed, t);
       }
 
       ctx.restore();
