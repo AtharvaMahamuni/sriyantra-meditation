@@ -554,24 +554,24 @@
     private applyCameraPreset(preset: string | null): void {
       const modeTag = document.getElementById('view-mode-tag');
       if (preset === 'isometric') {
-        this.targetPitch = 0.62;
+        this.targetPitch = 0.58;
         this.targetYaw = 0.52;
-        this.targetZoom = 1.0;
+        this.targetZoom = 0.96;
         if (modeTag) modeTag.textContent = '3D Meru Isometric';
       } else if (preset === 'plan') {
-        this.targetPitch = 0.05; // Looking directly down
+        this.targetPitch = 0.02; // Looking directly down
         this.targetYaw = 0.0;
-        this.targetZoom = 0.95;
+        this.targetZoom = 0.94;
         if (modeTag) modeTag.textContent = '2D Plan View (Chakra)';
       } else if (preset === 'cutaway') {
-        this.targetPitch = 1.48; // Side profile elevation
+        this.targetPitch = 1.40; // Side profile elevation
         this.targetYaw = 0.78;
-        this.targetZoom = 1.1;
+        this.targetZoom = 1.0;
         if (modeTag) modeTag.textContent = 'Elevation Cutaway';
       } else if (preset === 'bindu') {
-        this.targetPitch = 0.40;
+        this.targetPitch = 0.35;
         this.targetYaw = 0.20;
-        this.targetZoom = 1.65;
+        this.targetZoom = 1.45;
         if (modeTag) modeTag.textContent = 'Apex Bindu Focus';
       }
     }
@@ -616,11 +616,11 @@
         tourText.textContent = `Auto Tour: Layer ${layerIndex} of 9 (${LAYERS[layerIndex - 1].title})`;
       }
 
-      // Smooth camera adjustments per layer
-      this.targetPitch = 0.45 + (layerIndex / 9) * 0.25;
+      // Smooth camera adjustments per layer with comfortable headroom
+      this.targetPitch = 0.40 + (layerIndex / 9) * 0.20;
       this.targetYaw = 0.20 + (layerIndex * 0.45);
-      this.targetZoom = 0.95 + (layerIndex / 9) * 0.45;
-      this.targetExplodeProgress = 0.65;
+      this.targetZoom = 0.92 + (layerIndex / 9) * 0.35;
+      this.targetExplodeProgress = 0.55;
 
       this.tourStep++;
       this.tourTimer = window.setTimeout(() => {
@@ -736,8 +736,15 @@
       const renderW = w / this.dpr;
       const renderH = h / this.dpr;
       const cx = renderW * 0.5;
-      const cy = renderH * 0.52;
-      const baseR = Math.min(renderW, renderH) * 0.38;
+
+      // Lower plane positioning in 3D:
+      // When flat (top-down), plane is near center (0.50).
+      // When in 3D perspective / exploded, vertical layers rise upward into +Z.
+      // Lowering the base plane (0.60 to 0.64) ensures the 3D structure stays perfectly centered
+      // with generous headroom at the top so nothing ever goes out of sight.
+      const pitchFactor = Math.sin(Math.max(0, this.pitch));
+      const cy = renderH * (0.52 + pitchFactor * 0.11 + this.explodeProgress * 0.04);
+      const baseR = Math.min(renderW, renderH) * 0.32;
 
       // Clear with elegant studio gradient (light canvas conforming to DESIGN.md)
       const bgGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, renderW * 0.7);
@@ -779,7 +786,7 @@
 
       const steps = 10;
       const half = size;
-      const zFloor = -18;
+      const zFloor = -6;
 
       for (let i = -steps; i <= steps; i++) {
         const x = (i / steps) * half;
