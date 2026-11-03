@@ -46,21 +46,21 @@ export class CosmicGalaxyScene implements IVisualScene {
   }
 
   public onPointerMove(x: number, y: number): void {
-    // Convert mouse coordinates into interactive 3D perspective tilt
+    // Convert mouse coordinates into gentle 3D perspective tilt
     const normX = (x / this.width - 0.5) * 2;
     const normY = (y / this.height - 0.5) * 2;
 
-    this.targetTiltX = normY * 0.22; // Mouse Y tilts pitch (never pushes geometry off screen)
-    this.targetTiltY = normX * 0.30; // Mouse X tilts yaw
+    this.targetTiltX = normY * 0.14; // Subtle pitch
+    this.targetTiltY = normX * 0.18; // Subtle yaw
   }
 
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
     const dt = Math.min(delta, 100) * 0.001;
-    this.time += dt * 0.2 * state.rotationSpeed;
+    this.time += dt * 0.08 * state.rotationSpeed; // Subtle, serene pace
 
     // Smooth spring interpolation for camera angles
-    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.06;
-    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.06;
+    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.035;
+    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.035;
 
     const cx = this.width / 2;
     const cy = this.height / 2;
@@ -69,8 +69,8 @@ export class CosmicGalaxyScene implements IVisualScene {
     // Scaled safely so Bhupura corners never clip in full screen or at extreme 3D tilts
     const yantraRadius = isPortrait ? minDim * 0.36 : minDim * 0.21;
 
-    // 1. Deep Space Obsidian Canvas
-    ctx.fillStyle = '#0e0d0b';
+    // 1. OLED Pure True Black Canvas in Fullscreen
+    ctx.fillStyle = state.isFullScreen ? '#000000' : '#050403';
     ctx.fillRect(0, 0, this.width, this.height);
 
     // 2. Render 3D Background Galaxy Stars in Unified Perspective
@@ -82,7 +82,7 @@ export class CosmicGalaxyScene implements IVisualScene {
 
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i];
-      const currentAngle = star.armAngle + this.time * star.speed * 0.4;
+      const currentAngle = star.armAngle + this.time * star.speed * 0.18;
 
       const sx = Math.cos(currentAngle) * star.radius;
       const sz = Math.sin(currentAngle) * star.radius;
@@ -125,11 +125,11 @@ export class CosmicGalaxyScene implements IVisualScene {
     }
     ctx.restore();
 
-    // 3. Sinusoidal Breathing Scale (16s Continuous Cycle)
+    // 3. Subtle Sinusoidal Breathing Scale (16s Continuous Cycle)
     let breathScale = 1.0;
     if (state.breathing !== 'static') {
       const breathProgress = (Math.sin((this.time * Math.PI * 2) / 16 - Math.PI / 2) + 1) / 2;
-      breathScale = 0.965 + 0.05 * breathProgress;
+      breathScale = 0.985 + 0.025 * breathProgress;
     }
 
     // 4. Render 3D Perspective Sri Yantra with Alternating Layer Rotations

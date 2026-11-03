@@ -21,6 +21,7 @@ export interface VisualState {
   depth3D: number;             // 0.0 to 1.5 (Z-depth separation between layers)
   showYantra: boolean;         // Option to show or hide the Sri Yantra
   highlightAvarana: number | null; // 1 to 9 or null for all
+  isFullScreen?: boolean;      // True if browser is in fullscreen mode (for pure OLED black)
 }
 
 export interface SoundState {

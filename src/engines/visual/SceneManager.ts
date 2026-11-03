@@ -29,6 +29,7 @@ export class SceneManager {
     depth3D: 1.0,
     showYantra: true,
     highlightAvarana: null,
+    isFullScreen: false,
   };
 
   constructor(canvas: HTMLCanvasElement) {
@@ -107,6 +108,7 @@ export class SceneManager {
   }
 
   private handleResize(): void {
+    this.state.isFullScreen = !!document.fullscreenElement;
     const rect = this.canvas.getBoundingClientRect();
     this.width = rect.width || window.innerWidth;
     this.height = rect.height || window.innerHeight;

@@ -43,16 +43,16 @@ export class QuantumAtomsScene implements IVisualScene {
   public onPointerMove(x: number, y: number): void {
     const normX = (x / this.width - 0.5) * 2;
     const normY = (y / this.height - 0.5) * 2;
-    this.targetTiltX = normY * 0.22;
-    this.targetTiltY = normX * 0.30;
+    this.targetTiltX = normY * 0.14;
+    this.targetTiltY = normX * 0.18;
   }
 
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
     const dt = Math.min(delta, 100) * 0.001;
-    this.time += dt * 0.2 * state.rotationSpeed;
+    this.time += dt * 0.08 * state.rotationSpeed;
 
-    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.06;
-    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.06;
+    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.035;
+    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.035;
 
     const cx = this.width / 2;
     const cy = this.height / 2;
@@ -60,15 +60,15 @@ export class QuantumAtomsScene implements IVisualScene {
     const minDim = Math.min(this.width, this.height);
     const yantraRadius = isPortrait ? minDim * 0.36 : minDim * 0.21;
 
-    // 1. Dark Quantum Vacuum
-    ctx.fillStyle = '#0c0b0a';
+    // 1. OLED Pure Black Canvas in Fullscreen
+    ctx.fillStyle = state.isFullScreen ? '#000000' : '#050403';
     ctx.fillRect(0, 0, this.width, this.height);
 
     // 2. Render 3D Orbital Electrons & Trails in Perspective
     ctx.save();
     for (let i = 0; i < this.electrons.length; i++) {
       const el = this.electrons[i];
-      el.angle += el.speed * dt * state.rotationSpeed;
+      el.angle += el.speed * dt * 0.45 * state.rotationSpeed;
       const r = yantraRadius * el.trackRadiusRatio;
       const ex = Math.cos(el.angle) * r;
       const ey = Math.sin(el.angle) * r;
@@ -101,11 +101,11 @@ export class QuantumAtomsScene implements IVisualScene {
     }
     ctx.restore();
 
-    // 3. Breathing Rhythm
+    // 3. Subtle Living Breathing Rhythm
     let breathScale = 1.0;
     if (state.breathing !== 'static') {
       const breathProgress = (Math.sin((this.time * Math.PI * 2) / 16 - Math.PI / 2) + 1) / 2;
-      breathScale = 0.965 + 0.05 * breathProgress;
+      breathScale = 0.985 + 0.025 * breathProgress;
     }
 
     // 4. Render 3D Sri Yantra

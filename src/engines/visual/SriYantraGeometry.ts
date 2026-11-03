@@ -199,23 +199,24 @@ export class SriYantraGeometry {
     let angleCore = 0; // The 9 triangles constellation
 
     if (motionStyle === 'alternating') {
-      // Concentric circles & lotus counter-rotate in alternating harmony!
-      angleBhupura = t * 0.06;          // Clockwise (Slow majestic)
-      angleOuterCircles = -t * 0.10;     // Counter-Clockwise
-      angleLotus16 = -t * 0.16;          // Counter-Clockwise
-      angleMidCircles = t * 0.12;        // Clockwise
-      angleLotus8 = t * 0.22;            // Clockwise
-      angleInnerCircles = -t * 0.14;     // Counter-Clockwise
-      angleCore = t * 0.10;              // Core 43-triangle constellation rotates gently
+      // Concentric circles & lotus counter-rotate in serene, subtle harmony
+      angleBhupura = t * 0.022;          // Slow majestic celestial drift
+      angleOuterCircles = -t * 0.035;    // Counter-Clockwise
+      angleLotus16 = -t * 0.055;         // Subtle Counter-Clockwise
+      angleMidCircles = t * 0.040;       // Clockwise
+      angleLotus8 = t * 0.075;           // Clockwise
+      angleInnerCircles = -t * 0.045;    // Counter-Clockwise
+      angleCore = t * 0.030;             // Core 43-triangle constellation glides smoothly
     } else if (motionStyle === 'unified') {
-      // All layers rotate together
-      angleBhupura = t * 0.12;
-      angleOuterCircles = t * 0.12;
-      angleLotus16 = t * 0.12;
-      angleMidCircles = t * 0.12;
-      angleLotus8 = t * 0.12;
-      angleInnerCircles = t * 0.12;
-      angleCore = t * 0.12;
+      // All layers rotate together serenely
+      const uAngle = t * 0.038;
+      angleBhupura = uAngle;
+      angleOuterCircles = uAngle;
+      angleLotus16 = uAngle;
+      angleMidCircles = uAngle;
+      angleLotus8 = uAngle;
+      angleInnerCircles = uAngle;
+      angleCore = uAngle;
     }
 
     ctx.save();
@@ -347,10 +348,10 @@ export class SriYantraGeometry {
       const bRadius = R * (highlightAvarana === 9 ? 0.022 : 0.013) * bp.scale;
 
       ctx.save();
-      // Pulsing outer ripple rings
-      const ringPulse = (Math.sin(time * 3) + 1) * 0.5;
+      // Gentle pulsing outer ripple rings
+      const ringPulse = (Math.sin(time * 1.2) + 1) * 0.5;
       for (let r = 1; r <= 3; r++) {
-        const ringR = bRadius * (1.6 + r * 1.6 + ringPulse * 0.7);
+        const ringR = bRadius * (1.6 + r * 1.6 + ringPulse * 0.4);
         ctx.beginPath();
         ctx.arc(bp.x, bp.y, ringR, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(255, 240, 200, ${0.4 / r})`;

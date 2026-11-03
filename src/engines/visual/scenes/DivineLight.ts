@@ -21,14 +21,14 @@ export class DivineLightScene implements IVisualScene {
   private embers: PranaEmber[] = [];
   private time: number = 0;
 
-  private targetTiltX: number = 0.12;
+  private targetTiltX: number = 0.08;
   private targetTiltY: number = 0.0;
-  private currentTiltX: number = 0.12;
+  private currentTiltX: number = 0.08;
   private currentTiltY: number = 0.0;
 
   private readonly FOV = 550;
-  private readonly NUM_EMBERS = 95;
-  private readonly NUM_RAYS = 12;
+  private readonly NUM_EMBERS = 32;
+  private readonly NUM_RAYS = 8;
 
   public init(_ctx: CanvasRenderingContext2D, width: number, height: number): void {
     this.width = width;
@@ -46,16 +46,16 @@ export class DivineLightScene implements IVisualScene {
   public onPointerMove(x: number, y: number): void {
     const normX = (x / this.width - 0.5) * 2;
     const normY = (y / this.height - 0.5) * 2;
-    this.targetTiltX = normY * 0.22;
-    this.targetTiltY = normX * 0.30;
+    this.targetTiltX = normY * 0.14;
+    this.targetTiltY = normX * 0.18;
   }
 
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
     const dt = Math.min(delta, 100) * 0.001;
-    this.time += dt * 0.2 * state.rotationSpeed;
+    this.time += dt * 0.08 * state.rotationSpeed;
 
-    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.06;
-    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.06;
+    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.035;
+    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.035;
 
     const cx = this.width / 2;
     const cy = this.height / 2;
@@ -63,28 +63,33 @@ export class DivineLightScene implements IVisualScene {
     const minDim = Math.min(this.width, this.height);
     const yantraRadius = isPortrait ? minDim * 0.36 : minDim * 0.21;
 
-    // 1. Radiant Background
-    const bgGrad = ctx.createRadialGradient(cx, cy, minDim * 0.05, cx, cy, minDim * 0.9);
-    bgGrad.addColorStop(0, '#1a1309');
-    bgGrad.addColorStop(0.5, '#110f0c');
-    bgGrad.addColorStop(1, '#090807');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, this.width, this.height);
+    // 1. OLED Pure Black Background
+    if (state.isFullScreen) {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, this.width, this.height);
+    } else {
+      const bgGrad = ctx.createRadialGradient(cx, cy, minDim * 0.05, cx, cy, minDim * 0.85);
+      bgGrad.addColorStop(0, '#100c07');
+      bgGrad.addColorStop(0.5, '#050403');
+      bgGrad.addColorStop(1, '#000000');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, this.width, this.height);
+    }
 
-    // 2. Volumetric Prana Light Rays in 3D Perspective
+    // 2. Subtle, Ethereal Volumetric Rays in 3D Perspective
     ctx.save();
     ctx.translate(cx, cy);
-    const rayMaxR = minDim * 0.95;
+    const rayMaxR = minDim * 0.90;
 
     for (let i = 0; i < this.NUM_RAYS; i++) {
-      const angle = (i * Math.PI * 2) / this.NUM_RAYS + this.time * 0.08;
-      const rayAlpha = (Math.sin(this.time * 1.2 + i * 1.5) * 0.04 + 0.07) * state.glowIntensity;
-      const rayWidth = (Math.PI * 2) / (this.NUM_RAYS * 2.6);
+      const angle = (i * Math.PI * 2) / this.NUM_RAYS + this.time * 0.02;
+      const rayAlpha = (Math.sin(this.time * 0.4 + i * 1.2) * 0.012 + 0.020) * state.glowIntensity;
+      const rayWidth = (Math.PI * 2) / (this.NUM_RAYS * 3.2);
 
-      const rayGrad = ctx.createRadialGradient(0, 0, yantraRadius * 0.15, 0, 0, rayMaxR);
-      rayGrad.addColorStop(0, `rgba(255, 160, 40, ${rayAlpha * 2.0})`);
-      rayGrad.addColorStop(0.4, `rgba(245, 78, 0, ${rayAlpha * 0.9})`);
-      rayGrad.addColorStop(1, 'rgba(245, 78, 0, 0)');
+      const rayGrad = ctx.createRadialGradient(0, 0, yantraRadius * 0.2, 0, 0, rayMaxR);
+      rayGrad.addColorStop(0, `rgba(255, 175, 70, ${rayAlpha * 1.5})`);
+      rayGrad.addColorStop(0.4, `rgba(245, 90, 15, ${rayAlpha * 0.5})`);
+      rayGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       ctx.fillStyle = rayGrad;
       ctx.beginPath();
@@ -95,33 +100,33 @@ export class DivineLightScene implements IVisualScene {
     }
     ctx.restore();
 
-    // 3. Floating Golden Embers
+    // 3. Floating Micro-Embers (Whisper-Soft)
     ctx.save();
     for (let i = 0; i < this.embers.length; i++) {
       const e = this.embers[i];
-      e.y += e.vy * dt * 25;
-      e.x += e.vx * dt * 25;
-      e.pulsePhase += dt * 0.8;
+      e.y += e.vy * dt * 9;
+      e.x += e.vx * dt * 9;
+      e.pulsePhase += dt * 0.4;
 
-      if (e.y < -20) e.y = this.height + 20;
-      if (e.x < -20) e.x = this.width + 20;
-      if (e.x > this.width + 20) e.x = -20;
+      if (e.y < -15) e.y = this.height + 15;
+      if (e.x < -15) e.x = this.width + 15;
+      if (e.x > this.width + 15) e.x = -15;
 
-      const alpha = (Math.sin(e.pulsePhase) * 0.35 + 0.65) * e.maxAlpha;
+      const alpha = (Math.sin(e.pulsePhase) * 0.3 + 0.7) * e.maxAlpha;
       ctx.beginPath();
       ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 190, 80, ${alpha})`;
-      ctx.shadowColor = 'rgba(245, 100, 30, 0.5)';
-      ctx.shadowBlur = 6;
+      ctx.fillStyle = `rgba(255, 195, 90, ${alpha})`;
+      ctx.shadowColor = 'rgba(245, 100, 30, 0.3)';
+      ctx.shadowBlur = 3;
       ctx.fill();
     }
     ctx.restore();
 
-    // 4. Breathing Rhythm
+    // 4. Subtle Living Breath Rhythm
     let breathScale = 1.0;
     if (state.breathing !== 'static') {
       const breathProgress = (Math.sin((this.time * Math.PI * 2) / 16 - Math.PI / 2) + 1) / 2;
-      breathScale = 0.965 + 0.05 * breathProgress;
+      breathScale = 0.985 + 0.025 * breathProgress;
     }
 
     // 5. Render 3D Sri Yantra
@@ -132,12 +137,12 @@ export class DivineLightScene implements IVisualScene {
       fov: this.FOV,
       scale: breathScale,
       speed: state.rotationSpeed,
-      depth3D: state.depth3D ?? 1.1,
+      depth3D: state.depth3D ?? 1.0,
       motionStyle: state.motionStyle ?? 'alternating',
       paletteId: state.palette ?? 'cursor-gold',
       showYantra: state.showYantra ?? true,
       highlightAvarana: state.highlightAvarana,
-      glowIntensity: state.glowIntensity * 1.3,
+      glowIntensity: state.glowIntensity * 0.85,
     });
   }
 
@@ -147,11 +152,11 @@ export class DivineLightScene implements IVisualScene {
       this.embers.push({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: -Math.random() * 0.8 - 0.2,
-        radius: Math.random() * 2.0 + 0.8,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: -Math.random() * 0.45 - 0.1,
+        radius: Math.random() * 1.2 + 0.6,
         alpha: 0,
-        maxAlpha: Math.random() * 0.55 + 0.25,
+        maxAlpha: Math.random() * 0.35 + 0.15,
         pulsePhase: Math.random() * Math.PI * 2,
       });
     }

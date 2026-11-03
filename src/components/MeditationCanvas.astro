@@ -371,6 +371,7 @@ import ZenControlsBar from './ZenControlsBar.astro';
     private initFullscreenHandler(): void {
       document.addEventListener('fullscreenchange', () => {
         const isFS = !!document.fullscreenElement;
+        this.sceneManager.state.isFullScreen = isFS;
         if (isFS) {
           document.documentElement.classList.add('is-fullscreen-locked');
           document.body.classList.add('is-fullscreen-locked');
@@ -459,11 +460,20 @@ import ZenControlsBar from './ZenControlsBar.astro';
     cursor: none !important;
   }
 
-  /* Prevent side scroll in fullscreen */
+  /* Prevent side scroll in fullscreen & OLED True Black */
   :global(html.is-fullscreen-locked),
-  :global(body.is-fullscreen-locked) {
+  :global(body.is-fullscreen-locked),
+  :global(html.is-fullscreen-locked .meditation-viewport),
+  :global(body.is-fullscreen-locked .meditation-viewport) {
     overflow: hidden !important;
     scrollbar-width: none !important;
+    background-color: #000000 !important;
+    background: #000000 !important;
+  }
+
+  :global(html.is-fullscreen-locked #sri-yantra-canvas),
+  :global(body.is-fullscreen-locked #sri-yantra-canvas) {
+    background-color: #000000 !important;
   }
 
   :global(html.is-fullscreen-locked::-webkit-scrollbar),

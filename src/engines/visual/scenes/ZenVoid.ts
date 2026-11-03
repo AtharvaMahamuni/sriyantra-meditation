@@ -30,16 +30,16 @@ export class ZenVoidScene implements IVisualScene {
   public onPointerMove(x: number, y: number): void {
     const normX = (x / this.width - 0.5) * 2;
     const normY = (y / this.height - 0.5) * 2;
-    this.targetTiltX = normY * 0.22;
-    this.targetTiltY = normX * 0.30;
+    this.targetTiltX = normY * 0.14;
+    this.targetTiltY = normX * 0.18;
   }
 
   public render(ctx: CanvasRenderingContext2D, delta: number, state: VisualState): void {
     const dt = Math.min(delta, 100) * 0.001;
-    this.time += dt * 0.15 * state.rotationSpeed;
+    this.time += dt * 0.07 * state.rotationSpeed;
 
-    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.06;
-    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.06;
+    this.currentTiltX += (this.targetTiltX - this.currentTiltX) * 0.035;
+    this.currentTiltY += (this.targetTiltY - this.currentTiltY) * 0.035;
 
     const cx = this.width / 2;
     const cy = this.height / 2;
@@ -47,18 +47,23 @@ export class ZenVoidScene implements IVisualScene {
     const minDim = Math.min(this.width, this.height);
     const yantraRadius = isPortrait ? minDim * 0.36 : minDim * 0.21;
 
-    // 1. Pure Obsidian Deep Void with Subtle Vignette
-    const vignette = ctx.createRadialGradient(cx, cy, minDim * 0.2, cx, cy, minDim * 0.85);
-    vignette.addColorStop(0, '#131210');
-    vignette.addColorStop(1, '#080806');
-    ctx.fillStyle = vignette;
-    ctx.fillRect(0, 0, this.width, this.height);
+    // 1. OLED True Black Canvas (100% #000000 in Fullscreen)
+    if (state.isFullScreen) {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, this.width, this.height);
+    } else {
+      const vignette = ctx.createRadialGradient(cx, cy, minDim * 0.2, cx, cy, minDim * 0.85);
+      vignette.addColorStop(0, '#0c0a08');
+      vignette.addColorStop(1, '#000000');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, this.width, this.height);
+    }
 
-    // 2. Breathing Scale
+    // 2. Subtle Living Breath
     let breathScale = 1.0;
     if (state.breathing !== 'static') {
       const breathProgress = (Math.sin((this.time * Math.PI * 2) / 16 - Math.PI / 2) + 1) / 2;
-      breathScale = 0.97 + 0.04 * breathProgress;
+      breathScale = 0.985 + 0.025 * breathProgress;
     }
 
     // 3. Render 3D Sri Yantra
