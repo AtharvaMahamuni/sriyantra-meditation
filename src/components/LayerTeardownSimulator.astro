@@ -500,9 +500,9 @@
         this.lastMouseY = e.clientY;
         this.lastInteractionTime = Date.now();
 
-        this.targetYaw += dx * 0.007;
-        // Unconstrained vertical orbit: allows viewing from top (negative pitch) down to bottom (positive pitch)
-        this.targetPitch = Math.max(-Math.PI * 0.48, Math.min(Math.PI * 0.48, this.targetPitch + dy * 0.007));
+        // Natural object-grab swipe direction (inverted to match intuitive physical manipulation)
+        this.targetYaw -= dx * 0.007;
+        this.targetPitch = Math.max(-Math.PI * 0.48, Math.min(Math.PI * 0.48, this.targetPitch - dy * 0.007));
       });
 
       const stopDrag = () => {
