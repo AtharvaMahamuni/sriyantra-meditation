@@ -1,0 +1,1606 @@
+---
+// src/components/LayerTeardownSimulator.astro
+// Interactive 3D Sri Yantra Teardown Simulator: 9 Concentric Layers (Avaranas / Maha Meru Prastara)
+// Built following the teardown skill: real geometry, single input drive, subsystem isolation, auto tour, live telemetry
+---
+
+<section class="teardown-section" id="layers-explorer" aria-label="Interactive 3D Sri Yantra Layer Teardown and Meru Simulator">
+  <div class="teardown-container">
+    <!-- Section Header adhering to DESIGN.md -->
+    <div class="section-intro">
+      <div class="intro-badge">
+        <span class="mono-badge">3D Teardown • Maha Meru Prastara</span>
+      </div>
+      <h2 class="display-title teardown-title">
+        The 9 Sacred Circuits Exploded in 3D
+      </h2>
+      <p class="body-lead teardown-desc">
+        Take apart the Sri Yantra layer by layer. Explore the vertical architecture of the ancient <em>Maha Meru</em> stepped pyramid—from the foundational Earth Citadel (Bhupura) up to the dimensionless cosmic singularity (Bindu).
+      </p>
+    </div>
+
+    <!-- Main Teardown Cockpit -->
+    <div class="simulator-cockpit">
+      <!-- 3D Canvas Viewport -->
+      <div class="canvas-viewport" id="sim-viewport">
+        <canvas id="teardown-canvas" aria-label="Interactive 3D Sri Yantra Exploded Model"></canvas>
+
+        <!-- Viewport Overlays -->
+        <div class="viewport-hud-top">
+          <div class="view-pill active" id="view-mode-tag">3D Meru Isometric</div>
+          <div class="elevation-gauge" id="elevation-gauge">Elevation: 0.0 mm</div>
+        </div>
+
+        <div class="camera-toolbar" role="toolbar" aria-label="Camera Presets">
+          <button class="cam-btn active" data-cam="isometric" title="3D Isometric 3/4 View">Isometric</button>
+          <button class="cam-btn" data-cam="plan" title="Top-Down 2D Chakra Plan">2D Plan</button>
+          <button class="cam-btn" data-cam="cutaway" title="Side Profile Elevation">Elevation</button>
+          <button class="cam-btn" data-cam="bindu" title="Macro Bindu Focus">Apex Bindu</button>
+          <button class="cam-btn reset" id="sim-reset-cam-btn" title="Reset Camera">Reset</button>
+        </div>
+
+        <div class="drag-hint" id="drag-hint">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v8M8 12h8"/>
+          </svg>
+          <span>Drag to orbit • Scroll to zoom</span>
+        </div>
+
+        <!-- Auto Tour Floating Pill -->
+        <div class="auto-tour-status" id="tour-status" style="display: none;">
+          <span class="pulse-dot"></span>
+          <span id="tour-status-text">Auto Tour Active • Layer 1 of 9</span>
+          <button class="stop-tour-btn" id="stop-tour-btn" title="Stop Auto Tour">✕</button>
+        </div>
+      </div>
+
+      <!-- Control & Telemetry Sidebar Panel -->
+      <aside class="telemetry-panel">
+        <!-- 1. Explode & Teardown Control -->
+        <div class="panel-card explode-card">
+          <div class="card-header">
+            <span class="card-label">Exploded Separation</span>
+            <span class="card-val" id="explode-percent-text">50%</span>
+          </div>
+          <div class="slider-wrapper">
+            <input
+              type="range"
+              id="explode-slider"
+              min="0"
+              max="100"
+              value="50"
+              step="1"
+              class="explode-slider"
+              aria-label="Explode layers vertically along Z axis"
+            />
+          </div>
+          <div class="explode-quick-buttons">
+            <button class="quick-btn" data-val="0">Assembled (0%)</button>
+            <button class="quick-btn active" data-val="50">Expanded (50%)</button>
+            <button class="quick-btn" data-val="100">Full Meru (100%)</button>
+          </div>
+        </div>
+
+        <!-- 2. Tour & Motion Actions -->
+        <div class="tour-actions">
+          <button id="start-tour-btn" class="tour-cta-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Start Cinematic Auto Tour</span>
+          </button>
+        </div>
+
+        <!-- 3. Subsystem Selector (The 9 Avaranas) -->
+        <div class="panel-card subsystems-card">
+          <div class="card-header">
+            <span class="card-label">Subsystem Isolation</span>
+            <button id="isolate-all-btn" class="isolate-all-btn active">All 9 Layers</button>
+          </div>
+          <div class="layers-button-grid" role="group" aria-label="Select Avarana Layer to Isolate">
+            <button class="layer-pill" data-layer="1">
+              <span class="layer-num">1</span>
+              <span class="layer-name">Bhupura</span>
+            </button>
+            <button class="layer-pill" data-layer="2">
+              <span class="layer-num">2</span>
+              <span class="layer-name">16-Lotus</span>
+            </button>
+            <button class="layer-pill" data-layer="3">
+              <span class="layer-num">3</span>
+              <span class="layer-name">8-Lotus</span>
+            </button>
+            <button class="layer-pill" data-layer="4">
+              <span class="layer-num">4</span>
+              <span class="layer-name">14 Triangles</span>
+            </button>
+            <button class="layer-pill" data-layer="5">
+              <span class="layer-num">5</span>
+              <span class="layer-name">Outer 10</span>
+            </button>
+            <button class="layer-pill" data-layer="6">
+              <span class="layer-num">6</span>
+              <span class="layer-name">Inner 10</span>
+            </button>
+            <button class="layer-pill" data-layer="7">
+              <span class="layer-num">7</span>
+              <span class="layer-name">8 Triangles</span>
+            </button>
+            <button class="layer-pill" data-layer="8">
+              <span class="layer-num">8</span>
+              <span class="layer-name">Trikona</span>
+            </button>
+            <button class="layer-pill" data-layer="9">
+              <span class="layer-num">9</span>
+              <span class="layer-name">Bindu</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Real-time Telemetry & Metaphysics Display -->
+        <div class="panel-card telemetry-card">
+          <div class="card-header">
+            <span class="card-label">Active Layer Telemetry</span>
+            <span class="layer-index-tag" id="tel-index">AVARANA 01 / 09</span>
+          </div>
+
+          <div class="telemetry-body">
+            <div class="tel-main-title">
+              <div class="sanskrit-title" id="tel-sanskrit">त्रैलोक्यमोहन चक्र</div>
+              <div class="english-title" id="tel-title">Trailokya Mohana Chakra</div>
+              <div class="meaning-subtitle" id="tel-meaning">The Realm of Three Worlds • Enchantress of the Universe</div>
+            </div>
+
+            <div class="telemetry-grid">
+              <div class="tel-cell">
+                <span class="cell-k">Yogic Chakra</span>
+                <span class="cell-v" id="tel-chakra">Muladhara (Root)</span>
+              </div>
+              <div class="tel-cell">
+                <span class="cell-k">Element / Tattva</span>
+                <span class="cell-v" id="tel-element">Prithvi (Earth)</span>
+              </div>
+              <div class="tel-cell">
+                <span class="cell-k">Presiding Deity</span>
+                <span class="cell-v" id="tel-deity">Tripura & 10 Siddhis</span>
+              </div>
+              <div class="tel-cell">
+                <span class="cell-k">Geometric Subsystem</span>
+                <span class="cell-v" id="tel-geometry">3 Concentric Enclosures • 4 Gates</span>
+              </div>
+              <div class="tel-cell">
+                <span class="cell-k">Sacred Mudra</span>
+                <span class="cell-v" id="tel-mudra">Sarva Sankshobhini</span>
+              </div>
+              <div class="tel-cell">
+                <span class="cell-k">Bija Sound Seed</span>
+                <span class="cell-v mono" id="tel-bija">अं आं सौः (Am Am Sauh)</span>
+              </div>
+            </div>
+
+            <div class="tel-description">
+              <span class="desc-heading">Contemplation & Sacred Function:</span>
+              <p id="tel-desc">
+                The earth citadel anchoring divine cosmic intelligence into physical reality. Guarded by the ten Mahasiddhis (Anima, Laghima, Mahima...), this outermost layer protects the practitioner's consciousness from psychic distraction.
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script>
+  interface LayerData {
+    id: number;
+    sanskrit: string;
+    title: string;
+    meaning: string;
+    chakra: string;
+    element: string;
+    deity: string;
+    geometry: string;
+    mudra: string;
+    bija: string;
+    desc: string;
+    baseZ: number; // Base Z in stepped Meru stack
+    color: string;
+    accent: string;
+  }
+
+  const LAYERS: LayerData[] = [
+    {
+      id: 1,
+      sanskrit: 'त्रैलोक्यमोहन चक्र',
+      title: 'Trailokya Mohana Chakra',
+      meaning: 'Realm of Three Worlds • Enchanter of Consciousness',
+      chakra: 'Muladhara (Root)',
+      element: 'Prithvi (Earth)',
+      deity: 'Tripura (Guarded by 10 Mahasiddhis)',
+      geometry: '3 Concentric Square Enclosures • 4 Cardinal Gates',
+      mudra: 'Sarva Sankshobhini Mudra',
+      bija: 'अं आं सौः (Am Am Sauh)',
+      desc: 'The sacred ground foundation. Represents physical existence, the base of the spine, and stability. In 3D Meru Prastara, this forms the multi-tiered plinth anchoring divine geometry into manifestation.',
+      baseZ: 0,
+      color: 'rgba(215, 140, 50, 0.75)',
+      accent: '#f54e00'
+    },
+    {
+      id: 2,
+      sanskrit: 'सर्वाशापरिपूरक चक्र',
+      title: 'Sarvasha Paripuraka Chakra',
+      meaning: 'Fulfiller of All Desires & Spiritual Longings',
+      chakra: 'Swadhishthana (Sacral)',
+      element: 'Apas (Water / Senses)',
+      deity: 'Tripureshi (Guarding 16 Kalas)',
+      geometry: '16 Radial Lotus Petals • 3 Outer Rings (Mekhala)',
+      mudra: 'Sarva Vidravini Mudra',
+      bija: 'ऐं क्लीं सौः (Aim Klim Sauh)',
+      desc: '16-petaled outer lotus ring inscribed in 3 outer boundary circles. Governs the 16 senses, breath patterns, and emotional equilibrium.',
+      baseZ: 14,
+      color: 'rgba(235, 160, 60, 0.78)',
+      accent: '#e87b28'
+    },
+    {
+      id: 3,
+      sanskrit: 'सर्वसंक्षोभण चक्र',
+      title: 'Sarva Samkshobhana Chakra',
+      meaning: 'Agitator of Dynamic Prana • Awakening Fire',
+      chakra: 'Manipura (Solar Plexus)',
+      element: 'Agni (Fire)',
+      deity: 'Tripura Sundari (8 Ananga Shaktis)',
+      geometry: '8 Lotus Petals Orienting the 8 Directions',
+      mudra: 'Sarvakarshini Mudra',
+      bija: 'ह्रीं क्लीं सौः (Hrim Klim Sauh)',
+      desc: '8-petaled inner lotus representing the 8 elements of manifestation (earth, water, fire, air, space, mind, intellect, ego). Radiates dynamic prana toward the triangle core.',
+      baseZ: 28,
+      color: 'rgba(245, 180, 75, 0.82)',
+      accent: '#f54e00'
+    },
+    {
+      id: 4,
+      sanskrit: 'सर्वसौभाग्यदायक चक्र',
+      title: 'Sarva Saubhagyadayaka Chakra',
+      meaning: 'Bestower of All Auspiciousness & Grace',
+      chakra: 'Anahata (Heart)',
+      element: 'Vayu (Air / 14 Nadis)',
+      deity: 'Tripura Vasini',
+      geometry: '14 Interlocking Secondary Triangles (Chaturdasha Kona)',
+      mudra: 'Sarva Vashankari Mudra',
+      bija: 'हैं ह्क्लीं ह्सौः (Haim Hklim Hsauh)',
+      desc: 'The outer polygon circuit of 14 acute triangles. In human subtle physiology, these correspond to the 14 principal nadis channelizing vital life force.',
+      baseZ: 42,
+      color: 'rgba(255, 195, 90, 0.85)',
+      accent: '#f54e00'
+    },
+    {
+      id: 5,
+      sanskrit: 'सर्वार्थसाधक चक्र',
+      title: 'Sarvartha Sadhaka Chakra',
+      meaning: 'Accomplisher of All Inner & Outer Goals',
+      chakra: 'Vishuddha (Throat)',
+      element: 'Akasha (Ether / 10 Pranas)',
+      deity: 'Tripura Shri',
+      geometry: '10 Outer Acute Triangles (Bahir Dashara)',
+      mudra: 'Sarvonmadini Mudra',
+      bija: 'ह्रीं श्रीं सौः (Hrim Shrim Sauh)',
+      desc: '10 outer triangles representing the 10 vital life currents (Prana, Apana, Samana, Udana, Vyana, Naga, Kurma, Krikara, Devadatta, Dhananjaya).',
+      baseZ: 56,
+      color: 'rgba(255, 210, 110, 0.88)',
+      accent: '#f54e00'
+    },
+    {
+      id: 6,
+      sanskrit: 'सर्वरक्षाकर चक्र',
+      title: 'Sarva Rakshakara Chakra',
+      meaning: 'The Universal Supreme Protector',
+      chakra: 'Ajna (Third Eye - Lower Horizon)',
+      element: 'Tejas (10 Inner Digestive Fires)',
+      deity: 'Tripura Malini',
+      geometry: '10 Inner Acute Triangles (Antar Dashara)',
+      mudra: 'Sarva Mahankusha Mudra',
+      bija: 'ह्रीं स्त्रीं हुं (Hrim Strim Hum)',
+      desc: '10 inner triangles surrounding the central octagonal arena. Represents internal transmutation, intellectual clarity, and psychic armor.',
+      baseZ: 70,
+      color: 'rgba(255, 220, 130, 0.90)',
+      accent: '#f54e00'
+    },
+    {
+      id: 7,
+      sanskrit: 'सर्वरोगहर चक्र',
+      title: 'Sarva Rogahara Chakra',
+      meaning: 'Destroyer of All Afflictions & Duality',
+      chakra: 'Manas / Soma Chakra',
+      element: 'Amrita (Pure Consciousness)',
+      deity: 'Tripura Siddha (8 Vashini Shaktis)',
+      geometry: '8 Innermost Triangles (Ashta Kona)',
+      mudra: 'Sarva Khechari Mudra',
+      bija: 'ह्रीं श्रीं सौः (Hrim Shrim Sauh)',
+      desc: '8 innermost triangles enclosing the central primary triangle. Governs the 8 divine faculties of speech, thought, and transcendent awareness.',
+      baseZ: 84,
+      color: 'rgba(255, 235, 160, 0.94)',
+      accent: '#f54e00'
+    },
+    {
+      id: 8,
+      sanskrit: 'सर्वसिद्धिप्रद चक्र',
+      title: 'Sarva Siddhiprada Chakra',
+      meaning: 'Bestower of Supreme Spiritual Attainment',
+      chakra: 'Guru Chakra / Baindava Horizon',
+      element: 'Para Shakti (Dynamic Creation)',
+      deity: 'Tripura Amba (Kameshvari, Vajreshvari, Bhagamalini)',
+      geometry: 'Primary Downward Equilateral Triangle (Trikona)',
+      mudra: 'Sarva Bija Mudra',
+      bija: 'ह्स्रैं ह्स्ख्रीं ह्स्रौः (Hsraim Hskhrim Hssrauh)',
+      desc: 'The central downward-pointing triangle representing the primordial womb of creation (Yoni). Its three vertices symbolize creation (Brahma), preservation (Vishnu), and dissolution (Rudra).',
+      baseZ: 98,
+      color: 'rgba(255, 245, 200, 0.98)',
+      accent: '#f54e00'
+    },
+    {
+      id: 9,
+      sanskrit: 'सर्वानन्दमय चक्र',
+      title: 'Sarvanandamaya Chakra',
+      meaning: 'The Realm of Infinite Pure Bliss',
+      chakra: 'Sahasrara (Crown of Cosmic Union)',
+      element: 'Parabrahman (Supreme Absolute)',
+      deity: 'Maha Tripura Sundari (Lalita Parabhattarika)',
+      geometry: 'Dimensionless Singularity Dot (Bindu Apex)',
+      mudra: 'Sarva Yoni Mudra',
+      bija: 'श्रीं (Shrim - The Sovereign Sound)',
+      desc: 'The dimensionless summit point where Shiva and Shakti exist in indivisible non-dual union. The apex of the 3D Maha Meru pyramid, and the focus of Bindu Trataka meditation.',
+      baseZ: 114,
+      color: 'rgba(255, 255, 255, 1.0)',
+      accent: '#f54e00'
+    }
+  ];
+
+  class TeardownSimulator {
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private dpr: number = 1;
+
+    // 3D Camera & Pose State
+    private pitch: number = 0.62;   // ~35 degrees down
+    private yaw: number = 0.52;     // ~30 degrees orbit
+    private targetPitch: number = 0.62;
+    private targetYaw: number = 0.52;
+    private fov: number = 650;
+    private zoom: number = 1.0;
+    private targetZoom: number = 1.0;
+
+    // Teardown / Explode State
+    private explodeProgress: number = 0.50; // 0..1
+    private targetExplodeProgress: number = 0.50;
+
+    // Subsystem Isolation
+    private isolatedLayer: number | null = null; // null = all layers
+
+    // Auto Tour
+    private isTouring: boolean = false;
+    private tourStep: number = 0;
+    private tourTimer: number | null = null;
+    private lastInteractionTime: number = Date.now();
+
+    // Mouse Drag State
+    private isDragging: boolean = false;
+    private lastMouseX: number = 0;
+    private lastMouseY: number = 0;
+
+    // Animation Loop
+    private animFrameId: number | null = null;
+    private lastFrameTime: number = performance.now();
+
+    constructor() {
+      const c = document.getElementById('teardown-canvas') as HTMLCanvasElement;
+      if (!c) throw new Error('Teardown canvas not found');
+      this.canvas = c;
+      const context = c.getContext('2d');
+      if (!context) throw new Error('Canvas 2D context not available');
+      this.ctx = context;
+
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+
+      this.initInteractions();
+      this.initUIControls();
+      this.startLoop();
+
+      // Initial telemetry sync
+      this.updateTelemetry(1);
+    }
+
+    private resize(): void {
+      const parent = this.canvas.parentElement;
+      if (!parent) return;
+      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = parent.getBoundingClientRect();
+      const w = Math.floor(rect.width);
+      const h = Math.floor(rect.height || 560);
+
+      this.canvas.width = w * this.dpr;
+      this.canvas.height = h * this.dpr;
+      this.canvas.style.width = `${w}px`;
+      this.canvas.style.height = `${h}px`;
+    }
+
+    private initInteractions(): void {
+      const cvs = this.canvas;
+
+      cvs.addEventListener('pointerdown', (e) => {
+        this.isDragging = true;
+        this.lastMouseX = e.clientX;
+        this.lastMouseY = e.clientY;
+        this.lastInteractionTime = Date.now();
+        if (this.isTouring) this.stopAutoTour();
+        cvs.setPointerCapture(e.pointerId);
+      });
+
+      cvs.addEventListener('pointermove', (e) => {
+        if (!this.isDragging) return;
+        const dx = e.clientX - this.lastMouseX;
+        const dy = e.clientY - this.lastMouseY;
+        this.lastMouseX = e.clientX;
+        this.lastMouseY = e.clientY;
+        this.lastInteractionTime = Date.now();
+
+        this.targetYaw += dx * 0.007;
+        this.targetPitch = Math.max(0.05, Math.min(Math.PI * 0.48, this.targetPitch + dy * 0.007));
+      });
+
+      const stopDrag = () => {
+        this.isDragging = false;
+      };
+      cvs.addEventListener('pointerup', stopDrag);
+      cvs.addEventListener('pointercancel', stopDrag);
+
+      // Wheel Zoom
+      cvs.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        this.lastInteractionTime = Date.now();
+        if (this.isTouring) this.stopAutoTour();
+
+        const zoomDelta = e.deltaY * -0.0015;
+        this.targetZoom = Math.max(0.55, Math.min(2.2, this.targetZoom + zoomDelta));
+      }, { passive: false });
+    }
+
+    private initUIControls(): void {
+      // Explode Slider
+      const slider = document.getElementById('explode-slider') as HTMLInputElement | null;
+      const sliderText = document.getElementById('explode-percent-text');
+      slider?.addEventListener('input', () => {
+        this.lastInteractionTime = Date.now();
+        if (this.isTouring) this.stopAutoTour();
+        const val = parseInt(slider.value, 10);
+        this.targetExplodeProgress = val / 100;
+        if (sliderText) sliderText.textContent = `${val}%`;
+      });
+
+      // Quick Explode Buttons
+      const quickBtns = document.querySelectorAll('.quick-btn');
+      quickBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.lastInteractionTime = Date.now();
+          if (this.isTouring) this.stopAutoTour();
+          quickBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const val = parseInt(btn.getAttribute('data-val') || '50', 10);
+          this.targetExplodeProgress = val / 100;
+          if (slider) slider.value = String(val);
+          if (sliderText) sliderText.textContent = `${val}%`;
+        });
+      });
+
+      // Camera Presets
+      const camBtns = document.querySelectorAll('.cam-btn:not(.reset)');
+      camBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.lastInteractionTime = Date.now();
+          if (this.isTouring) this.stopAutoTour();
+          camBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const cam = btn.getAttribute('data-cam');
+          this.applyCameraPreset(cam);
+        });
+      });
+
+      // Reset Cam Button
+      document.getElementById('sim-reset-cam-btn')?.addEventListener('click', () => {
+        this.applyCameraPreset('isometric');
+        this.targetZoom = 1.0;
+      });
+
+      // Layer Isolation Buttons
+      const layerBtns = document.querySelectorAll('.layer-pill');
+      const allBtn = document.getElementById('isolate-all-btn');
+
+      layerBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.lastInteractionTime = Date.now();
+          if (this.isTouring) this.stopAutoTour();
+          layerBtns.forEach(b => b.classList.remove('active'));
+          allBtn?.classList.remove('active');
+          btn.classList.add('active');
+
+          const lId = parseInt(btn.getAttribute('data-layer') || '1', 10);
+          this.isolatedLayer = lId;
+          this.updateTelemetry(lId);
+        });
+      });
+
+      allBtn?.addEventListener('click', () => {
+        this.lastInteractionTime = Date.now();
+        layerBtns.forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+        this.isolatedLayer = null;
+        this.updateTelemetry(1);
+      });
+
+      // Auto Tour Start / Stop
+      document.getElementById('start-tour-btn')?.addEventListener('click', () => {
+        this.startAutoTour();
+      });
+
+      document.getElementById('stop-tour-btn')?.addEventListener('click', () => {
+        this.stopAutoTour();
+      });
+    }
+
+    private applyCameraPreset(preset: string | null): void {
+      const modeTag = document.getElementById('view-mode-tag');
+      if (preset === 'isometric') {
+        this.targetPitch = 0.62;
+        this.targetYaw = 0.52;
+        this.targetZoom = 1.0;
+        if (modeTag) modeTag.textContent = '3D Meru Isometric';
+      } else if (preset === 'plan') {
+        this.targetPitch = 0.05; // Looking directly down
+        this.targetYaw = 0.0;
+        this.targetZoom = 0.95;
+        if (modeTag) modeTag.textContent = '2D Plan View (Chakra)';
+      } else if (preset === 'cutaway') {
+        this.targetPitch = 1.48; // Side profile elevation
+        this.targetYaw = 0.78;
+        this.targetZoom = 1.1;
+        if (modeTag) modeTag.textContent = 'Elevation Cutaway';
+      } else if (preset === 'bindu') {
+        this.targetPitch = 0.40;
+        this.targetYaw = 0.20;
+        this.targetZoom = 1.65;
+        if (modeTag) modeTag.textContent = 'Apex Bindu Focus';
+      }
+    }
+
+    public startAutoTour(): void {
+      this.isTouring = true;
+      this.tourStep = 0;
+      const statusEl = document.getElementById('tour-status');
+      if (statusEl) statusEl.style.display = 'flex';
+
+      this.stepTour();
+    }
+
+    public stopAutoTour(): void {
+      this.isTouring = false;
+      if (this.tourTimer) {
+        clearTimeout(this.tourTimer);
+        this.tourTimer = null;
+      }
+      const statusEl = document.getElementById('tour-status');
+      if (statusEl) statusEl.style.display = 'none';
+    }
+
+    private stepTour(): void {
+      if (!this.isTouring) return;
+
+      const layerIndex = (this.tourStep % 9) + 1;
+      this.isolatedLayer = layerIndex;
+      this.updateTelemetry(layerIndex);
+
+      // Highlight corresponding layer button in UI
+      const layerBtns = document.querySelectorAll('.layer-pill');
+      const allBtn = document.getElementById('isolate-all-btn');
+      allBtn?.classList.remove('active');
+      layerBtns.forEach(btn => {
+        const id = parseInt(btn.getAttribute('data-layer') || '0', 10);
+        btn.classList.toggle('active', id === layerIndex);
+      });
+
+      const tourText = document.getElementById('tour-status-text');
+      if (tourText) {
+        tourText.textContent = `Auto Tour: Layer ${layerIndex} of 9 (${LAYERS[layerIndex - 1].title})`;
+      }
+
+      // Smooth camera adjustments per layer
+      this.targetPitch = 0.45 + (layerIndex / 9) * 0.25;
+      this.targetYaw = 0.20 + (layerIndex * 0.45);
+      this.targetZoom = 0.95 + (layerIndex / 9) * 0.45;
+      this.targetExplodeProgress = 0.65;
+
+      this.tourStep++;
+      this.tourTimer = window.setTimeout(() => {
+        this.stepTour();
+      }, 3400);
+    }
+
+    private updateTelemetry(layerId: number): void {
+      const data = LAYERS.find(l => l.id === layerId) || LAYERS[0];
+      const indexEl = document.getElementById('tel-index');
+      const sansEl = document.getElementById('tel-sanskrit');
+      const titleEl = document.getElementById('tel-title');
+      const meanEl = document.getElementById('tel-meaning');
+      const chakraEl = document.getElementById('tel-chakra');
+      const elemEl = document.getElementById('tel-element');
+      const deityEl = document.getElementById('tel-deity');
+      const geomEl = document.getElementById('tel-geometry');
+      const mudraEl = document.getElementById('tel-mudra');
+      const bijaEl = document.getElementById('tel-bija');
+      const descEl = document.getElementById('tel-desc');
+
+      if (indexEl) indexEl.textContent = `AVARANA 0${data.id} / 09`;
+      if (sansEl) sansEl.textContent = data.sanskrit;
+      if (titleEl) titleEl.textContent = data.title;
+      if (meanEl) meanEl.textContent = data.meaning;
+      if (chakraEl) chakraEl.textContent = data.chakra;
+      if (elemEl) elemEl.textContent = data.element;
+      if (deityEl) deityEl.textContent = data.deity;
+      if (geomEl) geomEl.textContent = data.geometry;
+      if (mudraEl) mudraEl.textContent = data.mudra;
+      if (bijaEl) bijaEl.textContent = data.bija;
+      if (descEl) descEl.textContent = data.desc;
+    }
+
+    private startLoop(): void {
+      const loop = (time: number) => {
+        if (time < this.lastFrameTime) this.lastFrameTime = time;
+        this.lastFrameTime = time;
+
+        // Teardown Skill Rule: 25s of quiet activates gentle ambient orbit drift
+        if (!this.isTouring && !this.isDragging && Date.now() - this.lastInteractionTime > 25000) {
+          this.targetYaw += 0.0015;
+        }
+
+        this.render(time * 0.001);
+        this.animFrameId = requestAnimationFrame(loop);
+      };
+      this.animFrameId = requestAnimationFrame(loop);
+    }
+
+    public destroy(): void {
+      if (this.animFrameId) {
+        cancelAnimationFrame(this.animFrameId);
+        this.animFrameId = null;
+      }
+      this.stopAutoTour();
+    }
+
+    private project(
+      x: number,
+      y: number,
+      z: number,
+      cx: number,
+      cy: number
+    ): { x: number; y: number; z: number; scale: number } {
+      const cosY = Math.cos(this.yaw);
+      const sinY = Math.sin(this.yaw);
+      const cosP = Math.cos(this.pitch);
+      const sinP = Math.sin(this.pitch);
+
+      // Yaw rotation (around vertical Y/Z axis)
+      const rx = x * cosY - y * sinY;
+      const ry = x * sinY + y * cosY;
+
+      // Pitch rotation (tilt towards viewer)
+      const ry2 = ry * cosP - z * sinP;
+      const rz2 = ry * sinP + z * cosP;
+
+      // Perspective divide
+      const effFov = this.fov * this.zoom;
+      const depth = rz2 + effFov;
+      const scale = depth > 10 ? effFov / depth : effFov / 10;
+
+      return {
+        x: cx + rx * scale,
+        y: cy + ry2 * scale,
+        z: rz2,
+        scale,
+      };
+    }
+
+    private render(t: number): void {
+      const ctx = this.ctx;
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+
+      // Smooth physics damping toward targets
+      this.pitch += (this.targetPitch - this.pitch) * 0.08;
+      this.yaw += (this.targetYaw - this.yaw) * 0.08;
+      this.zoom += (this.targetZoom - this.zoom) * 0.08;
+      this.explodeProgress += (this.targetExplodeProgress - this.explodeProgress) * 0.08;
+
+      // Update elevation gauge display
+      const totalElevation = (this.explodeProgress * 320.0).toFixed(1);
+      const elevGauge = document.getElementById('elevation-gauge');
+      if (elevGauge) {
+        elevGauge.textContent = `Meru Elevation: ${totalElevation} mm`;
+      }
+
+      ctx.save();
+      ctx.scale(this.dpr, this.dpr);
+
+      const renderW = w / this.dpr;
+      const renderH = h / this.dpr;
+      const cx = renderW * 0.5;
+      const cy = renderH * 0.52;
+      const baseR = Math.min(renderW, renderH) * 0.38;
+
+      // Clear with elegant studio gradient (light canvas conforming to DESIGN.md)
+      const bgGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, renderW * 0.7);
+      bgGrad.addColorStop(0, '#ffffff');
+      bgGrad.addColorStop(0.65, '#fafaf7');
+      bgGrad.addColorStop(1, '#f2f1ec');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, renderW, renderH);
+
+      // Subtle warm grid ground floor
+      this.renderGroundGrid(ctx, cx, cy, baseR * 1.6);
+
+      // Render vertical elevator leader lines when exploded
+      if (this.explodeProgress > 0.08) {
+        this.renderElevatorHairlines(ctx, cx, cy, baseR);
+      }
+
+      // Render each of the 9 Avaranas in ascending 3D elevation
+      for (let i = 0; i < LAYERS.length; i++) {
+        const layer = LAYERS[i];
+        const isIsolated = this.isolatedLayer !== null && this.isolatedLayer === layer.id;
+        const isDimmed = this.isolatedLayer !== null && this.isolatedLayer !== layer.id;
+
+        // Calculate vertical elevation for this layer
+        // When explodeProgress = 0, all layers sit at flat z ~ 0.
+        // When explodeProgress = 1, each layer extends to full Meru stepped height.
+        const layerZ = layer.baseZ * (0.15 + this.explodeProgress * 2.8);
+
+        this.renderLayerGeometry(ctx, layer, layerZ, cx, cy, baseR, isIsolated, isDimmed, t);
+      }
+
+      ctx.restore();
+    }
+
+    private renderGroundGrid(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number): void {
+      ctx.save();
+      ctx.strokeStyle = '#e6e5e0';
+      ctx.lineWidth = 0.5;
+
+      const steps = 10;
+      const half = size;
+      const zFloor = -18;
+
+      for (let i = -steps; i <= steps; i++) {
+        const x = (i / steps) * half;
+        const p1 = this.project(x, -half, zFloor, cx, cy);
+        const p2 = this.project(x, half, zFloor, cx, cy);
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+
+        const p3 = this.project(-half, x, zFloor, cx, cy);
+        const p4 = this.project(half, x, zFloor, cx, cy);
+
+        ctx.beginPath();
+        ctx.moveTo(p3.x, p3.y);
+        ctx.lineTo(p4.x, p4.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    private renderElevatorHairlines(ctx: CanvasRenderingContext2D, cx: number, cy: number, baseR: number): void {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(245, 78, 0, 0.18)'; // Subtle Cursor Orange hairlines
+      ctx.lineWidth = 0.75;
+      ctx.setLineDash([3, 4]);
+
+      // Draw 4 corner vertical guideline pillars from base to top
+      const corners = [
+        { x: baseR * 0.95, y: baseR * 0.95 },
+        { x: -baseR * 0.95, y: baseR * 0.95 },
+        { x: -baseR * 0.95, y: -baseR * 0.95 },
+        { x: baseR * 0.95, y: -baseR * 0.95 },
+      ];
+
+      const maxZ = LAYERS[8].baseZ * (0.15 + this.explodeProgress * 2.8);
+
+      for (const pt of corners) {
+        const pBottom = this.project(pt.x, pt.y, 0, cx, cy);
+        const pTop = this.project(pt.x, pt.y, maxZ, cx, cy);
+
+        ctx.beginPath();
+        ctx.moveTo(pBottom.x, pBottom.y);
+        ctx.lineTo(pTop.x, pTop.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    private renderLayerGeometry(
+      ctx: CanvasRenderingContext2D,
+      layer: LayerData,
+      z: number,
+      cx: number,
+      cy: number,
+      baseR: number,
+      isIsolated: boolean,
+      isDimmed: boolean,
+      t: number
+    ): void {
+      ctx.save();
+
+      const alpha = isDimmed ? 0.14 : (isIsolated ? 1.0 : 0.85);
+      const strokeColor = isIsolated ? '#f54e00' : (isDimmed ? '#a09c92' : layer.color);
+      const lineWidth = isIsolated ? 2.0 : (isDimmed ? 0.6 : 1.1);
+
+      ctx.strokeStyle = strokeColor;
+      ctx.fillStyle = isIsolated ? 'rgba(245, 78, 0, 0.05)' : 'rgba(200, 150, 75, 0.02)';
+      ctx.lineWidth = lineWidth;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      if (isIsolated) {
+        ctx.shadowColor = 'rgba(245, 78, 0, 0.35)';
+        ctx.shadowBlur = 10;
+      }
+
+      // Draw specific geometry for each Avarana
+      switch (layer.id) {
+        case 1: // Bhupura (Earth Citadel with 4 T-Gates)
+          this.drawBhupura(ctx, z, cx, cy, baseR * 0.95, alpha);
+          break;
+        case 2: // 16-Petal Lotus
+          this.drawLotus(ctx, 16, z, cx, cy, baseR * 0.78, baseR * 0.66, alpha);
+          break;
+        case 3: // 8-Petal Lotus
+          this.drawLotus(ctx, 8, z, cx, cy, baseR * 0.62, baseR * 0.50, alpha);
+          break;
+        case 4: // 14 Triangles (Chaturdasha Kona)
+          this.drawTriangleRing(ctx, 14, z, cx, cy, baseR * 0.48, baseR * 0.38, alpha);
+          break;
+        case 5: // Outer 10 Triangles (Bahir Dashara)
+          this.drawTriangleRing(ctx, 10, z, cx, cy, baseR * 0.37, baseR * 0.28, alpha);
+          break;
+        case 6: // Inner 10 Triangles (Antar Dashara)
+          this.drawTriangleRing(ctx, 10, z, cx, cy, baseR * 0.27, baseR * 0.19, alpha);
+          break;
+        case 7: // 8 Triangles (Ashta Kona)
+          this.drawTriangleRing(ctx, 8, z, cx, cy, baseR * 0.18, baseR * 0.12, alpha);
+          break;
+        case 8: // Inmost Triangle (Trikona)
+          this.drawCentralTrikona(ctx, z, cx, cy, baseR * 0.11, alpha);
+          break;
+        case 9: // Bindu Singularity
+          this.drawBinduPoint(ctx, z, cx, cy, baseR, isIsolated, t);
+          break;
+      }
+
+      ctx.restore();
+    }
+
+    private drawBhupura(
+      ctx: CanvasRenderingContext2D,
+      z: number,
+      cx: number,
+      cy: number,
+      size: number,
+      alpha: number
+    ): void {
+      ctx.globalAlpha = alpha;
+      const tiers = [size, size * 0.94, size * 0.88];
+
+      for (let idx = 0; idx < tiers.length; idx++) {
+        const s = tiers[idx];
+        const gW = s * 0.24; // Gate width
+        const gD = s * 0.14; // Gate depth
+
+        const pts = [
+          // Top edge with North Gate
+          { x: -s, y: -s },
+          { x: -gW, y: -s },
+          { x: -gW, y: -s - gD },
+          { x: gW, y: -s - gD },
+          { x: gW, y: -s },
+          { x: s, y: -s },
+
+          // Right edge with East Gate
+          { x: s, y: -gW },
+          { x: s + gD, y: -gW },
+          { x: s + gD, y: gW },
+          { x: s, y: gW },
+          { x: s, y: s },
+
+          // Bottom edge with South Gate
+          { x: gW, y: s },
+          { x: gW, y: s + gD },
+          { x: -gW, y: s + gD },
+          { x: -gW, y: s },
+          { x: -s, y: s },
+
+          // Left edge with West Gate
+          { x: -s, y: gW },
+          { x: -s - gD, y: gW },
+          { x: -s - gD, y: -gW },
+          { x: -s, y: -gW },
+        ];
+
+        ctx.beginPath();
+        for (let i = 0; i < pts.length; i++) {
+          const p = this.project(pts[i].x, pts[i].y, z + idx * 2, cx, cy);
+          if (i === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    private drawLotus(
+      ctx: CanvasRenderingContext2D,
+      petals: number,
+      z: number,
+      cx: number,
+      cy: number,
+      rOuter: number,
+      rInner: number,
+      alpha: number
+    ): void {
+      ctx.globalAlpha = alpha;
+      const angleStep = (Math.PI * 2) / petals;
+
+      // Base ring
+      const ringSteps = 48;
+      ctx.beginPath();
+      for (let i = 0; i <= ringSteps; i++) {
+        const a = (i / ringSteps) * Math.PI * 2;
+        const p = this.project(Math.cos(a) * rInner, Math.sin(a) * rInner, z, cx, cy);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+
+      // Petals
+      for (let i = 0; i < petals; i++) {
+        const a1 = i * angleStep;
+        const a2 = (i + 1) * angleStep;
+        const aMid = (a1 + a2) * 0.5;
+
+        const pBase1 = this.project(Math.cos(a1) * rInner, Math.sin(a1) * rInner, z, cx, cy);
+        const pTip = this.project(Math.cos(aMid) * rOuter, Math.sin(aMid) * rOuter, z + 2, cx, cy);
+        const pBase2 = this.project(Math.cos(a2) * rInner, Math.sin(a2) * rInner, z, cx, cy);
+
+        ctx.beginPath();
+        ctx.moveTo(pBase1.x, pBase1.y);
+        ctx.lineTo(pTip.x, pTip.y);
+        ctx.lineTo(pBase2.x, pBase2.y);
+        ctx.stroke();
+      }
+    }
+
+    private drawTriangleRing(
+      ctx: CanvasRenderingContext2D,
+      count: number,
+      z: number,
+      cx: number,
+      cy: number,
+      rOuter: number,
+      rInner: number,
+      alpha: number
+    ): void {
+      ctx.globalAlpha = alpha;
+      const step = (Math.PI * 2) / count;
+
+      for (let i = 0; i < count; i++) {
+        const a1 = i * step;
+        const a2 = (i + 1) * step;
+        const aMid = (a1 + a2) * 0.5;
+
+        const p1 = this.project(Math.cos(a1) * rInner, Math.sin(a1) * rInner, z, cx, cy);
+        const pTip = this.project(Math.cos(aMid) * rOuter, Math.sin(aMid) * rOuter, z + 2, cx, cy);
+        const p2 = this.project(Math.cos(a2) * rInner, Math.sin(a2) * rInner, z, cx, cy);
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(pTip.x, pTip.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    private drawCentralTrikona(
+      ctx: CanvasRenderingContext2D,
+      z: number,
+      cx: number,
+      cy: number,
+      r: number,
+      alpha: number
+    ): void {
+      ctx.globalAlpha = alpha;
+      // Downward-pointing primary Shakti triangle
+      const pts = [
+        { x: 0, y: r * 1.15 },                       // Apex pointing downward
+        { x: Math.cos(-Math.PI / 6) * r, y: -r * 0.65 }, // Top-Right
+        { x: Math.cos(-Math.PI * 5 / 6) * r, y: -r * 0.65 }, // Top-Left
+      ];
+
+      ctx.beginPath();
+      for (let i = 0; i < pts.length; i++) {
+        const p = this.project(pts[i].x, pts[i].y, z, cx, cy);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    private drawBinduPoint(
+      ctx: CanvasRenderingContext2D,
+      z: number,
+      cx: number,
+      cy: number,
+      baseR: number,
+      isIsolated: boolean,
+      t: number
+    ): void {
+      const p = this.project(0, 0, z, cx, cy);
+      const rad = baseR * (isIsolated ? 0.024 : 0.016) * p.scale;
+
+      ctx.save();
+      ctx.globalAlpha = 1.0;
+
+      // Radiant halo
+      const grad = ctx.createRadialGradient(p.x, p.y, 1, p.x, p.y, rad * 3.5);
+      grad.addColorStop(0, 'rgba(245, 78, 0, 0.95)');
+      grad.addColorStop(0.4, 'rgba(245, 140, 40, 0.45)');
+      grad.addColorStop(1, 'rgba(245, 78, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, rad * 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Pulsing center pearl
+      const pulse = Math.sin(t * 3.0) * 0.2 + 1.0;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, rad * pulse, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#f54e00';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      new TeardownSimulator();
+    } catch (err) {
+      console.warn('[Teardown Simulator] Init error:', err);
+    }
+  });
+</script>
+
+<style>
+  .teardown-section {
+    padding: 6rem 0 5rem;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    border-top: 1px solid var(--color-hairline);
+    position: relative;
+  }
+
+  .teardown-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .section-intro {
+    text-align: center;
+    max-width: 820px;
+    margin: 0 auto 3.5rem;
+  }
+
+  .intro-badge {
+    margin-bottom: 1rem;
+  }
+
+  .mono-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(245, 78, 0, 0.2);
+    font-weight: 500;
+  }
+
+  .teardown-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    margin-bottom: 1.25rem;
+    font-weight: 400;
+  }
+
+  .teardown-desc {
+    color: var(--color-body);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  /* Cockpit Layout: 3D Viewport on Left, Telemetry & Controls on Right */
+  .simulator-cockpit {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .simulator-cockpit {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* 3D Canvas Viewport */
+  .canvas-viewport {
+    position: relative;
+    width: 100%;
+    height: 640px;
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .canvas-viewport:active {
+    cursor: grabbing;
+  }
+
+  #teardown-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Viewport HUD Overlays */
+  .viewport-hud-top {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    pointer-events: none;
+  }
+
+  .view-pill {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-hairline);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .elevation-gauge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    background: rgba(245, 78, 0, 0.08);
+    border: 1px solid rgba(245, 78, 0, 0.2);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .camera-toolbar {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    display: flex;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-hairline);
+    padding: 0.3rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  }
+
+  .cam-btn {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    color: var(--color-body);
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+
+  .cam-btn:hover {
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+  }
+
+  .cam-btn.active {
+    background-color: var(--color-ink);
+    color: #ffffff;
+  }
+
+  .cam-btn.reset {
+    color: var(--color-muted);
+    border-left: 1px solid var(--color-hairline);
+    border-radius: 0 5px 5px 0;
+  }
+
+  .drag-hint {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-hairline);
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  .auto-tour-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(38, 37, 30, 0.92);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    animation: tourPulse 1.4s infinite ease-in-out;
+  }
+
+  @keyframes tourPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  .stop-tour-btn {
+    background: transparent;
+    border: none;
+    color: #a09c92;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-left: 0.2rem;
+    padding: 0;
+  }
+
+  .stop-tour-btn:hover {
+    color: #ffffff;
+  }
+
+  /* Telemetry Sidebar Panel */
+  .telemetry-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .panel-card {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    font-weight: 600;
+  }
+
+  .card-val {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  /* Explode Slider */
+  .slider-wrapper {
+    margin-bottom: 0.85rem;
+  }
+
+  .explode-slider {
+    width: 100%;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    height: 6px;
+    background: var(--color-hairline);
+    border-radius: 3px;
+  }
+
+  .explode-quick-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .quick-btn {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    color: var(--color-body);
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+
+  .quick-btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-hairline-strong);
+  }
+
+  .quick-btn.active {
+    background-color: rgba(245, 78, 0, 0.08);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  /* Tour CTA */
+  .tour-cta-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 200ms var(--ease-calm);
+    box-shadow: 0 4px 14px rgba(245, 78, 0, 0.25);
+  }
+
+  .tour-cta-btn:hover {
+    background-color: var(--color-primary-active);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(245, 78, 0, 0.35);
+  }
+
+  /* Subsystems Grid */
+  .isolate-all-btn {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    background: transparent;
+    border: 1px solid var(--color-hairline);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .isolate-all-btn.active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+  }
+
+  .layers-button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.45rem;
+  }
+
+  .layer-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.55rem;
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    color: var(--color-body);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 180ms ease;
+    text-align: left;
+  }
+
+  .layer-pill:hover {
+    background-color: var(--color-canvas-soft);
+    color: var(--color-ink);
+    border-color: var(--color-hairline-strong);
+  }
+
+  .layer-pill.active {
+    background-color: rgba(245, 78, 0, 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .layer-num {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .layer-pill.active .layer-num {
+    background: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .layer-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Telemetry Body */
+  .layer-index-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .tel-main-title {
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-hairline);
+    padding-bottom: 0.85rem;
+  }
+
+  .sanskrit-title {
+    font-family: var(--font-devanagari);
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+  }
+
+  .english-title {
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    color: var(--color-ink);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .meaning-subtitle {
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    font-style: italic;
+  }
+
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tel-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .cell-k {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cell-v {
+    font-size: 0.82rem;
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+
+  .cell-v.mono {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-primary);
+  }
+
+  .tel-description {
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    padding: 0.85rem;
+  }
+
+  .desc-heading {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .tel-description p {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--color-body);
+    margin: 0;
+  }
+</style>

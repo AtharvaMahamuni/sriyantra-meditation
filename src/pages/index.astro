@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MeditationCanvas from '../components/MeditationCanvas.astro';
+import LayerTeardownSimulator from '../components/LayerTeardownSimulator.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import AffiliateShowcase from '../components/AffiliateShowcase.astro';
 import Footer from '../components/Footer.astro';
@@ -80,14 +81,17 @@ import Footer from '../components/Footer.astro';
       </div>
     </section>
 
-    <!-- 3. Comprehensive FAQ Section (Targeting all high-volume user search queries) -->
+    <!-- 3. Interactive 3D Layer Teardown Simulator (Maha Meru Prastara) -->
+    <LayerTeardownSimulator />
+
+    <!-- 4. Comprehensive FAQ Section (Targeting all high-volume user search queries) -->
     <FaqAccordion />
 
-    <!-- 4. Verified Sourcing & Materials Showcase (Affiliate Ready) -->
+    <!-- 5. Verified Sourcing & Materials Showcase (Affiliate Ready) -->
     <AffiliateShowcase />
   </main>
 
-  <!-- 5. Footer with Author Credentials -->
+  <!-- 6. Footer with Author Credentials -->
   <Footer isDark={false} />
 </BaseLayout>
 
