@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { url } from '../lib/site';
+---
+
+<BaseLayout
+  title="Page Not Found — Sri Yantra Meditation"
+  description="The sacred geometry or page you were looking for is not located here. Return to the center of the Sri Yantra."
+  canonicalPath="/404.html"
+  isDark={false}
+>
+  <Header isDark={false} />
+
+  <main class="error-page-main">
+    <div class="error-card">
+      <div class="error-icon">
+        <svg viewBox="0 0 64 64" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.4"/>
+          <polygon points="32,10 52,48 12,48" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+          <polygon points="32,54 52,16 12,16" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="32" cy="32" r="3.5" fill="var(--color-primary)"/>
+        </svg>
+      </div>
+
+      <div class="error-badge">
+        <span class="mono-tag">404 • Singularity Not Found</span>
+      </div>
+
+      <h1 class="display-title error-title">Beyond the Nine Enclosures</h1>
+
+      <p class="error-desc">
+        The coordinates you sought do not exist in this realm. Allow your consciousness to return to the foundational Bindu.
+      </p>
+
+      <div class="error-actions">
+        <a href={url("/")} class="return-home-btn">
+          <span class="btn-dot"></span>
+          <span>Return to Meditation Visualizer</span>
+        </a>
+        <a href={url("/geometry/")} class="return-alt-btn">Explore Sacred Geometry</a>
+      </div>
+    </div>
+  </main>
+
+  <Footer isDark={false} />
+</BaseLayout>
+
+<style>
+  .error-page-main {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    background-color: var(--color-canvas);
+  }
+
+  .error-card {
+    max-width: 580px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 2rem;
+    background: #ffffff;
+    border: 1px solid var(--color-hairline);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(38, 37, 30, 0.04);
+  }
+
+  .error-icon {
+    color: var(--color-ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .error-badge {
+    margin-bottom: 1rem;
+  }
+
+  .mono-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.65rem;
+    background-color: rgba(245, 78, 0, 0.08);
+    color: var(--color-primary);
+    border-radius: 9999px;
+    font-weight: 500;
+  }
+
+  .error-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+
+  .error-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-body);
+    margin-bottom: 2rem;
+    max-width: 440px;
+  }
+
+  .error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .return-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.65rem 1.25rem;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-radius: 9999px;
+    transition: background-color var(--duration-normal) var(--ease-calm), transform var(--duration-normal) var(--ease-calm);
+  }
+
+  .return-home-btn:hover {
+    background-color: var(--color-primary-active);
+    transform: translateY(-1px);
+    color: #ffffff;
+  }
+
+  .btn-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  }
+
+  .return-alt-btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.65rem 1.25rem;
+    border: 1px solid var(--color-hairline);
+    background: transparent;
+    color: var(--color-ink);
+    border-radius: 9999px;
+    transition: border-color var(--duration-normal) var(--ease-calm), color var(--duration-normal) var(--ease-calm);
+  }
+
+  .return-alt-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+</style>

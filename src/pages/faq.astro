@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
+import { url } from '../lib/site';
 ---
 
 <BaseLayout
@@ -34,7 +35,7 @@ import FaqAccordion from '../components/FaqAccordion.astro';
           <p>
             Experience the soothing, 60FPS rotating Sri Yantra with 136.1 Hz Om drone, customizable atmospheres, and automatic screen wake-lock.
           </p>
-          <a href="/" class="launch-meditation-btn">Enter Meditation Visualizer</a>
+          <a href={url("/")} class="launch-meditation-btn">Enter Meditation Visualizer</a>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 ---
 import ZenControlsBar from './ZenControlsBar.astro';
+import { url } from '../lib/site';
 ---
 
 <div class="meditation-viewport" id="meditation-viewport">
@@ -16,11 +17,11 @@ import ZenControlsBar from './ZenControlsBar.astro';
 
     <nav class="top-nav">
       <a href="#layers-explorer" class="top-nav-link">3D Layers</a>
-      <a href="/geometry/" class="top-nav-link">Geometry</a>
-      <a href="/meditation/" class="top-nav-link">How to Meditate</a>
-      <a href="/vastu/" class="top-nav-link">Vastu & Placement</a>
-      <a href="/materials/" class="top-nav-link">Sphatik Guide</a>
-      <a href="/faq/" class="top-nav-link">FAQ</a>
+      <a href={url("/geometry/")} class="top-nav-link">Geometry</a>
+      <a href={url("/meditation/")} class="top-nav-link">How to Meditate</a>
+      <a href={url("/vastu/")} class="top-nav-link">Vastu & Placement</a>
+      <a href={url("/materials/")} class="top-nav-link">Sphatik Guide</a>
+      <a href={url("/faq/")} class="top-nav-link">FAQ</a>
     </nav>
   </header>
 

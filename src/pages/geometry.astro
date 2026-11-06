@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import LayerTeardownSimulator from '../components/LayerTeardownSimulator.astro';
 import Footer from '../components/Footer.astro';
+import { url } from '../lib/site';
 ---
 
 <BaseLayout
@@ -166,7 +167,7 @@ import Footer from '../components/Footer.astro';
           <p>
             Watch the 9 circuits rotate and breathe in 60FPS with our interactive visualizer and 136.1 Hz Om drone.
           </p>
-          <a href="/" class="cta-btn">Open Live Meditation Visualizer</a>
+          <a href={url("/")} class="cta-btn">Open Live Meditation Visualizer</a>
         </div>
       </div>
     </article>

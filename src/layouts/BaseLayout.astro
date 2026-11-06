@@ -1,6 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/global.css';
+import { url, SITE_ORIGIN, AUTHOR_NAME, AUTHOR_TWITTER, AUTHOR_GITHUB } from '../lib/site';
 
 interface Props {
   title?: string;
@@ -12,12 +13,14 @@ interface Props {
 const {
   title = "Sri Yantra Meditation — Fullscreen Sacred Geometry & 136.1 Hz Om Visualizer",
   description = "A soothing, fullscreen digital sanctuary featuring a rotating Sri Yantra, procedural 136.1 Hz Om drone, Bindu Trataka focus guides, and Vedic geometry research.",
-  canonicalPath = "/",
+  canonicalPath,
   isDark = false
 } = Astro.props;
 
-const canonicalUrl = new URL(canonicalPath, "https://sriyantrameditation.com").href;
-const ogImage = "https://sriyantrameditation.com/og-image.png";
+const siteRoot = Astro.site ?? SITE_ORIGIN;
+const activePath = canonicalPath ?? Astro.url.pathname;
+const canonicalUrl = new URL(activePath, siteRoot).href;
+const ogImage = new URL(url("/og-image.png"), siteRoot).href;
 ---
 
 <!doctype html>
@@ -45,11 +48,11 @@ const ogImage = "https://sriyantrameditation.com/og-image.png";
     <meta name="twitter:image" content={ogImage} />
 
     <!-- AI & Agent Discovery -->
-    <link rel="help" type="text/plain" href="/llms.txt" />
-    <link rel="alternate" type="application/json" href="/identity.json" />
+    <link rel="help" type="text/plain" href={url("/llms.txt")} />
+    <link rel="alternate" type="application/json" href={url("/identity.json")} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
 
     <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,30 +65,30 @@ const ogImage = "https://sriyantrameditation.com/og-image.png";
       "@graph": [
         {
           "@type": "WebSite",
-          "@id": "https://sriyantrameditation.com/#website",
-          "url": "https://sriyantrameditation.com/",
+          "@id": `${canonicalUrl}#website`,
+          "url": canonicalUrl,
           "name": "Sri Yantra Meditation",
           "description": description,
-          "publisher": { "@id": "https://sriyantrameditation.com/#author" }
+          "publisher": { "@id": `${canonicalUrl}#author` }
         },
         {
           "@type": "WebApplication",
-          "@id": "https://sriyantrameditation.com/#app",
+          "@id": `${canonicalUrl}#app`,
           "name": "Sri Yantra Meditation Visualizer",
-          "url": "https://sriyantrameditation.com/",
+          "url": canonicalUrl,
           "applicationCategory": "HealthAndFitnessApplication",
           "operatingSystem": "All",
           "browserRequirements": "Requires JavaScript, HTML5 Canvas, Web Audio API",
-          "author": { "@id": "https://sriyantrameditation.com/#author" }
+          "author": { "@id": `${canonicalUrl}#author` }
         },
         {
           "@type": "Person",
-          "@id": "https://sriyantrameditation.com/#author",
-          "name": "Atharva Mahamuni",
-          "url": "https://sriyantrameditation.com/about/",
+          "@id": `${canonicalUrl}#author`,
+          "name": AUTHOR_NAME,
+          "url": new URL(url("/about/"), siteRoot).href,
           "sameAs": [
-            "https://x.com/athmatwt",
-            "https://github.com/AtharvaMahamuni"
+            AUTHOR_TWITTER,
+            AUTHOR_GITHUB
           ]
         }
       ]

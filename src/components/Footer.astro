@@ -1,4 +1,6 @@
 ---
+import { url } from '../lib/site';
+
 interface Props {
   isDark?: boolean;
 }
@@ -22,30 +24,30 @@ const { isDark = false } = Astro.props;
       <div class="footer-links-col">
         <h3 class="col-title">Sacred Practice</h3>
         <ul class="col-list">
-          <li><a href="/">Live Full-screen Visualizer</a></li>
-          <li><a href="/meditation/">How to Meditate (Trataka)</a></li>
-          <li><a href="/meditation/#mantras">Sri Yantra Mantras</a></li>
-          <li><a href="/meditation/#sound-physics">136.1 Hz Cosmic Octave</a></li>
+          <li><a href={url("/")}>Live Full-screen Visualizer</a></li>
+          <li><a href={url("/meditation/")}>How to Meditate (Trataka)</a></li>
+          <li><a href={url("/meditation/#mantras")}>Sri Yantra Mantras</a></li>
+          <li><a href={url("/meditation/#sound-physics")}>136.1 Hz Cosmic Octave</a></li>
         </ul>
       </div>
 
       <div class="footer-links-col">
         <h3 class="col-title">Geometry & Vastu</h3>
         <ul class="col-list">
-          <li><a href="/geometry/">The 9 Avaranas (Circuits)</a></li>
-          <li><a href="/geometry/#concurrency">The Concurrency Problem</a></li>
-          <li><a href="/vastu/">Where to Place in Home</a></li>
-          <li><a href="/materials/">Sphatik vs Copper vs Meru</a></li>
+          <li><a href={url("/geometry/")}>The 9 Avaranas (Circuits)</a></li>
+          <li><a href={url("/geometry/#concurrency")}>The Concurrency Problem</a></li>
+          <li><a href={url("/vastu/")}>Where to Place in Home</a></li>
+          <li><a href={url("/materials/")}>Sphatik vs Copper vs Meru</a></li>
         </ul>
       </div>
 
       <div class="footer-links-col">
         <h3 class="col-title">Knowledge & AI</h3>
         <ul class="col-list">
-          <li><a href="/faq/">Comprehensive FAQ</a></li>
-          <li><a href="/llms.txt">llms.txt (AI Specification)</a></li>
-          <li><a href="/faq-ai.txt">Machine-Readable Q&A</a></li>
-          <li><a href="/about/">About & Privacy</a></li>
+          <li><a href={url("/faq/")}>Comprehensive FAQ</a></li>
+          <li><a href={url("/llms.txt")}>llms.txt (AI Specification)</a></li>
+          <li><a href={url("/faq-ai.txt")}>Machine-Readable Q&A</a></li>
+          <li><a href={url("/about/")}>About & Privacy</a></li>
         </ul>
       </div>
     </div>

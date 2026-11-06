@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { url } from '../lib/site';
 ---
 
 <BaseLayout
@@ -119,7 +120,7 @@ import Footer from '../components/Footer.astro';
           <p>
             Launch our fullscreen visualizer with 136.1 Hz Om drone and automatic Screen Wake Lock.
           </p>
-          <a href="/" class="cta-btn">Start Fullscreen Meditation</a>
+          <a href={url("/")} class="cta-btn">Start Fullscreen Meditation</a>
         </div>
       </div>
     </article>

@@ -5,6 +5,7 @@ import LayerTeardownSimulator from '../components/LayerTeardownSimulator.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import AffiliateShowcase from '../components/AffiliateShowcase.astro';
 import Footer from '../components/Footer.astro';
+import { url } from '../lib/site';
 ---
 
 <BaseLayout
@@ -74,8 +75,8 @@ import Footer from '../components/Footer.astro';
             </p>
           </div>
           <div class="banner-actions">
-            <a href="/geometry/" class="guide-link-btn primary">Explore Geometry</a>
-            <a href="/meditation/" class="guide-link-btn secondary">Meditation Guide</a>
+            <a href={url("/geometry/")} class="guide-link-btn primary">Explore Geometry</a>
+            <a href={url("/meditation/")} class="guide-link-btn secondary">Meditation Guide</a>
           </div>
         </div>
       </div>
